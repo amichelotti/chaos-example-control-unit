@@ -14,9 +14,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "32F7448E14B49CCB0025638B"
-               BuildableName = "ControlUnitTest"
-               BlueprintName = "ControlUnitTest"
-               ReferencedContainer = "container:ControlUnitTest.xcodeproj">
+               BuildableName = "ExampleControlUnit"
+               BlueprintName = "ExampleControlUnit"
+               ReferencedContainer = "container:ExampleControlUnit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,9 +32,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32F7448E14B49CCB0025638B"
-            BuildableName = "ControlUnitTest"
-            BlueprintName = "ControlUnitTest"
-            ReferencedContainer = "container:ControlUnitTest.xcodeproj">
+            BuildableName = "ExampleControlUnit"
+            BlueprintName = "ExampleControlUnit"
+            ReferencedContainer = "container:ExampleControlUnit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -51,9 +51,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32F7448E14B49CCB0025638B"
-            BuildableName = "ControlUnitTest"
-            BlueprintName = "ControlUnitTest"
-            ReferencedContainer = "container:ControlUnitTest.xcodeproj">
+            BuildableName = "ExampleControlUnit"
+            BlueprintName = "ExampleControlUnit"
+            ReferencedContainer = "container:ExampleControlUnit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -144,9 +144,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "32F7448E14B49CCB0025638B"
-            BuildableName = "ControlUnitTest"
-            BlueprintName = "ControlUnitTest"
-            ReferencedContainer = "container:ControlUnitTest.xcodeproj">
+            BuildableName = "ExampleControlUnit"
+            BlueprintName = "ExampleControlUnit"
+            ReferencedContainer = "container:ExampleControlUnit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

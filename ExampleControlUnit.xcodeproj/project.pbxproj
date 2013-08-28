@@ -22,7 +22,7 @@
 		32BE864A15A0E3C500818C39 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		32F22421179AFF3500853F62 /* SCWorkerCU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SCWorkerCU.cpp; sourceTree = SOURCE_ROOT; };
 		32F22422179AFF3500853F62 /* SCWorkerCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWorkerCU.h; sourceTree = SOURCE_ROOT; };
-		32F7448F14B49CCB0025638B /* ControlUnitTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ControlUnitTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		32F7448F14B49CCB0025638B /* ExampleControlUnit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ExampleControlUnit; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F7449914B49CFA0025638B /* ControlUnitExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = ControlUnitExample.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		32F7449A14B49CFA0025638B /* RTWorkerCU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = RTWorkerCU.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		32F7449B14B49CFA0025638B /* RTWorkerCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = RTWorkerCU.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -51,7 +51,7 @@
 		326027B914B30A2400C906CE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				32F7448F14B49CCB0025638B /* ControlUnitTest */,
+				32F7448F14B49CCB0025638B /* ExampleControlUnit */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,9 +75,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		32F7448E14B49CCB0025638B /* ControlUnitTest */ = {
+		32F7448E14B49CCB0025638B /* ExampleControlUnit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 32F7449614B49CCC0025638B /* Build configuration list for PBXNativeTarget "ControlUnitTest" */;
+			buildConfigurationList = 32F7449614B49CCC0025638B /* Build configuration list for PBXNativeTarget "ExampleControlUnit" */;
 			buildPhases = (
 				32F7448B14B49CCB0025638B /* Sources */,
 				32F7448C14B49CCB0025638B /* Frameworks */,
@@ -86,9 +86,9 @@
 			);
 			dependencies = (
 			);
-			name = ControlUnitTest;
+			name = ExampleControlUnit;
 			productName = ControlUnitTest;
-			productReference = 32F7448F14B49CCB0025638B /* ControlUnitTest */;
+			productReference = 32F7448F14B49CCB0025638B /* ExampleControlUnit */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -100,7 +100,7 @@
 				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = INFN;
 			};
-			buildConfigurationList = 326027A214B309ED00C906CE /* Build configuration list for PBXProject "ControlUnitTest" */;
+			buildConfigurationList = 326027A214B309ED00C906CE /* Build configuration list for PBXProject "ExampleControlUnit" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -112,7 +112,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				32F7448E14B49CCB0025638B /* ControlUnitTest */,
+				32F7448E14B49CCB0025638B /* ExampleControlUnit */,
 			);
 		};
 /* End PBXProject section */
@@ -195,7 +195,7 @@
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -236,7 +236,7 @@
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -244,7 +244,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		326027A214B309ED00C906CE /* Build configuration list for PBXProject "ControlUnitTest" */ = {
+		326027A214B309ED00C906CE /* Build configuration list for PBXProject "ExampleControlUnit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				326027A414B309ED00C906CE /* Debug */,
@@ -253,7 +253,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		32F7449614B49CCC0025638B /* Build configuration list for PBXNativeTarget "ControlUnitTest" */ = {
+		32F7449614B49CCC0025638B /* Build configuration list for PBXNativeTarget "ExampleControlUnit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				32F7449714B49CCC0025638B /* Debug */,
