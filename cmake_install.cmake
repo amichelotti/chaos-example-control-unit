@@ -1,4 +1,4 @@
-# Install script for directory: /Users/bisegni/sorgenti/chaos_bundle_dev/example/ControlUnitTest
+# Install script for directory: /Users/bisegni/sorgenti/chaos_bundle_dev/example/ExampleControlUnit
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -28,13 +28,7 @@ IF(NOT CMAKE_INSTALL_COMPONENT)
 ENDIF(NOT CMAKE_INSTALL_COMPONENT)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ControlUnitTest/build/ControlUnitTest")
-  IF(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ControlUnitTest" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ControlUnitTest")
-    IF(CMAKE_INSTALL_DO_STRIP)
-      EXECUTE_PROCESS(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ControlUnitTest")
-    ENDIF(CMAKE_INSTALL_DO_STRIP)
-  ENDIF()
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ExampleControlUnit/build/ControlUnitTest")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(CMAKE_INSTALL_COMPONENT)
@@ -43,7 +37,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ControlUnitTest/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ExampleControlUnit/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ControlUnitTest/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/Users/bisegni/sorgenti/chaos_bundle_dev/example/ExampleControlUnit/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

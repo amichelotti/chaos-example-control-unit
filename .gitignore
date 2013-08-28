@@ -4,3 +4,5 @@ build/*
 ControlUnitTest.xcodeproj/xcuserdatai/*
 DerivedData
 ExampleControlUnit.xcodeproj/project.xcworkspace/xcuserdata
+Makefile
+cmake_install.cmake
