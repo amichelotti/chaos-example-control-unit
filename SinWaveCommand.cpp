@@ -89,7 +89,7 @@ void SinWaveCommand::acquireHandler() {
         //the return to exec
         lastStartTime = shared_stat->lastCmdStepStart;
         if(!(*quitSharedVariable)) {
-            switch (SlowCommand::runningState) {
+            switch (SlowCommand::getRunningProperty()) {
                 case chaos::cu::control_manager::slow_command::RunningStateType::RS_Exsc:
                     SL_STACK_RUNNIG_STATE
                     CMDCU_ << "Change to SL_STACK_RUNNIG_STATE";
