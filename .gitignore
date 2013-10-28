@@ -1,8 +1,8 @@
 *xccheckout*
 CMakeCache.txt
+ExampleControlUnit.xcodeproj/xcuserdata
 CMakeFiles/*
 build/*
-ControlUnitTest.xcodeproj/xcuserdatai/*
 DerivedData
 ExampleControlUnit.xcodeproj/project.xcworkspace/xcuserdata
 Makefile
