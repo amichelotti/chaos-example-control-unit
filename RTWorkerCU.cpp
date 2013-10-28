@@ -29,6 +29,8 @@
 #include <chaos/cu_toolkit/ControlManager/handler/DSInt32Handler.h>
 #include <chaos/cu_toolkit/ControlManager/handler/DSDoubleHandler.h>
 
+#include <boost/lexical_cast.hpp>
+
 #include <cmath>
 #include <stdio.h>
 #include <iostream>
@@ -146,6 +148,10 @@ void RTWorkerCU::unitDefineDriver(std::vector<chaos::cu::driver_manager::driver:
  */
 void RTWorkerCU::unitInit() throw(CException) {
     LAPP_ << "init RTWorkerCU";
+	
+	//get the defual value of the number of point
+	RangeValueInfo attributeInfo;
+	getAttributeRangeValueInfo("points", attributeInfo);
     //RTAbstractControlUnit::init();
     
     initTime = steady_clock::now();
@@ -155,12 +161,17 @@ void RTWorkerCU::unitInit() throw(CException) {
     PI = acos((long double) -1);
     messageID = 0;
     sinevalue = NULL;
-    setWavePoint("points", 30);
+	
+
+    
     freq = 1.0;
     gain = 5.0;
     phase = 0.0;
     bias = 0.0;
     gainNoise = 0.5;
+	
+	setWavePoint("points", boost::lexical_cast<int32_t>(attributeInfo.defaultValue));
+
 }
 
 /*
