@@ -64,7 +64,7 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     *(gainNoise = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)5)->getCurrentValue<double>()) = 0.5;
     
     //custom variable
-    quitSharedVariable = getValueSetting(IOCAttributeShareCache::SVD_CUSTOM, (AttributeIndexType)6)->getCurrentValue<bool>();
+    quitSharedVariable = getValueSetting(IOCAttributeShareCache::SVD_CUSTOM, (AttributeIndexType)0)->getCurrentValue<bool>();
     
     lastStartTime = 0;
 	
