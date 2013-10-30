@@ -30,8 +30,8 @@ using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
 
 SinWaveCommand::SinWaveCommand():rng((const uint_fast32_t) time(0) ),one_to_hundred( -100, 100 ),randInt(rng, one_to_hundred) {
-    //set default scheduler delay
-    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, 50);
+    //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
+    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, 50000);
 }
 
 SinWaveCommand::~SinWaveCommand() {
@@ -84,7 +84,7 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
 void SinWaveCommand::acquireHandler() {
     uint64_t timeDiff = shared_stat->lastCmdStepStart - lastStartTime;
     
-    if(timeDiff > 10000 || (*quitSharedVariable)) {
+    if(timeDiff > 10000000 || (*quitSharedVariable)) {
         //every ten seconds ste the state until reac the killable and
         //the return to exec
         lastStartTime = shared_stat->lastCmdStepStart;
