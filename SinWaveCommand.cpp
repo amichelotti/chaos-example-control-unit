@@ -54,17 +54,18 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     sinevalue = NULL;
     
     
-    pointSetting = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)0);
+    pointSetting = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)0);
     points = pointSetting->getCurrentValue<uint32_t>();
+	
     //put my defaul tinit attribute
-    *(freq = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)1)->getCurrentValue<double>()) = 1.0;
-    *(bias = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)2)->getCurrentValue<double>()) = 0.0;
-    *(phase = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)3)->getCurrentValue<double>()) = 0.0;
-    *(gain = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)4)->getCurrentValue<double>()) = 5.0;
-    *(gainNoise = getValueSetting(IOCAttributeShareCache::SVD_INPUT, (AttributeIndexType)5)->getCurrentValue<double>()) = 0.5;
+    *(freq = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
+    *(bias = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
+    *(phase = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
+    *(gain = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
+    *(gainNoise = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
     
     //custom variable
-    quitSharedVariable = getValueSetting(IOCAttributeShareCache::SVD_CUSTOM, (AttributeIndexType)0)->getCurrentValue<bool>();
+    quitSharedVariable = getVariableValue(IOCAttributeShareCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
     
     lastStartTime = 0;
 	
@@ -110,11 +111,11 @@ void SinWaveCommand::acquireHandler() {
     
     //check if some parameter has changed every 100 msec
     if(timeDiff > 100) {
-        getChangedAttributeIndex(IOCAttributeShareCache::SVD_INPUT, changedIndex);
+        getChangedVariableIndex(IOCAttributeShareCache::SVD_INPUT, changedIndex);
         if(changedIndex.size()) {
             CMDCU_ << "We have " << changedIndex.size() << " changed attribute";
             for (int idx =0; idx < changedIndex.size(); idx++) {
-                ValueSetting *vSet = getValueSetting(IOCAttributeShareCache::SVD_INPUT, changedIndex[idx]);
+                ValueSetting *vSet = getVariableValue(IOCAttributeShareCache::SVD_INPUT, changedIndex[idx]);
 				
 				//set change as completed
 				vSet->completed();
