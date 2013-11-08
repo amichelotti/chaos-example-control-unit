@@ -8,7 +8,7 @@
 
 #include "SCWorkerCU.h"
 #include "SinWaveCommand.h"
-
+#include "TestCorrelatingCommand.h"
 using namespace chaos::common::data;
 
 using namespace chaos::cu::control_manager::slow_command;
@@ -39,9 +39,10 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     
     //install a command
     installCommand<SinWaveCommand>("sinwave_base");
-    
+    installCommand<TestCorrelatingCommand>("corr_test");
+	
     //set it has default
-   // setDefaultCommand("sinwave_base");
+	setDefaultCommand("sinwave_base");
     
     //setup the dataset
     addAttributeToDataSet("sinWave",
