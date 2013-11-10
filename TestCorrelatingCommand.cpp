@@ -34,9 +34,25 @@ uint8_t TestCorrelatingCommand::implementedHandler() {
 // Start the command execution
 void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 	start_time = shared_stat->lastCmdStepStart;
-    CMDCU_ << "Simulate set handler";
+    CMDCU_ << "Simulate set handler from ";
     instance_cout++;
-	SL_EXEC_RUNNIG_STATE
+    if(data && data->hasKey("rs_mode")) {
+        switch(data->getInt32Value("rs_mode")) {
+            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Exsc:
+                SL_EXEC_RUNNIG_STATE
+                break;
+            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Kill:
+                SL_KILL_RUNNIG_STATE
+                break;
+            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Stack:
+                SL_STACK_RUNNIG_STATE
+                break;
+            default:
+                SL_EXEC_RUNNIG_STATE
+                
+        }
+    }
+	
 }
 
 // Correlation and commit phase

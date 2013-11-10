@@ -147,7 +147,7 @@ void SinWaveCommand::acquireHandler() {
     pushDataSet(acquiredData);
 	
 	//make some delay
-	for(int idx = 0; idx <= 100000000; idx++){};
+	for(int idx = 0; idx <= 50000000; idx++){};
 }
 
 // Correlation and commit phase
