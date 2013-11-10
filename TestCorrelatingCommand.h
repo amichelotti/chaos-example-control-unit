@@ -20,7 +20,7 @@ namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
 class TestCorrelatingCommand : public ccc_slow_command::SlowCommand {
 	    uint64_t start_time;
-	
+	static uint64_t instance_cout;
 protected:
 	// return the implemented handler
     uint8_t implementedHandler();
