@@ -52,7 +52,7 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
                 
         }
     }
-	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, 2000000);
+	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)2000000);
 }
 
 // Correlation and commit phase

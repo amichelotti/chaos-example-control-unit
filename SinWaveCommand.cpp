@@ -31,7 +31,7 @@ using namespace chaos::cu::control_manager::slow_command;
 
 SinWaveCommand::SinWaveCommand():rng((const uint_fast32_t) time(0) ),one_to_hundred( -100, 100 ),randInt(rng, one_to_hundred) {
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
-    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, 50000);
+    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)50000);
 }
 
 SinWaveCommand::~SinWaveCommand() {
