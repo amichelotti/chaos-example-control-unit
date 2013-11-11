@@ -67,6 +67,8 @@ void TestCorrelatingCommand::ccHandler() {
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
+	uint64_t timeDiff = shared_stat->lastCmdStepStart - start_time;
+	CMDCU_ << "timeout afeter " << timeDiff << " microsecond";
 	//move the state machine on fault
 	throw chaos::CException(1, "timeout reached", __FUNCTION__);
 	return true;
