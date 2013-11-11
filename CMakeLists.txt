@@ -19,7 +19,7 @@ LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 
 ADD_DEFINITIONS(-g -O2 -Wall)
 
-SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp DummyDriver.cpp)
+SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp DummyDriver.cpp)
 
 ADD_EXECUTABLE(ExampleControlUnit ${cutest_exe_src})
 
