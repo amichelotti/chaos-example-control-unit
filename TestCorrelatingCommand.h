@@ -30,7 +30,7 @@ protected:
    
     // Correlation and commit phase
     void ccHandler();
-
+	bool timeoutHandler();
 public:
 	TestCorrelatingCommand();
 	~TestCorrelatingCommand();

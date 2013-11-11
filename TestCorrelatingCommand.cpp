@@ -52,16 +52,22 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
                 
         }
     }
-	
+	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, 2000000);
 }
 
 // Correlation and commit phase
 void TestCorrelatingCommand::ccHandler() {
     uint64_t timeDiff = shared_stat->lastCmdStepStart - start_time;
-    CMDCU_ << "["<< instance_cout <<"] Simulate correlation..." << timeDiff << " of " << 10000000;
-    if(timeDiff > 10000000) {
+    CMDCU_ << "["<< instance_cout <<"] Simulate correlation..." << timeDiff << " of " << 2000000;
+    if(timeDiff > 20000000) {
 			//we can terminate
 		CMDCU_ << "End correlate simulation...";
 		SL_END_RUNNIG_STATE
 	}
+}
+
+bool TestCorrelatingCommand::timeoutHandler() {
+	//move the state machine on fault
+	throw chaos::CException(1, "timeout reached", __FUNCTION__);
+	return true;
 }
