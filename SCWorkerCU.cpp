@@ -101,7 +101,12 @@ void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& needed
 
 // Abstract method for the initialization of the control unit
 void SCWorkerCU::unitInit() throw(CException) {
-	
+	double temp_gain = 30.F;
+	double *tmp_gain = NULL;
+	tmp_gain = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "gain")->getCurrentValue<double>();
+	LAPP_ << *tmp_gain;
+	setVariableValue(IOCAttributeShareCache::SVD_INPUT, "gain", &temp_gain,  sizeof(double));
+	LAPP_ << *tmp_gain;
 }
 
 // Abstract method for the start of the control unit
