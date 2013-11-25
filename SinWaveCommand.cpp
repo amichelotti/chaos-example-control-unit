@@ -20,7 +20,7 @@
 #include "SinWaveCommand.h"
 #include <boost/lexical_cast.hpp>
 
-#define CMDCU_ LAPP_ << "[SinWaveCommand] - "
+#define CMDCU_ LAPP_ << "[SinWaveCommand] - " << getDeviceID() << " - "
 
 
 using namespace chaos;
@@ -31,7 +31,7 @@ using namespace chaos::cu::control_manager::slow_command;
 
 SinWaveCommand::SinWaveCommand():rng((const uint_fast32_t) time(0) ),one_to_hundred( -100, 100 ),randInt(rng, one_to_hundred) {
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
-    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)50000);
+    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
 }
 
 SinWaveCommand::~SinWaveCommand() {
@@ -91,15 +91,11 @@ void SinWaveCommand::acquireHandler() {
         lastStartTime = shared_stat->lastCmdStepStart;
         if(!(*quitSharedVariable)) {
             switch (SlowCommand::getRunningProperty()) {
-                case chaos::cu::control_manager::slow_command::RunningStateType::RS_Exsc:
-                    SL_STACK_RUNNIG_STATE
-                    CMDCU_ << "Change to SL_STACK_RUNNIG_STATE";
+                case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Exsc:
+                    SL_NORMAL_RUNNIG_STATE
+                    CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
                     break;
-                case chaos::cu::control_manager::slow_command::RunningStateType::RS_Stack:
-                    SL_KILL_RUNNIG_STATE
-                    CMDCU_ << "Change to SL_KILL_RUNNIG_STATE";
-                    break;
-                case chaos::cu::control_manager::slow_command::RunningStateType::RS_Kill:
+                case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Normal:
                     SL_EXEC_RUNNIG_STATE
                     CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
                     break;

@@ -9,10 +9,25 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
-		<key>ExampleControlUnit.xcscheme</key>
+		<key>ExampleControlUnit_a.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>ExampleControlUnit_b.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>ExampleControlUnit_c.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>ExampleControlUnit_d.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>

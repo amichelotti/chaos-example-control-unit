@@ -7,7 +7,7 @@
 //
 
 #include "TestCorrelatingCommand.h"
-#define CMDCU_ LAPP_ << "[TestCorrelatingCommand] - "
+#define CMDCU_ LAPP_ << "[TestCorrelatingCommand] - " << getDeviceID() << " - " << local_instance_count << " - "
 
 using namespace chaos;
 
@@ -19,6 +19,7 @@ uint64_t TestCorrelatingCommand::instance_cout = 0;
 
 TestCorrelatingCommand::TestCorrelatingCommand()  {
 	start_time = 0;
+    local_instance_count = instance_cout++;
 }
 
 TestCorrelatingCommand::~TestCorrelatingCommand() {
@@ -34,23 +35,24 @@ uint8_t TestCorrelatingCommand::implementedHandler() {
 // Start the command execution
 void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 	start_time = shared_stat->lastCmdStepStart;
-    CMDCU_ << "Simulate set handler from ";
-    instance_cout++;
+    CMDCU_ << "Start simulation at " << start_time << " microeconds ";
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
-            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Exsc:
+            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Exsc:
                 SL_EXEC_RUNNIG_STATE
                 break;
-            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Kill:
-                SL_KILL_RUNNIG_STATE
+            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Normal:
+                SL_NORMAL_RUNNIG_STATE
                 break;
-            case chaos::cu::control_manager::slow_command::RunningStateType::RS_Stack:
-                SL_STACK_RUNNIG_STATE
+            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_End:
+                SL_END_RUNNIG_STATE
                 break;
             default:
                 SL_EXEC_RUNNIG_STATE
                 
         }
+    } else {
+         SL_EXEC_RUNNIG_STATE
     }
 	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)2000000);
 }
@@ -58,7 +60,7 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 // Correlation and commit phase
 void TestCorrelatingCommand::ccHandler() {
     uint64_t timeDiff = shared_stat->lastCmdStepStart - start_time;
-    CMDCU_ << "["<< instance_cout <<"] Simulate correlation..." << timeDiff << " of " << 2000000;
+    CMDCU_ << "Simulate correlation..." << timeDiff << " of " << 20000000;
     if(timeDiff > 20000000) {
 			//we can terminate
 		CMDCU_ << "End correlate simulation...";
