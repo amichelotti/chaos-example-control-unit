@@ -48,24 +48,25 @@ uint8_t SinWaveCommand::implementedHandler() {
 // Start the command execution
 void SinWaveCommand::setHandler(CDataWrapper *data) {
     // chaos::cu::DeviceSchemaDB *deviceDB = NULL;
+    messageID = 0;
     
     srand((unsigned)time(0));
     PI = acos((long double) -1);
     sinevalue = NULL;
     
     
-    pointSetting = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)0);
+    pointSetting = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)0);
     points = pointSetting->getCurrentValue<uint32_t>();
 	
     //put my defaul tinit attribute
-    *(freq = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
-    *(bias = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
-    *(phase = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
-    *(gain = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
-    *(gainNoise = getVariableValue(IOCAttributeShareCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
+    *(freq = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
+    *(bias = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
+    *(phase = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
+    *(gain = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
+    *(gainNoise = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
     
     //custom variable
-    quitSharedVariable = getVariableValue(IOCAttributeShareCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
+    quitSharedVariable = getVariableValue(IOCAttributeSharedCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
     
     lastStartTime = 0;
 	
@@ -83,12 +84,12 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
-    uint64_t timeDiff = shared_stat->lastCmdStepStart - lastStartTime;
+    uint64_t timeDiff = getStartStepTime() - lastStartTime;
     
     if(timeDiff > 10000000 || (*quitSharedVariable)) {
         //every ten seconds ste the state until reac the killable and
         //the return to exec
-        lastStartTime = shared_stat->lastCmdStepStart;
+        lastStartTime = getLastStepTime();
         if(!(*quitSharedVariable)) {
             switch (SlowCommand::getRunningProperty()) {
                 case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Exsc:
@@ -107,11 +108,11 @@ void SinWaveCommand::acquireHandler() {
     
     //check if some parameter has changed every 100 msec
     if(timeDiff > 100) {
-        getChangedVariableIndex(IOCAttributeShareCache::SVD_INPUT, changedIndex);
+        getChangedVariableIndex(IOCAttributeSharedCache::SVD_INPUT, changedIndex);
         if(changedIndex.size()) {
             CMDCU_ << "We have " << changedIndex.size() << " changed attribute";
             for (int idx =0; idx < changedIndex.size(); idx++) {
-                ValueSetting *vSet = getVariableValue(IOCAttributeShareCache::SVD_INPUT, changedIndex[idx]);
+                ValueSetting *vSet = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, changedIndex[idx]);
 				
 				//set change as completed
 				vSet->completed();

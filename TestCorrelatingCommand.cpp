@@ -7,7 +7,7 @@
 //
 
 #include "TestCorrelatingCommand.h"
-#define CMDCU_ LAPP_ << "[TestCorrelatingCommand] - " << getDeviceID() << " - " << local_instance_count << " - "
+#define CMDCU_ LAPP_ << "[TestCorrelatingCommand] - " << getDeviceID() << " - [" << getUID()<< "-" << local_instance_count << "] - "
 
 using namespace chaos;
 
@@ -34,7 +34,7 @@ uint8_t TestCorrelatingCommand::implementedHandler() {
 
 // Start the command execution
 void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
-	start_time = shared_stat->lastCmdStepStart;
+	start_time = getSetTime();
     CMDCU_ << "Start simulation at " << start_time << " microeconds ";
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
@@ -59,7 +59,7 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 
 // Correlation and commit phase
 void TestCorrelatingCommand::ccHandler() {
-    uint64_t timeDiff = shared_stat->lastCmdStepStart - start_time;
+    uint64_t timeDiff = getStartStepTime() - start_time;
     CMDCU_ << "Simulate correlation..." << timeDiff << " of " << 20000000;
     if(timeDiff > 20000000) {
 			//we can terminate
@@ -69,8 +69,8 @@ void TestCorrelatingCommand::ccHandler() {
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
-	uint64_t timeDiff = shared_stat->lastCmdStepStart - start_time;
-	CMDCU_ << "timeout afeter " << timeDiff << " microsecond";
+	uint64_t timeDiff = getLastStepTime() - start_time;
+	CMDCU_ << "timeout after " << timeDiff << " microsecond";
 	//move the state machine on fault
 	throw chaos::CException(1, "timeout reached", __FUNCTION__);
 	return true;

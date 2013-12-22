@@ -37,12 +37,15 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     //add managed device di
     setDeviceID(_deviceID);
     
+    // add two execution channels to the contor unit
+    addExecutionChannels(2);
+    
     //install a command
     installCommand<SinWaveCommand>("sinwave_base");
     installCommand<TestCorrelatingCommand>("corr_test");
 	
-    //set it has default
-	setDefaultCommand("sinwave_base");
+    //set the sin_base command to run on second channels
+	setDefaultCommand("sinwave_base", 2);
     
     //setup the dataset
     addAttributeToDataSet("sinWave",
@@ -103,9 +106,9 @@ void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& needed
 void SCWorkerCU::unitInit() throw(CException) {
 	double temp_gain = 30.F;
 	double *tmp_gain = NULL;
-	tmp_gain = getVariableValue(IOCAttributeShareCache::SVD_INPUT, "gain")->getCurrentValue<double>();
+	tmp_gain = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "gain")->getCurrentValue<double>();
 	LAPP_ << *tmp_gain;
-	setVariableValue(IOCAttributeShareCache::SVD_INPUT, "gain", &temp_gain,  sizeof(double));
+	setVariableValue(IOCAttributeSharedCache::SVD_INPUT, "gain", &temp_gain,  sizeof(double));
 	LAPP_ << *tmp_gain;
 }
 
