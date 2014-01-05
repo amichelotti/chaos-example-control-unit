@@ -27,7 +27,7 @@ using namespace chaos;
 
 using namespace chaos::common::data;
 
-using namespace chaos::cu::control_manager::slow_command;
+using namespace chaos::common::batch_command;
 
 SinWaveCommand::SinWaveCommand():rng((const uint_fast32_t) time(0) ),one_to_hundred( -100, 100 ),randInt(rng, one_to_hundred) {
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
@@ -55,18 +55,18 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     sinevalue = NULL;
     
     
-    pointSetting = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)0);
+    pointSetting = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)0);
     points = pointSetting->getCurrentValue<uint32_t>();
 	
     //put my defaul tinit attribute
-    *(freq = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
-    *(bias = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
-    *(phase = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
-    *(gain = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
-    *(gainNoise = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
+    *(freq = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
+    *(bias = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
+    *(phase = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
+    *(gain = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
+    *(gainNoise = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
     
     //custom variable
-    quitSharedVariable = getVariableValue(IOCAttributeSharedCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
+    quitSharedVariable = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
     
     lastStartTime = 0;
 	
@@ -92,17 +92,17 @@ void SinWaveCommand::acquireHandler() {
         lastStartTime = getLastStepTime();
         if(!(*quitSharedVariable)) {
             switch (SlowCommand::getRunningProperty()) {
-                case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Exsc:
-                    SL_NORMAL_RUNNIG_STATE
+                case RunningPropertyType::RP_Exsc:
+                    BC_NORMAL_RUNNIG_PROPERTY
                     CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
                     break;
-                case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Normal:
-                    SL_EXEC_RUNNIG_STATE
+                case RunningPropertyType::RP_Normal:
+                    BC_EXEC_RUNNIG_PROPERTY
                     CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
                     break;
             }
         } else {
-            SL_END_RUNNIG_STATE;
+            BC_END_RUNNIG_PROPERTY;
         }
     }
     

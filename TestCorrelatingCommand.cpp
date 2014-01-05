@@ -13,6 +13,8 @@ using namespace chaos;
 
 using namespace chaos::common::data;
 
+using namespace chaos::common::batch_command;
+
 using namespace chaos::cu::control_manager::slow_command;
 
 uint64_t TestCorrelatingCommand::instance_cout = 0;
@@ -38,23 +40,23 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     CMDCU_ << "Start simulation at " << start_time << " microeconds ";
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
-            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Exsc:
-                SL_EXEC_RUNNIG_STATE
+            case RunningPropertyType::RP_Exsc:
+                BC_EXEC_RUNNIG_PROPERTY
                 break;
-            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_Normal:
-                SL_NORMAL_RUNNIG_STATE
+            case RunningPropertyType::RP_Normal:
+                BC_NORMAL_RUNNIG_PROPERTY
                 break;
-            case chaos::cu::control_manager::slow_command::RunningPropertyType::RP_End:
-                SL_END_RUNNIG_STATE
+            case RunningPropertyType::RP_End:
+                BC_END_RUNNIG_PROPERTY
                 break;
             default:
-                SL_EXEC_RUNNIG_STATE
+                BC_EXEC_RUNNIG_PROPERTY
                 
         }
     } else {
-         SL_EXEC_RUNNIG_STATE
+         BC_EXEC_RUNNIG_PROPERTY
     }
-	setFeatures(ccc_slow_command::features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)2000000);
+	setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)2000000);
 }
 
 // Correlation and commit phase
@@ -64,7 +66,7 @@ void TestCorrelatingCommand::ccHandler() {
     if(timeDiff > 20000000) {
 			//we can terminate
 		CMDCU_ << "End correlate simulation...";
-		SL_END_RUNNIG_STATE
+		BC_END_RUNNIG_PROPERTY
 	}
 }
 

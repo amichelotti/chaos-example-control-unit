@@ -11,6 +11,7 @@
 #include "TestCorrelatingCommand.h"
 using namespace chaos::common::data;
 
+using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
@@ -93,8 +94,8 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
 void SCWorkerCU::defineSharedVariable() {
     bool quit = false;
 	//here are defined the custom shared variable
-    addSharedVariable("quit", 1, chaos::DataType::TYPE_BOOLEAN);
-    setSharedVariableValue("quit", &quit, sizeof(bool));
+    addCustomSharedVariable("quit", 1, chaos::DataType::TYPE_BOOLEAN);
+    setVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_CUSTOM, "quit", &quit, sizeof(bool));
 }
 
 void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& neededDriver) {

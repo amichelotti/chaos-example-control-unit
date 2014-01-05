@@ -29,6 +29,7 @@ using namespace chaos;
 
 namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
+namespace chaos_batch = chaos::common::batch_command;
 
 class SinWaveCommand : public ccc_slow_command::SlowCommand {
     typedef boost::mt19937 RNGType;
@@ -37,7 +38,7 @@ class SinWaveCommand : public ccc_slow_command::SlowCommand {
     variate_generator< RNGType, uniform_int<> > randInt;
     double *sinevalue;
     uint32_t *points;
-    ccc_slow_command::ValueSetting *pointSetting;
+    chaos_batch::ValueSetting *pointSetting;
     double *freq;
     double *gain;
     double *phase;
@@ -49,7 +50,7 @@ class SinWaveCommand : public ccc_slow_command::SlowCommand {
     long double PI;
     int32_t messageID;
     boost::mutex pointChangeMutex;
-    std::vector<ccc_slow_command::VariableIndexType> changedIndex;
+    std::vector<chaos_batch::VariableIndexType> changedIndex;
     
     inline void computeWave(c_data::CDataWrapper *acquiredData);
     inline void setWavePoint();
