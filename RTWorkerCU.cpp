@@ -170,7 +170,7 @@ void RTWorkerCU::unitInit() throw(CException) {
     bias = 0.0;
     gainNoise = 0.5;
 	
-	setWavePoint("points", boost::lexical_cast<int32_t>(attributeInfo.defaultValue));
+	setWavePoint("points", attributeInfo.defaultValue.size()>0?boost::lexical_cast<int32_t>(attributeInfo.defaultValue):30);
 
 }
 
