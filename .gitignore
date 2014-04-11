@@ -5,6 +5,10 @@ CMakeFiles/*
 build/*
 DerivedData
 ExampleControlUnit.xcodeproj/project.xcworkspace/xcuserdata
+ExampleControlUnit.xcodeproj/xcuserdata/*
 Makefile
 cmake_install.cmake
 install_manifest.txt
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
