@@ -17,7 +17,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build)
 INCLUDE_DIRECTORIES(. ${PROJECT_SOURCE_DIR}/../../usr/local/include)
 LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 
-ADD_DEFINITIONS(-g -O2 -Wall)
+ADD_DEFINITIONS(-g -O2 -Wall -DBOOST_ALL_DYN_LINK)
 
 SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp DummyDriver.cpp)
 
