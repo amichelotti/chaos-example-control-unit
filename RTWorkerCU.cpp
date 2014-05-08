@@ -51,7 +51,11 @@ using namespace chaos;
 /*
  Construct a new CU with an identifier
  */
-RTWorkerCU::RTWorkerCU(string &customDeviceID):rng((const uint_fast32_t) time(0) ),one_to_hundred( -100, 100 ),randInt(rng, one_to_hundred){
+RTWorkerCU::RTWorkerCU(string &customDeviceID):
+rng((const uint_fast32_t) time(0) ),
+one_to_hundred( -100, 100 ),
+randInt(rng, one_to_hundred),
+sinevalue(NULL) {
     _deviceID = customDeviceID;
     numberOfResponse = 0;
 }
