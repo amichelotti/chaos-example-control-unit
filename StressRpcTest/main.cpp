@@ -14,13 +14,17 @@
 using namespace chaos;
 using namespace chaos::ui;
 
-int main(int argc, const char * argv[])
+int main(int argc, char * argv[])
 {
     try {
         ChaosUIToolkit::getInstance()->init(argc, argv);
-        DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID(mess_device_id, timeout);
+        DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID("rt_sin_a", 2000000);
         if (!controller) throw CException(4, "Error allcoating decive controller", "device controller creation");
-        
+		for(int idx = 0; idx < 10; idx++) {
+			chaos::common::data::CDataWrapper *result = NULL;
+			controller->sendCustomRequest("actionTestOne", NULL, &result);
+			if(result)delete(result);
+		}
         ChaosUIToolkit::getInstance()->deinit();
     } catch (CException& e) {
         std::cerr << e.errorCode << " - " << e.errorDomain << " - " << e.errorMessage << std::endl;

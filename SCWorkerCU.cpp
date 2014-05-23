@@ -39,15 +39,15 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     setDeviceID(_deviceID);
     
     // add two execution channels to the contor unit
-    addExecutionChannels(2);
+    //addExecutionChannels(2);
     
     //install a command
     installCommand<SinWaveCommand>("sinwave_base");
     installCommand<TestCorrelatingCommand>("corr_test");
 	
     //set the sin_base command to run on second channels
-	setDefaultCommand("sinwave_base", 2);
-    
+	//setDefaultCommand("sinwave_base", 2);
+    setDefaultCommand("sinwave_base");
     //setup the dataset
     addAttributeToDataSet("sinWave",
                           "The sin waveform",
