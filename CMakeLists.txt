@@ -23,10 +23,13 @@ SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveC
 
 ADD_EXECUTABLE(ExampleControlUnit ${cutest_exe_src})
 
+SET(FrameworkLib $ENV{CHAOS_LINK_LIBRARY})
+separate_arguments(FrameworkLib)
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	TARGET_LINK_LIBRARIES(ExampleControlUnit pthread chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached)
+	TARGET_LINK_LIBRARIES(ExampleControlUnit pthread chaos_cutoolkit chaos_common ${FrameworkLib})
 ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	TARGET_LINK_LIBRARIES(ExampleControlUnit chaos_cutoolkit chaos_common boost_program_options boost_system boost_thread boost_chrono boost_regex boost_log boost_log_setup boost_atomic memcached)
+	TARGET_LINK_LIBRARIES(ExampleControlUnit chaos_cutoolkit chaos_common ${FrameworkLib})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 INSTALL_TARGETS(/bin ExampleControlUnit)
