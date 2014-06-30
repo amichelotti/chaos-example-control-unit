@@ -43,7 +43,6 @@ class RTWorkerCU : public chaos::cu::RTAbstractControlUnit {
     high_resolution_clock::time_point initTime;
     high_resolution_clock::time_point lastExecutionTime;
     high_resolution_clock::time_point currentExecutionTime;
-    string _deviceID;
     long double PI;
     
     int32_t points;
@@ -61,7 +60,8 @@ public:
     /*
      Construct a new CU with an identifier
      */
-    RTWorkerCU(string&);
+    RTWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list);
+	
     /*
      Destructor a new CU with an identifier
      */
@@ -77,8 +77,6 @@ protected:
      Define the Control Unit Dataset and Actions
      */
     void unitDefineActionAndDataset()throw(CException);
-    
-	void unitDefineDriver(std::vector<chaos::cu::driver_manager::driver::DrvRequestInfo>& neededDriver);
 	
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer

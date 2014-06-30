@@ -19,13 +19,10 @@ using namespace chaos::cu::driver_manager::driver;
 /*
  Construct a new CU with an identifier
  */
-SCWorkerCU::SCWorkerCU(string &customDeviceID) {
-    _deviceID = customDeviceID;
-}
+SCWorkerCU::SCWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list):
+chaos::cu::SCAbstractControlUnit(control_unique_id, driver_list) {}
 
-SCWorkerCU::~SCWorkerCU() {
-	
-}
+SCWorkerCU::~SCWorkerCU() {}
 
 /*
  Return the default configuration
@@ -34,9 +31,6 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     //set the base information
     RangeValueInfo rangeInfoTemp;
     //cuSetup.addStringValue(CUDefinitionKey::CS_CM_CU_DESCRIPTION, "This is a beautifull CU");
-    
-    //add managed device di
-    setDeviceID(_deviceID);
     
     // add two execution channels to the contor unit
     //addExecutionChannels(2);
@@ -98,10 +92,10 @@ void SCWorkerCU::defineSharedVariable() {
     setVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_CUSTOM, "quit", &quit, sizeof(bool));
 }
 
-void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& neededDriver) {
-	cu_driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
-	neededDriver.push_back(drv1);
-}
+//void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& neededDriver) {
+//	cu_driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
+//	neededDriver.push_back(drv1);
+//}
 
 // Abstract method for the initialization of the control unit
 void SCWorkerCU::unitInit() throw(CException) {

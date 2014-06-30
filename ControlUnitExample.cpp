@@ -78,11 +78,13 @@ int main (int argc, char* argv[] )
 		ChaosCUToolkit::getInstance()->init(argc, argv);
 		//! [CUTOOLKIT Init]
 		
+		cu_driver_manager::driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
+		AbstractControlUnit::ControlUnitDriverList driver_list; driver_list.push_back(drv1);
 		//! [Adding the CustomControlUnit]
 		if(ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_CUSTOM_DEVICE_ID_A)){
 			tmp_device_id = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->getOption< std::vector<std::string> >(OPT_CUSTOM_DEVICE_ID_A);
 			for(int idx = 0; idx < tmp_device_id.size(); idx++){
-				ChaosCUToolkit::getInstance()->addControlUnit(new RTWorkerCU(tmp_device_id[idx]));
+				ChaosCUToolkit::getInstance()->addControlUnit(new RTWorkerCU(tmp_device_id[idx], driver_list));
 			}
 			
 		}
@@ -90,7 +92,7 @@ int main (int argc, char* argv[] )
 		if(ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_CUSTOM_DEVICE_ID_B)){
 			tmp_device_id = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->getOption< std::vector<std::string> >(OPT_CUSTOM_DEVICE_ID_B);
 			for(int idx = 0; idx < tmp_device_id.size(); idx++){
-				ChaosCUToolkit::getInstance()->addControlUnit(new SCWorkerCU(tmp_device_id[idx]));
+				ChaosCUToolkit::getInstance()->addControlUnit(new SCWorkerCU(tmp_device_id[idx], driver_list));
 			}
 			
 		}

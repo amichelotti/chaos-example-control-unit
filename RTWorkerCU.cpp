@@ -51,12 +51,12 @@ using namespace chaos;
 /*
  Construct a new CU with an identifier
  */
-RTWorkerCU::RTWorkerCU(string &customDeviceID):
+RTWorkerCU::RTWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list):
+chaos::cu::RTAbstractControlUnit(control_unique_id, driver_list),
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred),
 sinevalue(NULL) {
-    _deviceID = customDeviceID;
     numberOfResponse = 0;
 }
 
@@ -76,9 +76,6 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     
     //set the default delay for the CU
     setDefaultScheduleDelay(CU_DELAY_FROM_TASKS);
-    
-    //add managed device di
-    setDeviceID(_deviceID);
     
     
     //add custom action
@@ -141,10 +138,6 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                                                  "The gain of the noise of the wave",
                                                  this,
                                                  &RTWorkerCU::setDoubleValue);
-}
-
-void RTWorkerCU::unitDefineDriver(std::vector<chaos::cu::driver_manager::driver::DrvRequestInfo>& neededDriver) {
-	
 }
 
 /*
