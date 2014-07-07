@@ -275,7 +275,9 @@ void RTWorkerCU::setDoubleValue(const std::string& deviceID, const double& dValu
  */
 CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachParam) {
     CDataWrapper *result = new CDataWrapper();
-    result->addStringValue("result_key", "result_key_value");
+	static uint64_t counter = 0;
+    result->addInt64Value("call_counter", counter++);
+	LAPP_ << "call_counter = " << counter;
     return result;
 }
 

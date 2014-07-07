@@ -25,9 +25,9 @@ int main(int argc, char * argv[])
         if (!controller) throw CException(4, "Error allcoating decive controller", "device controller creation");
 		for(int idx = 0; idx < NUMBER_OF_ITERATION; idx++) {
 			chaos::common::data::CDataWrapper *result = NULL;
-			controller->sendCustomRequest("actionTestOne", NULL, &result);
-			if(result)delete(result);
-			
+			controller->sendCustomMessage("actionTestOne", NULL);
+			//if(result)delete(result);
+			//usleep(500);
 			if((idx % 100) == 0) {
 				LAPP_ << "Message sent: " << idx;
 			}
