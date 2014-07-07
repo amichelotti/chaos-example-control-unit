@@ -27,8 +27,8 @@ int main(int argc, char * argv[])
 			chaos::common::data::CDataWrapper *result = NULL;
 			controller->sendCustomMessage("actionTestOne", NULL);
 			//if(result)delete(result);
-			//usleep(500);
-			if((idx % 100) == 0) {
+			usleep(1000);
+			if((idx % 10000) == 0) {
 				LAPP_ << "Message sent: " << idx;
 			}
 		}
