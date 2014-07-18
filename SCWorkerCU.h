@@ -31,6 +31,7 @@ using namespace boost::posix_time;
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
 class SCWorkerCU : public chaos::cu::SCAbstractControlUnit {
+	PUBLISHABLE_CONTROL_UNIT_INTERFACE(SCWorkerCU)
 protected:
     /*
      Define the Control Unit Dataset and Actions
@@ -57,7 +58,7 @@ public:
     /*
      Construct a new CU with an identifier
      */
-    SCWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list);
+    SCWorkerCU(const string& _control_unit_id, const string& _control_unit_param, const ControlUnitDriverList& _control_unit_drivers);
 	
 	/*
      Base destructor

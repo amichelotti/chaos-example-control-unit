@@ -15,7 +15,7 @@ using namespace chaos;
 using namespace chaos::ui;
 
 
-#define NUMBER_OF_ITERATION 100000
+#define NUMBER_OF_ITERATION 1000
 
 int main(int argc, char * argv[])
 {
@@ -27,11 +27,12 @@ int main(int argc, char * argv[])
 			chaos::common::data::CDataWrapper *result = NULL;
 			controller->sendCustomMessage("actionTestOne", NULL);
 			//if(result)delete(result);
-			usleep(1000);
-			if((idx % 10000) == 0) {
+			if(idx && ((idx % 100) == 0)) {
+				//sleep(6000);
 				LAPP_ << "Message sent: " << idx;
 			}
 		}
+		sleep(10);
 		LAPP_ << "Message sent: " << NUMBER_OF_ITERATION;
         ChaosUIToolkit::getInstance()->deinit();
     } catch (CException& e) {

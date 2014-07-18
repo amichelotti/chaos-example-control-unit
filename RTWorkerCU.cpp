@@ -48,11 +48,19 @@ using namespace chaos;
 #define CU_DELAY_FROM_TASKS     1000000 //1Sec
 #define ACTION_TWO_PARAM_NAME   "actionTestTwo_paramName"
 
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(RTWorkerCU)
+
 /*
  Construct a new CU with an identifier
  */
-RTWorkerCU::RTWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list):
-chaos::cu::RTAbstractControlUnit(control_unique_id, driver_list),
+RTWorkerCU::RTWorkerCU(const string& _control_unit_id,
+					   const string& _control_unit_param,
+					   const ControlUnitDriverList& _control_unit_drivers):
+//call base constructor
+chaos::cu::RTAbstractControlUnit(_control_unit_id,
+								 _control_unit_param,
+								 _control_unit_drivers),
+//instance variabl einizialization
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred),

@@ -35,6 +35,7 @@ using namespace chaos;
 using namespace chaos::common::data;
 
 class RTWorkerCU : public chaos::cu::RTAbstractControlUnit {
+	PUBLISHABLE_CONTROL_UNIT_INTERFACE(RTWorkerCU)
     typedef boost::mt19937 RNGType; 
     RNGType rng;
     uniform_int<> one_to_hundred;    
@@ -60,7 +61,7 @@ public:
     /*
      Construct a new CU with an identifier
      */
-    RTWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list);
+    RTWorkerCU(const string& _control_unit_id, const string& _control_unit_param, const ControlUnitDriverList& _control_unit_drivers);
 	
     /*
      Destructor a new CU with an identifier

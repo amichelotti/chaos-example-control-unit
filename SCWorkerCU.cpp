@@ -15,12 +15,16 @@ using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
-
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(SCWorkerCU)
 /*
  Construct a new CU with an identifier
  */
-SCWorkerCU::SCWorkerCU(const string& control_unique_id, const ControlUnitDriverList& driver_list):
-chaos::cu::SCAbstractControlUnit(control_unique_id, driver_list) {}
+SCWorkerCU::SCWorkerCU(const string& _control_unit_id,
+					   const string& _control_unit_param,
+					   const ControlUnitDriverList& _control_unit_drivers):
+chaos::cu::SCAbstractControlUnit(_control_unit_id,
+								 _control_unit_param,
+								 _control_unit_drivers) {}
 
 SCWorkerCU::~SCWorkerCU() {}
 
