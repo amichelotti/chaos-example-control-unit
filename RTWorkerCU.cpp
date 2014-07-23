@@ -57,9 +57,9 @@ RTWorkerCU::RTWorkerCU(const string& _control_unit_id,
 					   const string& _control_unit_param,
 					   const ControlUnitDriverList& _control_unit_drivers):
 //call base constructor
-chaos::cu::RTAbstractControlUnit(_control_unit_id,
-								 _control_unit_param,
-								 _control_unit_drivers),
+chaos::cu::control_manager::RTAbstractControlUnit(_control_unit_id,
+												  _control_unit_param,
+												  _control_unit_drivers),
 //instance variabl einizialization
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),

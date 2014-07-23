@@ -30,7 +30,7 @@ using namespace boost::posix_time;
 
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
-class SCWorkerCU : public chaos::cu::SCAbstractControlUnit {
+class SCWorkerCU : public chaos::cu::control_manager::SCAbstractControlUnit {
 	PUBLISHABLE_CONTROL_UNIT_INTERFACE(SCWorkerCU)
 protected:
     /*

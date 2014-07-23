@@ -34,7 +34,7 @@ using namespace boost::posix_time;
 using namespace chaos;
 using namespace chaos::common::data;
 
-class RTWorkerCU : public chaos::cu::RTAbstractControlUnit {
+class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
 	PUBLISHABLE_CONTROL_UNIT_INTERFACE(RTWorkerCU)
     typedef boost::mt19937 RNGType; 
     RNGType rng;

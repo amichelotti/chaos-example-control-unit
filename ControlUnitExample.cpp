@@ -79,7 +79,7 @@ int main (int argc, char* argv[] )
 		//! [CUTOOLKIT Init]
 		
 		cu_driver_manager::driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
-		AbstractControlUnit::ControlUnitDriverList driver_list; driver_list.push_back(drv1);
+		control_manager::AbstractControlUnit::ControlUnitDriverList driver_list; driver_list.push_back(drv1);
 		
 		//register control unit into server
 		ChaosCUToolkit::getInstance()->registerControlUnit<RTWorkerCU>();

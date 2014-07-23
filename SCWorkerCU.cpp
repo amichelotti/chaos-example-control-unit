@@ -22,9 +22,9 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(SCWorkerCU)
 SCWorkerCU::SCWorkerCU(const string& _control_unit_id,
 					   const string& _control_unit_param,
 					   const ControlUnitDriverList& _control_unit_drivers):
-chaos::cu::SCAbstractControlUnit(_control_unit_id,
-								 _control_unit_param,
-								 _control_unit_drivers) {}
+chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
+												  _control_unit_param,
+												_control_unit_drivers) {}
 
 SCWorkerCU::~SCWorkerCU() {}
 
