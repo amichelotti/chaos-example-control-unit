@@ -48,15 +48,23 @@ using namespace chaos;
 #define CU_DELAY_FROM_TASKS     1000000 //1Sec
 #define ACTION_TWO_PARAM_NAME   "actionTestTwo_paramName"
 
+PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(RTWorkerCU)
+
 /*
  Construct a new CU with an identifier
  */
-RTWorkerCU::RTWorkerCU(string &customDeviceID):
+RTWorkerCU::RTWorkerCU(const string& _control_unit_id,
+					   const string& _control_unit_param,
+					   const ControlUnitDriverList& _control_unit_drivers):
+//call base constructor
+chaos::cu::control_manager::RTAbstractControlUnit(_control_unit_id,
+												  _control_unit_param,
+												  _control_unit_drivers),
+//instance variabl einizialization
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred),
 sinevalue(NULL) {
-    _deviceID = customDeviceID;
     numberOfResponse = 0;
 }
 
@@ -76,9 +84,6 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     
     //set the default delay for the CU
     setDefaultScheduleDelay(CU_DELAY_FROM_TASKS);
-    
-    //add managed device di
-    setDeviceID(_deviceID);
     
     
     //add custom action
@@ -141,10 +146,6 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                                                  "The gain of the noise of the wave",
                                                  this,
                                                  &RTWorkerCU::setDoubleValue);
-}
-
-void RTWorkerCU::unitDefineDriver(std::vector<chaos::cu::driver_manager::driver::DrvRequestInfo>& neededDriver) {
-	
 }
 
 /*
@@ -282,7 +283,9 @@ void RTWorkerCU::setDoubleValue(const std::string& deviceID, const double& dValu
  */
 CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachParam) {
     CDataWrapper *result = new CDataWrapper();
-    result->addStringValue("result_key", "result_key_value");
+	static uint64_t counter = 0;
+    result->addInt64Value("call_counter", counter++);
+	LAPP_ << "call_counter = " << counter;
     return result;
 }
 

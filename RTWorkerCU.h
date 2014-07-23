@@ -34,7 +34,8 @@ using namespace boost::posix_time;
 using namespace chaos;
 using namespace chaos::common::data;
 
-class RTWorkerCU : public chaos::cu::RTAbstractControlUnit {
+class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
+	PUBLISHABLE_CONTROL_UNIT_INTERFACE(RTWorkerCU)
     typedef boost::mt19937 RNGType; 
     RNGType rng;
     uniform_int<> one_to_hundred;    
@@ -43,7 +44,6 @@ class RTWorkerCU : public chaos::cu::RTAbstractControlUnit {
     high_resolution_clock::time_point initTime;
     high_resolution_clock::time_point lastExecutionTime;
     high_resolution_clock::time_point currentExecutionTime;
-    string _deviceID;
     long double PI;
     
     int32_t points;
@@ -61,7 +61,8 @@ public:
     /*
      Construct a new CU with an identifier
      */
-    RTWorkerCU(string&);
+    RTWorkerCU(const string& _control_unit_id, const string& _control_unit_param, const ControlUnitDriverList& _control_unit_drivers);
+	
     /*
      Destructor a new CU with an identifier
      */
@@ -77,8 +78,6 @@ protected:
      Define the Control Unit Dataset and Actions
      */
     void unitDefineActionAndDataset()throw(CException);
-    
-	void unitDefineDriver(std::vector<chaos::cu::driver_manager::driver::DrvRequestInfo>& neededDriver);
 	
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
