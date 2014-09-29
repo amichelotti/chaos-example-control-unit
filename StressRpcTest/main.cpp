@@ -15,24 +15,38 @@ using namespace chaos;
 using namespace chaos::ui;
 
 
-#define NUMBER_OF_ITERATION 1000
+#define NUMBER_OF_ITERATION 100
 
 int main(int argc, char * argv[])
 {
     try {
+		std::string device_id;
+		std::string action_name;
+		uint32_t timeout = 0;
+		uint32_t iteration = 0;
+		ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption<string>("device_id", "The identification string of the device to stress", &device_id);
+		ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption<string>("action_name", "The name of cutom action to call", &action_name);
+		ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption<uint32_t>("timeout", "The timeout of rpc call", 1000, &timeout);
+		ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->addOption<uint32_t>("iteration", "The numer of iteration to do", NUMBER_OF_ITERATION, &iteration);
+		
         ChaosUIToolkit::getInstance()->init(argc, argv);
-        DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID("rt_sin_a", 2000000);
+		
+		if(!ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("device_id")) {
+			throw chaos::CException(-1, "The device id is mandatory", "init");
+		}
+		
+		if(!ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("action_name")) {
+			throw chaos::CException(-1, "The action name id is mandatory", "init");
+		}
+		
+        DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID(device_id, timeout);
         if (!controller) throw CException(4, "Error allcoating decive controller", "device controller creation");
-		for(int idx = 0; idx < NUMBER_OF_ITERATION; idx++) {
-			chaos::common::data::CDataWrapper *result = NULL;
-			controller->sendCustomMessage("actionTestOne", NULL);
-			//if(result)delete(result);
+		for(int idx = 0; idx < iteration; idx++) {
+			controller->sendCustomMessage(action_name.c_str(), NULL);
 			if(idx && ((idx % 100) == 0)) {
-				//sleep(6000);
 				LAPP_ << "Message sent: " << idx;
 			}
 		}
-		sleep(10);
 		LAPP_ << "Message sent: " << NUMBER_OF_ITERATION;
         ChaosUIToolkit::getInstance()->deinit();
     } catch (CException& e) {

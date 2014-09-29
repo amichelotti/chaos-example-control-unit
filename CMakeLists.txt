@@ -20,16 +20,21 @@ LINK_DIRECTORIES(${PROJECT_SOURCE_DIR}/../../chaosframework/usr/local/lib)
 ADD_DEFINITIONS(-g -O2 -Wall -DBOOST_ALL_DYN_LINK)
 
 SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp DummyDriver.cpp)
+SET(roc_test_stress_exe_src main.cpp)
 
 ADD_EXECUTABLE(ExampleControlUnit ${cutest_exe_src})
+ADD_EXECUTABLE(RpcTestStress ${roc_test_stress_exe_src})
 
 SET(FrameworkLib $ENV{CHAOS_LINK_LIBRARY})
 separate_arguments(FrameworkLib)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	TARGET_LINK_LIBRARIES(ExampleControlUnit pthread chaos_cutoolkit chaos_common ${FrameworkLib})
+	TARGET_LINK_LIBRARIES(RpcTestStress pthread chaos_uitoolkit chaos_common ${FrameworkLib})
 ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	TARGET_LINK_LIBRARIES(ExampleControlUnit chaos_cutoolkit chaos_common ${FrameworkLib})
+	TARGET_LINK_LIBRARIES(RpcTestStress pthread chaos_uitoolkit chaos_common ${FrameworkLib})
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 INSTALL_TARGETS(/bin ExampleControlUnit)
+INSTALL_TARGETS(/bin RpcTestStress)
