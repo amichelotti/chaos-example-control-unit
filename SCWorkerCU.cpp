@@ -12,6 +12,7 @@
 using namespace chaos::common::data;
 
 using namespace chaos::common::batch_command;
+using namespace chaos::common::data::cache;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
@@ -89,11 +90,11 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
 
 }
 
-void SCWorkerCU::defineSharedVariable() {
+void SCWorkerCU::unitDefineCustomAttribute() {
     bool quit = false;
 	//here are defined the custom shared variable
-    addCustomSharedVariable("quit", 1, chaos::DataType::TYPE_BOOLEAN);
-    setVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_CUSTOM, "quit", &quit, sizeof(bool));
+	getAttributeCache()->addCustomAttribute("quit", 1, chaos::DataType::TYPE_BOOLEAN);
+	getAttributeCache()->setCustomAttributeValue("quit", &quit, sizeof(bool));
 }
 
 //void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& neededDriver) {
@@ -103,12 +104,6 @@ void SCWorkerCU::defineSharedVariable() {
 
 // Abstract method for the initialization of the control unit
 void SCWorkerCU::unitInit() throw(CException) {
-	double temp_gain = 30.F;
-	double *tmp_gain = NULL;
-	tmp_gain = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, "gain")->getCurrentValue<double>();
-	LAPP_ << *tmp_gain;
-	setVariableValue(IOCAttributeSharedCache::SVD_INPUT, "gain", &temp_gain,  sizeof(double));
-	LAPP_ << *tmp_gain;
 }
 
 // Abstract method for the start of the control unit

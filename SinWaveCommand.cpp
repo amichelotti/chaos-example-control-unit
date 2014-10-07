@@ -52,21 +52,18 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     
     srand((unsigned)time(0));
     PI = acos((long double) -1);
-    sinevalue = NULL;
-    
-    
-    pointSetting = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)0);
-    points = pointSetting->getCurrentValue<uint32_t>();
-	
-    //put my defaul tinit attribute
-    *(freq = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)1)->getCurrentValue<double>()) = 1.0;
-    *(bias = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)2)->getCurrentValue<double>()) = 0.0;
-    *(phase = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)3)->getCurrentValue<double>()) = 0.0;
-    *(gain = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)4)->getCurrentValue<double>()) = 5.0;
-    *(gainNoise = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_INPUT, (VariableIndexType)5)->getCurrentValue<double>()) = 0.5;
-    
-    //custom variable
-    quitSharedVariable = getVariableValue(chaos_batch::IOCAttributeSharedCache::SVD_CUSTOM, (VariableIndexType)0)->getCurrentValue<bool>();
+    sin_wave = NULL;
+	sin_wave_points = 0;
+	//get read only input attribute
+	attribute_cache.getReadonlyCachedAttributeValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, 0, &in_points);
+	attribute_cache.getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 1, &in_freq);
+	attribute_cache.getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 2, &in_bias);
+	attribute_cache.getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 3, &in_phase);
+	attribute_cache.getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 4, &in_gain);
+	attribute_cache.getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 5, &in_gain_noise);
+
+	//get custom attribute
+	attribute_cache.getCachedCustomAttributeValue<bool>(0, &custom_quit);
     
     lastStartTime = 0;
 	
@@ -86,11 +83,11 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
 void SinWaveCommand::acquireHandler() {
     uint64_t timeDiff = getStartStepTime() - lastStartTime;
     
-    if(timeDiff > 10000000 || (*quitSharedVariable)) {
+    if(timeDiff > 10000000 || (*custom_quit)) {
         //every ten seconds ste the state until reac the killable and
         //the return to exec
         lastStartTime = getLastStepTime();
-        if(!(*quitSharedVariable)) {
+        if(!(*custom_quit)) {
             switch (SlowCommand::getRunningProperty()) {
                 case RunningPropertyType::RP_Exsc:
                     BC_NORMAL_RUNNIG_PROPERTY
@@ -108,18 +105,14 @@ void SinWaveCommand::acquireHandler() {
     
     //check if some parameter has changed every 100 msec
     if(timeDiff > 100) {
-        getChangedVariableIndex(IOCAttributeSharedCache::SVD_INPUT, changedIndex);
+		attribute_cache.getChangedInputAttributeIndex(changedIndex);
         if(changedIndex.size()) {
             CMDCU_ << "We have " << changedIndex.size() << " changed attribute";
             for (int idx =0; idx < changedIndex.size(); idx++) {
-                ValueSetting *vSet = getVariableValue(IOCAttributeSharedCache::SVD_INPUT, changedIndex[idx]);
-				
-				//set change as completed
-				vSet->completed();
-				
+
                 //the index is correlated to the creation sequence so
                 //the index 0 is the first input parameter "frequency"
-                switch (vSet->index) {
+                switch (changedIndex[idx]) {
                     case 0://points
 
                         // apply the modification
@@ -139,9 +132,6 @@ void SinWaveCommand::acquireHandler() {
     //put the messageID for test the lost of package
     acquiredData->addInt32Value("id", ++messageID);
     computeWave(acquiredData);
-    
-    //submit acquired data
-    pushDataSet(acquiredData);
 }
 
 // Correlation and commit phase
@@ -150,35 +140,35 @@ void SinWaveCommand::ccHandler() {
 }
 
 void SinWaveCommand::computeWave(CDataWrapper *acquiredData) {
-    if(sinevalue == NULL) return;
-    double interval = (2*PI)/(*points);
+    if(!sin_wave) return;
+    double interval = (2*PI)/(ATTRIBUTE_HANDLE_GET_VALUE(in_points));
     boost::mutex::scoped_lock lock(pointChangeMutex);
-    for(int i=0; i<(*points); i++){
-        sinevalue[i] = ((*gain)*sin((interval*i)+(*phase))+(((double)randInt()/(double)100)*(*gainNoise))+(*bias));
+    for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
+        sin_wave[i] = (ATTRIBUTE_HANDLE_GET_VALUE(in_gain)*sin((interval*i)+ ATTRIBUTE_HANDLE_GET_VALUE(in_phase))+
+					   (((double)randInt()/(double)100)* ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise))+ATTRIBUTE_HANDLE_GET_VALUE(in_bias));
     }
-    acquiredData->addBinaryValue("sinWave", (char*)sinevalue, (int32_t)sizeof(double)*(*points));
+    acquiredData->addBinaryValue("sinWave", (char*)sin_wave, (int32_t)sizeof(double)*ATTRIBUTE_HANDLE_GET_VALUE(in_points));
 }
 
 /*
  */
 void SinWaveCommand::setWavePoint() {
     boost::mutex::scoped_lock lock(pointChangeMutex);
-    uint32_t tmpNOP = *pointSetting->getCurrentValue<uint32_t>();
+    uint32_t tmpNOP = ATTRIBUTE_HANDLE_GET_VALUE(in_points);
     if(tmpNOP < 1) tmpNOP = 0;
     
     if(!tmpNOP){
-        if(sinevalue){
-            free(sinevalue);
-            sinevalue = NULL;
+        if(sin_wave){
+            free(sin_wave);
+            sin_wave = NULL;
         }
     }else{
         size_t byteSize = sizeof(double) * tmpNOP;
-        double* tmpPtr = (double*)realloc(sinevalue, byteSize);
-        if(tmpPtr) {
-            sinevalue = tmpPtr;
-            memset(sinevalue, 0, byteSize);
-        }else{
-            pointSetting->completedWithError();
+        double* tmp_ptr = (double*)realloc(sin_wave, byteSize);
+        if(tmp_ptr) {
+            sin_wave = tmp_ptr;
+			sin_wave_points = tmpNOP;
+            memset(sin_wave, 0, byteSize);
         }
     }
 }

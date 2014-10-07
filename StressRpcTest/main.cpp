@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
 				LAPP_ << "Message sent: " << idx;
 			}
 		}
-		LAPP_ << "Message sent: " << NUMBER_OF_ITERATION;
+		LAPP_ << "Message sent: " << iteration;
         ChaosUIToolkit::getInstance()->deinit();
     } catch (CException& e) {
         std::cerr << e.errorCode << " - " << e.errorDomain << " - " << e.errorMessage << std::endl;

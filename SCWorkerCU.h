@@ -37,7 +37,7 @@ protected:
      Define the Control Unit Dataset and Actions
      */
     void unitDefineActionAndDataset()throw(CException);
-    void defineSharedVariable();
+    void unitDefineCustomAttribute();
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
      */
