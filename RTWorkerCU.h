@@ -46,7 +46,7 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     high_resolution_clock::time_point currentExecutionTime;
     long double PI;
     
-    READWRITE_ATTRIBUTE_HANDLE(double*) out_sin_value;
+    READWRITE_ATTRIBUTE_HANDLE(double) out_sin_value;
 	int32_t out_sin_value_points;
 	
 	READONLY_ATTRIBUTE_HANDLE(int32_t) in_points;
@@ -91,7 +91,10 @@ protected:
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
     void unitRun() throw(CException);
-    
+	
+	//! attribute changed handler
+	void unitInputAttributeChangedHandler() throw(CException);
+	
     /*
      The Control Unit will be stopped
      */
