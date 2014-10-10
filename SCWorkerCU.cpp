@@ -58,10 +58,6 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           "The number of point that compose the wave",
                           DataType::TYPE_INT32,
                           DataType::Input);
-    rangeInfoTemp.defaultValue = "30";
-    rangeInfoTemp.maxRange = "";
-    rangeInfoTemp.minRange = "30";
-    setAttributeRangeValueInfo("points", rangeInfoTemp);
     
     addAttributeToDataSet("frequency",
                           "The frequency of the wave [1-10Mhz]",
@@ -96,11 +92,6 @@ void SCWorkerCU::unitDefineCustomAttribute() {
 	getAttributeCache()->addCustomAttribute("quit", 1, chaos::DataType::TYPE_BOOLEAN);
 	getAttributeCache()->setCustomAttributeValue("quit", &quit, sizeof(bool));
 }
-
-//void SCWorkerCU::unitDefineDriver(std::vector<cu_driver::DrvRequestInfo>& neededDriver) {
-//	cu_driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
-//	neededDriver.push_back(drv1);
-//}
 
 // Abstract method for the initialization of the control unit
 void SCWorkerCU::unitInit() throw(CException) {

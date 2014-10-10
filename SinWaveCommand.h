@@ -36,19 +36,8 @@ class SinWaveCommand : public SlowCommand {
     RNGType rng;
     uniform_int<> one_to_hundred;
     variate_generator< RNGType, uniform_int<> > randInt;
-    double	*sin_wave;
-	uint32_t sin_wave_points;
-	
-	//input attribute
-    READONLY_ATTRIBUTE_HANDLE(int32_t) in_points;
-    READONLY_ATTRIBUTE_HANDLE(double) in_freq;
-    READONLY_ATTRIBUTE_HANDLE(double) in_gain;
-    READONLY_ATTRIBUTE_HANDLE(double) in_phase;
-    READONLY_ATTRIBUTE_HANDLE(double) in_bias;
-    READONLY_ATTRIBUTE_HANDLE(double) in_gain_noise;
-	
-	//custom attribute
-    READWRITE_ATTRIBUTE_HANDLE(bool)custom_quit;
+
+	uint32_t out_sin_value_points;
     uint64_t lastStartTime;
     
     long double PI;
@@ -56,7 +45,6 @@ class SinWaveCommand : public SlowCommand {
     boost::mutex pointChangeMutex;
     std::vector<VariableIndexType> changedIndex;
     
-    inline void computeWave(CDataWrapper *acquiredData);
     inline void setWavePoint();
 protected:
     // return the implemented handler

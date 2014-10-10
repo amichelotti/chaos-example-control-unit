@@ -274,10 +274,8 @@ void RTWorkerCU::setWavePoint() {
 	if(tmpNOP == out_sin_value_points) return;
 	
     if(!tmpNOP){
-        if(ATTRIBUTE_HANDLE_GET_VALUE(out_sin_value)){
-            free(out_sin_value);
-            out_sin_value = NULL;
-        }
+		//no wero point allowed
+		return;
     }else{
         uint32_t byte_size = uint32_t(sizeof(double) * tmpNOP);
 		if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
