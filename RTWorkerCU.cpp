@@ -198,7 +198,8 @@ void RTWorkerCU::unitStart() throw(CException) {
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
-	getAttributeCache()->getLockOnOutputAttributeCache(false);
+	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnOutputAttributeCache(false);
+	r_lock->lock();
 	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
 	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
 	double cached_frequency = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "frequency");
@@ -227,7 +228,8 @@ void RTWorkerCU::unitRun() throw(CException) {
 
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
-	getAttributeCache()->getLockOnOutputAttributeCache(true);
+	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
+	r_lock->lock();
 	std::vector<VariableIndexType> changed_input_attribute;
 	//check if we have something change in input
 	getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
