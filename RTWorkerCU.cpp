@@ -185,6 +185,8 @@ void RTWorkerCU::unitInit() throw(CException) {
 
 	setWavePoint();
 	getAttributeCache()->resetChangedInputIndex();
+	
+	r_o_attr_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
 }
 
 /*
@@ -218,7 +220,7 @@ void RTWorkerCU::unitRun() throw(CException) {
 	}*/
 	if(cached_sin_value == NULL) return;
 	double interval = (2*PI)/cached_points;
-	for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
+	for(int i=0; i<cached_points; i++){
 		double sin_point = sin((interval*i*cached_frequency) + cached_phase);
 		double sin_point_rumor = (((double)randInt()/(double)100) * cached_gain_noise);
 		cached_sin_value[i] = (cached_gain * sin_point) + sin_point_rumor + cached_bias;
@@ -226,10 +228,13 @@ void RTWorkerCU::unitRun() throw(CException) {
 	getAttributeCache()->setOutputDomainAsChanged();
 }
 
+void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
+	r_o_attr_lock->lock();
+}
+
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
-	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
-	r_lock->lock();
+
 	std::vector<VariableIndexType> changed_input_attribute;
 	//check if we have something change in input
 	getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
@@ -251,6 +256,7 @@ void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
 		//reset the chagned index
 		getAttributeCache()->resetChangedInputIndex();
 	}
+	r_o_attr_lock->unlock();
 }
 
 /*

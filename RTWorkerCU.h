@@ -58,7 +58,7 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     
     boost::mutex pointChangeMutex;
     int32_t messageID;
-    
+	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
 public:
     /*
      Construct a new CU with an identifier
@@ -91,6 +91,9 @@ protected:
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
     void unitRun() throw(CException);
+	
+	//! pre imput attribute change
+	void unitInputAttributePreChangeHandler() throw(CException);
 	
 	//! attribute changed handler
 	void unitInputAttributeChangedHandler() throw(CException);
