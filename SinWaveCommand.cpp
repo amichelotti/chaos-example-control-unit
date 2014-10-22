@@ -72,8 +72,6 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
-	
-   	getAttributeCache()->getLockOnOutputAttributeCache(false);
 	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
 	double cached_frequency = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "frequency");
 	double cached_bias = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "bias");
@@ -125,15 +123,18 @@ void SinWaveCommand::ccHandler() {
 	
 	//check if some parameter has changed every 100 msec
 	if(timeDiff > 100) {
+		boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+		r_lock->lock();
+
 		std::vector<VariableIndexType> changed_input_attribute;
 		getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
-		if(changedIndex.size()) {
-			CMDCU_ << "We have " << changedIndex.size() << " changed attribute";
-			for (int idx =0; idx < changedIndex.size(); idx++) {
+		if(changed_input_attribute.size()) {
+			CMDCU_ << "We have " << changed_input_attribute.size() << " changed attribute";
+			for (int idx =0; idx < changed_input_attribute.size(); idx++) {
 				
 				//the index is correlated to the creation sequence so
 				//the index 0 is the first input parameter "frequency"
-				switch (changedIndex[idx]) {
+				switch (changed_input_attribute[idx]) {
 					case 0://points
 						
 						// apply the modification
@@ -144,7 +145,7 @@ void SinWaveCommand::ccHandler() {
 				}
 				
 			}
-			changedIndex.clear();
+			getAttributeCache()->resetChangedInputIndex();
 		}
 	}
 }
@@ -152,8 +153,6 @@ void SinWaveCommand::ccHandler() {
 /*
  */
 void SinWaveCommand::setWavePoint() {
-	getAttributeCache()->getLockOnOutputAttributeCache(true);
-
 	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
 	if(cached_points < 1) cached_points = 0;
 	if(cached_points == out_sin_value_points) return;

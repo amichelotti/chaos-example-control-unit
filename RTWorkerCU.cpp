@@ -200,7 +200,7 @@ void RTWorkerCU::unitStart() throw(CException) {
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
-	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getLockOnOutputAttributeCache(false);
+	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
 	r_lock->lock();
 	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
 	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
@@ -229,7 +229,7 @@ void RTWorkerCU::unitRun() throw(CException) {
 }
 
 void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
-	r_o_attr_lock->lock();
+	//r_o_attr_lock->lock();
 }
 
 //! changed attribute
@@ -256,7 +256,7 @@ void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
 		//reset the chagned index
 		getAttributeCache()->resetChangedInputIndex();
 	}
-	r_o_attr_lock->unlock();
+	//r_o_attr_lock->unlock();
 }
 
 /*

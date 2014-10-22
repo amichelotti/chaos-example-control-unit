@@ -43,7 +43,6 @@ class SinWaveCommand : public SlowCommand {
     long double PI;
     int32_t messageID;
     boost::mutex pointChangeMutex;
-    std::vector<VariableIndexType> changedIndex;
     
     inline void setWavePoint();
 protected:

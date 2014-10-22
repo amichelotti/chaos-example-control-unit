@@ -54,6 +54,7 @@ protected:
      The Control Unit will be deinitialized and disposed
      */
     void unitDeinit() throw(CException);
+	
 public:
     /*
      Construct a new CU with an identifier
