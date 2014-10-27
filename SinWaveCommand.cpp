@@ -101,7 +101,7 @@ void SinWaveCommand::ccHandler() {
 	uint64_t timeDiff = getStartStepTime() - lastStartTime;
 	bool cached_quit = getAttributeCache()->getValue<bool>(AttributeValueSharedCache::SVD_CUSTOM, "quit");
 
-	if(timeDiff > 10000000 || cached_quit) {
+	if(timeDiff > 10000 || cached_quit) {
 		//every ten seconds ste the state until reac the killable and
 		//the return to exec
 		lastStartTime = getLastStepTime();

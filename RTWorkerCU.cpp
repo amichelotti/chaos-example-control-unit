@@ -27,8 +27,6 @@
 #include <chaos/common/bson/bson.h>
 #include <chaos/common/bson/util/hex.h>
 #include <chaos/common/action/ActionDescriptor.h>
-#include <chaos/cu_toolkit/ControlManager/handler/DSInt32Handler.h>
-#include <chaos/cu_toolkit/ControlManager/handler/DSDoubleHandler.h>
 
 #include <boost/lexical_cast.hpp>
 

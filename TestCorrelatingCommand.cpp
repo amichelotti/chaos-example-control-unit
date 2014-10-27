@@ -63,7 +63,7 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 void TestCorrelatingCommand::ccHandler() {
     uint64_t timeDiff = getStartStepTime() - start_time;
     CMDCU_ << "Simulate correlation..." << timeDiff << " of " << 20000000;
-    if(timeDiff > 20000000) {
+    if(timeDiff > 20000) {
 			//we can terminate
 		CMDCU_ << "End correlate simulation...";
 		BC_END_RUNNIG_PROPERTY
