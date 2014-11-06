@@ -27,39 +27,30 @@
 
 using namespace chaos;
 
-namespace c_data = chaos::common::data;
-namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
-namespace chaos_batch = chaos::common::batch_command;
+using namespace chaos::common::data;
+using namespace chaos::cu::control_manager::slow_command;
+using namespace chaos::common::batch_command;
 
-class SinWaveCommand : public ccc_slow_command::SlowCommand {
+class SinWaveCommand : public SlowCommand {
     typedef boost::mt19937 RNGType;
     RNGType rng;
     uniform_int<> one_to_hundred;
     variate_generator< RNGType, uniform_int<> > randInt;
-    double *sinevalue;
-    uint32_t *points;
-    chaos_batch::ValueSetting *pointSetting;
-    double *freq;
-    double *gain;
-    double *phase;
-    double *bias;
-    double *gainNoise;
-    bool *quitSharedVariable;
+
+	uint32_t out_sin_value_points;
     uint64_t lastStartTime;
     
     long double PI;
     int32_t messageID;
     boost::mutex pointChangeMutex;
-    std::vector<chaos_batch::VariableIndexType> changedIndex;
     
-    inline void computeWave(c_data::CDataWrapper *acquiredData);
     inline void setWavePoint();
 protected:
     // return the implemented handler
     uint8_t implementedHandler();
     
     // Start the command execution
-    void setHandler(c_data::CDataWrapper *data);
+    void setHandler(CDataWrapper *data);
     
     // Aquire the necessary data for the command
     /*!

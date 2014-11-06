@@ -1,3 +1,4 @@
+
 /*
  *	RTWorkerCU.cpp
  *	!CHOAS
@@ -26,8 +27,6 @@
 #include <chaos/common/bson/bson.h>
 #include <chaos/common/bson/util/hex.h>
 #include <chaos/common/action/ActionDescriptor.h>
-#include <chaos/cu_toolkit/ControlManager/handler/DSInt32Handler.h>
-#include <chaos/cu_toolkit/ControlManager/handler/DSDoubleHandler.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -50,6 +49,8 @@ using namespace chaos;
 
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(RTWorkerCU)
 
+using namespace chaos::cu::control_manager;
+
 /*
  Construct a new CU with an identifier
  */
@@ -64,7 +65,7 @@ chaos::cu::control_manager::RTAbstractControlUnit(_control_unit_id,
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred),
-sinevalue(NULL) {
+out_sin_value_points(0) {
     numberOfResponse = 0;
 }
 
@@ -109,43 +110,45 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                                 "integer 32bit action param description for testing purpose");
     
     
-    //setup the dataset
+    //create the output attribute
     addAttributeToDataSet("sinWave",
                           "The sin waveform",
                           DataType::TYPE_BYTEARRAY,
                           DataType::Output,
-                          10000);
-    
-    addInputInt32AttributeToDataSet<RTWorkerCU>("points",
-                                                "The number of point that compose the wave",
-                                                this,
-                                                &RTWorkerCU::setWavePoint);
-    
-    addInputDoubleAttributeToDataSet<RTWorkerCU>("frequency",
-                                                 "The frequency of the wave [1-10Mhz]",
-                                                 this,
-                                                 &RTWorkerCU::setDoubleValue);
-    
-    addInputDoubleAttributeToDataSet<RTWorkerCU>("bias",
-                                                 "The bias of the wave",
-                                                 this,
-                                                 &RTWorkerCU::setDoubleValue);
-    
-    
-    addInputDoubleAttributeToDataSet<RTWorkerCU>("gain",
-                                                 "The gain of the wave",
-                                                 this,
-                                                 &RTWorkerCU::setDoubleValue);
-    
-    addInputDoubleAttributeToDataSet<RTWorkerCU>("phase",
-                                                 "The phase of the wave",
-                                                 this,
-                                                 &RTWorkerCU::setDoubleValue);
-    
-    addInputDoubleAttributeToDataSet<RTWorkerCU>("gain_noise",
-                                                 "The gain of the noise of the wave",
-                                                 this,
-                                                 &RTWorkerCU::setDoubleValue);
+                          1);
+	
+	//create the input attribute
+    addAttributeToDataSet("points",
+						  "The number of point that compose the wave",
+						  DataType::TYPE_INT32,
+						  DataType::Input);
+	addAttributeToDataSet("frequency",
+						  "The frequency of the wave [1-10Mhz]",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	addAttributeToDataSet("bias",
+						  "The bias of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	addAttributeToDataSet("gain",
+						  "The gain of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	addAttributeToDataSet("phase",
+						  "The phase of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+	addAttributeToDataSet("gain_noise",
+						  "The gain of the noise of the wave",
+						  DataType::TYPE_DOUBLE,
+						  DataType::Input);
+}
+
+void RTWorkerCU::unitDefineCustomAttribute() {
+	bool quit = false;
+	//here are defined the custom shared variable
+	getAttributeCache()->addCustomAttribute("quit", 1, chaos::DataType::TYPE_BOOLEAN);
+	getAttributeCache()->setCustomAttributeValue("quit", &quit, sizeof(bool));
 }
 
 /*
@@ -165,18 +168,23 @@ void RTWorkerCU::unitInit() throw(CException) {
     srand((unsigned)time(0));
     PI = acos((long double) -1);
     messageID = 0;
-    sinevalue = NULL;
-	
+	out_sin_value_points = 0;
 
-    
-    freq = 1.0;
-    gain = 5.0;
-    phase = 0.0;
-    bias = 0.0;
-    gainNoise = 0.5;
+	//get handle to the output attribute value
+	getAttributeCache()->getCachedOutputAttributeValue<double>(0, &out_sin_value);
 	
-	setWavePoint("points", attributeInfo.defaultValue.size()>0?boost::lexical_cast<int32_t>(attributeInfo.defaultValue):30);
+	//get handle to the input attribute value
+	getAttributeCache()->getReadonlyCachedAttributeValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, 0, &in_points);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 1, &in_freq);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 2, &in_bias);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 3, &in_gain);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 4, &in_phase);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 5, &in_gain_noise);
 
+	setWavePoint();
+	getAttributeCache()->resetChangedInputIndex();
+	
+	r_o_attr_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
 }
 
 /*
@@ -190,30 +198,64 @@ void RTWorkerCU::unitStart() throw(CException) {
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
-    //get new data wrapper instance filled
-    //with mandatory data
-    CDataWrapper *acquiredData = getNewDataWrapper();
-    if(!acquiredData) return;
-    
-    //put the messageID for test the lost of package
-    acquiredData->addInt32Value("id", ++messageID);
-    computeWave(acquiredData);
-    
-    //submit acquired data
-    pushDataSet(acquiredData);
-    
+	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+	r_lock->lock();
+	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
+	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
+	double cached_frequency = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "frequency");
+	double cached_bias = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "bias");
+	double cached_gain = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain");
+	double cached_phase = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "phase");
+	double cached_gain_noise = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain_noise");
+
+	/*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
+	double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
+	for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
+		double * ptr = ATTRIBUTE_HANDLE_GET_PTR(out_sin_value);
+		double sin_point = sin((interval*i)+ATTRIBUTE_HANDLE_GET_VALUE(in_phase));
+		double sin_point_rumor = (((double)randInt()/(double)100)*ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise));
+		ptr[i] = ((**in_gain) * sin_point) + sin_point_rumor + ATTRIBUTE_HANDLE_GET_VALUE(in_bias);
+	}*/
+	if(cached_sin_value == NULL) return;
+	double interval = (2*PI)/cached_points;
+	for(int i=0; i<cached_points; i++){
+		double sin_point = sin((interval*i*cached_frequency) + cached_phase);
+		double sin_point_rumor = (((double)randInt()/(double)100) * cached_gain_noise);
+		cached_sin_value[i] = (cached_gain * sin_point) + sin_point_rumor + cached_bias;
+	}
+	getAttributeCache()->setOutputDomainAsChanged();
 }
 
-void RTWorkerCU::computeWave(CDataWrapper *acquiredData) {
-    if(sinevalue == NULL) return;
-    double interval = (2*PI)/points;
-    boost::mutex::scoped_lock lock(pointChangeMutex);
-    for(int i=0; i<points; i++){
-        sinevalue[i] = (gain*sin((interval*i)+phase)+(((double)randInt()/(double)100)*gainNoise)+bias);
-    }
-    acquiredData->addBinaryValue("sinWave", (char*)sinevalue, (int32_t)sizeof(double)*points);
+void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
+	//r_o_attr_lock->lock();
 }
 
+//! changed attribute
+void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
+
+	std::vector<VariableIndexType> changed_input_attribute;
+	//check if we have something change in input
+	getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
+	//check if something has changed
+	if(changed_input_attribute.size()) {
+		//something has changed
+		for (std::vector<VariableIndexType>::iterator it = changed_input_attribute.begin();
+			 it != changed_input_attribute.end();
+			 it++) {
+			switch(*it) {
+				case 0://points
+					setWavePoint();
+					break;
+					
+				default:
+					break;
+			}
+		}
+		//reset the chagned index
+		getAttributeCache()->resetChangedInputIndex();
+	}
+	//r_o_attr_lock->unlock();
+}
 
 /*
  Execute the Control Unit work
@@ -228,54 +270,26 @@ void RTWorkerCU::unitStop() throw(CException) {
  */
 void RTWorkerCU::unitDeinit() throw(CException) {
     LAPP_ << "deinit RTWorkerCU";
-    if(sinevalue){
-        free(sinevalue);
-    }
-    //RTAbstractControlUnit::deinit();
 }
 
 /*
  */
-void RTWorkerCU::setWavePoint(const std::string& deviceID, const int32_t& newNumberOfPoints) {
-    boost::mutex::scoped_lock lock(pointChangeMutex);
-    int32_t tmpNOP = newNumberOfPoints;
+void RTWorkerCU::setWavePoint() {
+	int32_t tmpNOP = ATTRIBUTE_HANDLE_GET_VALUE(in_points);
     if(tmpNOP < 1) tmpNOP = 0;
-    
+	if(tmpNOP == out_sin_value_points) return;
+	
     if(!tmpNOP){
-        if(sinevalue){
-            free(sinevalue);
-            sinevalue = NULL;
-        }
+		//no wero point allowed
+		return;
     }else{
-        size_t byteSize = sizeof(double) * tmpNOP;
-        double* tmpPtr = (double*)realloc(sinevalue, byteSize);
-        if(tmpPtr) {
-            sinevalue = tmpPtr;
-            memset(sinevalue, 0, byteSize);
-        }else{
-            //memory can't be enlarged so pointer ramin the same
-            //so all remain unchanged
-            tmpNOP = points;
-        }
+        uint32_t byte_size = uint32_t(sizeof(double) * tmpNOP);
+		if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
+			out_sin_value_points = tmpNOP;
+		}
+		
     }
-    points = tmpNOP;
-}
-
-/*
- */
-void RTWorkerCU::setDoubleValue(const std::string& deviceID, const double& dValue) {
-    LAPP_ <<  "setDoubleValue for " << deviceID << " = " << dValue;
-    if(!deviceID.compare("frequency")){
-        freq = dValue;
-    } else if(!deviceID.compare("gain")){
-        gain = dValue;
-    } else if(!deviceID.compare("phase")){
-        phase = dValue;
-    } else if(!deviceID.compare("bias")){
-        bias = dValue;
-    } else if(!deviceID.compare("gain_noise")){
-        gainNoise = dValue;
-    }
+	
 }
 
 /*

@@ -37,7 +37,7 @@ protected:
      Define the Control Unit Dataset and Actions
      */
     void unitDefineActionAndDataset()throw(CException);
-    void defineSharedVariable();
+    void unitDefineCustomAttribute();
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
      */
@@ -54,6 +54,7 @@ protected:
      The Control Unit will be deinitialized and disposed
      */
     void unitDeinit() throw(CException);
+	
 public:
     /*
      Construct a new CU with an identifier

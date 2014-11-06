@@ -46,17 +46,19 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     high_resolution_clock::time_point currentExecutionTime;
     long double PI;
     
-    int32_t points;
-    double *sinevalue;
-    double freq;
-    double gain;
-    double phase;
-    double bias;
-    double gainNoise;
+    READWRITE_ATTRIBUTE_HANDLE(double) out_sin_value;
+	int32_t out_sin_value_points;
+	
+	READONLY_ATTRIBUTE_HANDLE(int32_t) in_points;
+	READONLY_ATTRIBUTE_HANDLE(double) in_freq;
+    READONLY_ATTRIBUTE_HANDLE(double) in_gain;
+    READONLY_ATTRIBUTE_HANDLE(double) in_phase;
+    READONLY_ATTRIBUTE_HANDLE(double) in_bias;
+    READONLY_ATTRIBUTE_HANDLE(double) in_gain_noise;
     
     boost::mutex pointChangeMutex;
     int32_t messageID;
-    
+	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
 public:
     /*
      Construct a new CU with an identifier
@@ -68,16 +70,14 @@ public:
      */
     ~RTWorkerCU();
     
-    inline void computeWave(CDataWrapper *acquiredData);
-    
-    inline void setDoubleValue(const std::string& deviceID, const double& dValue);
-    
-    inline void setWavePoint(const std::string& deviceID, const int32_t& newNumberOfPoints);
+    inline void setWavePoint();
 protected:
     /*
      Define the Control Unit Dataset and Actions
      */
     void unitDefineActionAndDataset()throw(CException);
+	
+	void unitDefineCustomAttribute();
 	
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
@@ -91,7 +91,13 @@ protected:
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
     void unitRun() throw(CException);
-    
+	
+	//! pre imput attribute change
+	void unitInputAttributePreChangeHandler() throw(CException);
+	
+	//! attribute changed handler
+	void unitInputAttributeChangedHandler() throw(CException);
+	
     /*
      The Control Unit will be stopped
      */
