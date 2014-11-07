@@ -20,18 +20,25 @@ namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
 class TestCorrelatingCommand : public ccc_slow_command::SlowCommand {
-    uint64_t start_time;
-    static  uint64_t instance_cout;
-    uint64_t         local_instance_count;
+    uint64_t		start_time;
+    static			uint64_t instance_cout;
+    uint64_t        local_instance_count;
+	
+	std::string		exception_message;
+	uint32_t		exception_location; //0-set, 1-acquire, 2-correlation
 protected:
 	// return the implemented handler
     uint8_t implementedHandler();
     
     // Start the command execution
     void setHandler(c_data::CDataWrapper *data);
-   
+	
+	//implementation empty
+	void acquireHandler();
+	
     // Correlation and commit phase
     void ccHandler();
+
 	bool timeoutHandler();
 public:
 	TestCorrelatingCommand();
