@@ -72,12 +72,12 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
-	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
-	double cached_frequency = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "frequency");
-	double cached_bias = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "bias");
-	double cached_gain = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain");
-	double cached_phase = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "phase");
-	double cached_gain_noise = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain_noise");
+	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
+	double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
+	double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
+	double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
+	double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
+	double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
 	
 	/*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
 	 double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
@@ -99,7 +99,7 @@ void SinWaveCommand::acquireHandler() {
 // Correlation and commit phase
 void SinWaveCommand::ccHandler() {
 	uint64_t timeDiff = getStartStepTime() - lastStartTime;
-	bool cached_quit = getAttributeCache()->getValue<bool>(AttributeValueSharedCache::SVD_CUSTOM, "quit");
+	bool cached_quit = getAttributeCache()->getValue<bool>(DOMAIN_CUSTOM, "quit");
 
 	if(timeDiff > 10000 || cached_quit) {
 		//every ten seconds ste the state until reac the killable and
@@ -153,7 +153,7 @@ void SinWaveCommand::ccHandler() {
 /*
  */
 void SinWaveCommand::setWavePoint() {
-	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
+	int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
 	if(cached_points < 1) cached_points = 0;
 	if(cached_points == out_sin_value_points) return;
 	

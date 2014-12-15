@@ -174,12 +174,12 @@ void RTWorkerCU::unitInit() throw(CException) {
 	getAttributeCache()->getCachedOutputAttributeValue<double>(0, &out_sin_value);
 	
 	//get handle to the input attribute value
-	getAttributeCache()->getReadonlyCachedAttributeValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, 0, &in_points);
-	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 1, &in_freq);
-	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 2, &in_bias);
-	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 3, &in_gain);
-	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 4, &in_phase);
-	getAttributeCache()->getReadonlyCachedAttributeValue<double>(AttributeValueSharedCache::SVD_INPUT, 5, &in_gain_noise);
+	getAttributeCache()->getReadonlyCachedAttributeValue<int32_t>(DOMAIN_INPUT, 0, &in_points);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 1, &in_freq);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 2, &in_bias);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 3, &in_gain);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 4, &in_phase);
+	getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 5, &in_gain_noise);
 
 	setWavePoint();
 	getAttributeCache()->resetChangedInputIndex();
@@ -200,13 +200,13 @@ void RTWorkerCU::unitStart() throw(CException) {
 void RTWorkerCU::unitRun() throw(CException) {
 	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
 	r_lock->lock();
-	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(AttributeValueSharedCache::SVD_OUTPUT, "sinWave");
-	int32_t cached_points = getAttributeCache()->getValue<int32_t>(AttributeValueSharedCache::SVD_INPUT, "points");
-	double cached_frequency = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "frequency");
-	double cached_bias = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "bias");
-	double cached_gain = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain");
-	double cached_phase = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "phase");
-	double cached_gain_noise = getAttributeCache()->getValue<double>(AttributeValueSharedCache::SVD_INPUT, "gain_noise");
+	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
+	int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
+	double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
+	double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
+	double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
+	double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
+	double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
 
 	/*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
 	double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
@@ -233,28 +233,8 @@ void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
 
-	std::vector<VariableIndexType> changed_input_attribute;
-	//check if we have something change in input
-	getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
-	//check if something has changed
-	if(changed_input_attribute.size()) {
-		//something has changed
-		for (std::vector<VariableIndexType>::iterator it = changed_input_attribute.begin();
-			 it != changed_input_attribute.end();
-			 it++) {
-			switch(*it) {
-				case 0://points
-					setWavePoint();
-					break;
-					
-				default:
-					break;
-			}
-		}
-		//reset the chagned index
-		getAttributeCache()->resetChangedInputIndex();
-	}
-	//r_o_attr_lock->unlock();
+	
+	
 }
 
 /*
