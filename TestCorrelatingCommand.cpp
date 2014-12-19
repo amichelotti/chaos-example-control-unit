@@ -48,6 +48,11 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
 		exception_location = data->getInt32Value("exception-location");
 	}
 	
+	if(data && data->hasKey("correlation-message")) {
+		correlation_message = data->getStringValue("correlation-message");
+	}
+
+	
 	if(exception_location == 0) {
 		throw CException(-1, exception_message, __PRETTY_FUNCTION__);
 	}
@@ -85,6 +90,7 @@ void TestCorrelatingCommand::ccHandler() {
 	}
     uint64_t timeDiff = getStartStepTime() - start_time;
     CMDCU_ << "Simulate correlation..." << timeDiff << " of " << 20000;
+	if(correlation_message.size()) CMDCU_ << "Correlation Message: " << correlation_message;
     if(timeDiff > 20000) {
 			//we can terminate
 		CMDCU_ << "End correlate simulation...";

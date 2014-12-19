@@ -26,6 +26,7 @@ class TestCorrelatingCommand : public ccc_slow_command::SlowCommand {
 	
 	std::string		exception_message;
 	uint32_t		exception_location; //0-set, 1-acquire, 2-correlation
+	std::string		correlation_message;
 protected:
 	// return the implemented handler
     uint8_t implementedHandler();

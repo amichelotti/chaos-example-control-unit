@@ -107,7 +107,10 @@ protected:
      The Control Unit will be deinitialized and disposed
      */
     void unitDeinit() throw(CException);
-    
+	
+	//! restore the control unit to snapshot
+	void unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
+							   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException);
     /*
         Test Action Handler
      */

@@ -55,6 +55,9 @@ protected:
      */
     void unitDeinit() throw(CException);
 	
+	// restore the control unit to snapshot
+	void unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
+							   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException);
 public:
     /*
      Construct a new CU with an identifier

@@ -252,6 +252,12 @@ void RTWorkerCU::unitDeinit() throw(CException) {
     LAPP_ << "deinit RTWorkerCU";
 }
 
+//! restore the control unit to snapshot
+void RTWorkerCU::unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
+									   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException) {
+	LAPP_ << "resto to snapshot " << restore_snapshot_tag;
+}
+
 /*
  */
 void RTWorkerCU::setWavePoint() {
