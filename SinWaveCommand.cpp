@@ -29,10 +29,16 @@ using namespace chaos::common::data;
 
 using namespace chaos::common::batch_command;
 
+BATCH_COMMAND_OPEN_DESCRIPTION_WITH_SLOWCOMMAND_INSTANCER(SinWaveCommand,
+                                                          "Default method for sinusoidal signal generation",
+                                                          "2A3C9510-3C76-4B5A-89EE-4D1D5AD29D95")
+BATCH_COMMAND_CLOSE_DESCRIPTION()
+
 SinWaveCommand::SinWaveCommand():
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred) {
+    //boost::shared_ptr<chaos::common::data::CDataWrapper>  a = BATCH_COMMAND_GET_DESCRIPTION(SinWaveCommand);
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
     setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
 }
@@ -45,7 +51,7 @@ SinWaveCommand::~SinWaveCommand() {
 uint8_t SinWaveCommand::implementedHandler() {
     return  HandlerType::HT_Set |
     HandlerType::HT_Acquisition |
-	HandlerType::HT_Correlation;
+    HandlerType::HT_Correlation;
 }
 
 // Start the command execution
@@ -55,14 +61,14 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     
     srand((unsigned)time(0));
     PI = acos((long double) -1);
-	out_sin_value_points = 0;
+    out_sin_value_points = 0;
     lastStartTime = 0;
-	
-	//this is necessary becase if the command is installed after the first start the
-	//attribute is not anymore marched has "changed". so in every case at set handler
-	//we call the set point funciton that respect the actual value of poits pointer.
-	setWavePoint();
-	
+    
+    //this is necessary becase if the command is installed after the first start the
+    //attribute is not anymore marched has "changed". so in every case at set handler
+    //we call the set point funciton that respect the actual value of poits pointer.
+    setWavePoint();
+    
     CMDCU_ << "SinWaveCommand::setHandler";
 }
 
@@ -72,98 +78,98 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
-	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
-	double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
-	double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
-	double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
-	double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
-	double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
-	
-	/*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
-	 double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
-	 for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
-		double * ptr = ATTRIBUTE_HANDLE_GET_PTR(out_sin_value);
-		double sin_point = sin((interval*i)+ATTRIBUTE_HANDLE_GET_VALUE(in_phase));
-		double sin_point_rumor = (((double)randInt()/(double)100)*ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise));
-		ptr[i] = ((**in_gain) * sin_point) + sin_point_rumor + ATTRIBUTE_HANDLE_GET_VALUE(in_bias);
-	 }*/
-	double interval = (2*PI)/out_sin_value_points;
-	for(int i=0; i<out_sin_value_points; i++){
-		double sin_point = sin((interval*i*cached_frequency) + cached_phase);
-		double sin_point_rumor = (((double)randInt()/(double)100) * cached_gain_noise);
-		cached_sin_value[i] = (cached_gain * sin_point) + sin_point_rumor + cached_bias;
-	}
-	getAttributeCache()->setOutputDomainAsChanged();
+    double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
+    double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
+    double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
+    double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
+    double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
+    double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
+    
+    /*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
+     double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
+     for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
+     double * ptr = ATTRIBUTE_HANDLE_GET_PTR(out_sin_value);
+     double sin_point = sin((interval*i)+ATTRIBUTE_HANDLE_GET_VALUE(in_phase));
+     double sin_point_rumor = (((double)randInt()/(double)100)*ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise));
+     ptr[i] = ((**in_gain) * sin_point) + sin_point_rumor + ATTRIBUTE_HANDLE_GET_VALUE(in_bias);
+     }*/
+    double interval = (2*PI)/out_sin_value_points;
+    for(int i=0; i<out_sin_value_points; i++){
+        double sin_point = sin((interval*i*cached_frequency) + cached_phase);
+        double sin_point_rumor = (((double)randInt()/(double)100) * cached_gain_noise);
+        cached_sin_value[i] = (cached_gain * sin_point) + sin_point_rumor + cached_bias;
+    }
+    getAttributeCache()->setOutputDomainAsChanged();
 }
 
 // Correlation and commit phase
 void SinWaveCommand::ccHandler() {
-	uint64_t timeDiff = getStartStepTime() - lastStartTime;
-	bool cached_quit = getAttributeCache()->getValue<bool>(DOMAIN_CUSTOM, "quit");
-
-	if(timeDiff > 10000 || cached_quit) {
-		//every ten seconds ste the state until reac the killable and
-		//the return to exec
-		lastStartTime = getLastStepTime();
-		if(!cached_quit) {
-			switch (SlowCommand::getRunningProperty()) {
-				case RunningPropertyType::RP_Exsc:
-					BC_NORMAL_RUNNIG_PROPERTY
-					CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
-					break;
-				case RunningPropertyType::RP_Normal:
-					BC_EXEC_RUNNIG_PROPERTY
-					CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
-					break;
-			}
-		} else {
-			BC_END_RUNNIG_PROPERTY;
-		}
-	}
-	
-	//check if some parameter has changed every 100 msec
-	if(timeDiff > 100) {
-		boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
-		r_lock->lock();
-
-		std::vector<VariableIndexType> changed_input_attribute;
-		getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
-		if(changed_input_attribute.size()) {
-			CMDCU_ << "We have " << changed_input_attribute.size() << " changed attribute";
-			for (int idx =0; idx < changed_input_attribute.size(); idx++) {
-				
-				//the index is correlated to the creation sequence so
-				//the index 0 is the first input parameter "frequency"
-				switch (changed_input_attribute[idx]) {
-					case 0://points
-						
-						// apply the modification
-						setWavePoint();
-						break;
-					default:// all other parameter are managed into the function that create the sine waveform
-						break;
-				}
-				
-			}
-			getAttributeCache()->resetChangedInputIndex();
-		}
-	}
+    uint64_t timeDiff = getStartStepTime() - lastStartTime;
+    bool cached_quit = getAttributeCache()->getValue<bool>(DOMAIN_CUSTOM, "quit");
+    
+    if(timeDiff > 10000 || cached_quit) {
+        //every ten seconds ste the state until reac the killable and
+        //the return to exec
+        lastStartTime = getLastStepTime();
+        if(!cached_quit) {
+            switch (SlowCommand::getRunningProperty()) {
+                case RunningPropertyType::RP_Exsc:
+                    BC_NORMAL_RUNNIG_PROPERTY
+                    CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
+                    break;
+                case RunningPropertyType::RP_Normal:
+                    BC_EXEC_RUNNIG_PROPERTY
+                    CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
+                    break;
+            }
+        } else {
+            BC_END_RUNNIG_PROPERTY;
+        }
+    }
+    
+    //check if some parameter has changed every 100 msec
+    if(timeDiff > 100) {
+        boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+        r_lock->lock();
+        
+        std::vector<VariableIndexType> changed_input_attribute;
+        getAttributeCache()->getChangedInputAttributeIndex(changed_input_attribute);
+        if(changed_input_attribute.size()) {
+            CMDCU_ << "We have " << changed_input_attribute.size() << " changed attribute";
+            for (int idx =0; idx < changed_input_attribute.size(); idx++) {
+                
+                //the index is correlated to the creation sequence so
+                //the index 0 is the first input parameter "frequency"
+                switch (changed_input_attribute[idx]) {
+                    case 0://points
+                        
+                        // apply the modification
+                        setWavePoint();
+                        break;
+                    default:// all other parameter are managed into the function that create the sine waveform
+                        break;
+                }
+                
+            }
+            getAttributeCache()->resetChangedInputIndex();
+        }
+    }
 }
 
 /*
  */
 void SinWaveCommand::setWavePoint() {
-	int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
-	if(cached_points < 1) cached_points = 0;
-	if(cached_points == out_sin_value_points) return;
-	
-	if(!cached_points){
-		//no wero point allowed
-	}else{
-		uint32_t byte_size = uint32_t(sizeof(double) * cached_points);
-		if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
-			out_sin_value_points = cached_points;
-		}
-		
-	}
+    int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
+    if(cached_points < 1) cached_points = 0;
+    if(cached_points == out_sin_value_points) return;
+    
+    if(!cached_points){
+        //no wero point allowed
+    }else{
+        uint32_t byte_size = uint32_t(sizeof(double) * cached_points);
+        if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
+            out_sin_value_points = cached_points;
+        }
+        
+    }
 }

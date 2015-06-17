@@ -31,7 +31,7 @@ using namespace chaos::common::data;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::common::batch_command;
 
-class SinWaveCommand : public SlowCommand {
+DEFINE_BATCH_COMMAND_CLASS(SinWaveCommand, SlowCommand) {
     typedef boost::mt19937 RNGType;
     RNGType rng;
     uniform_int<> one_to_hundred;

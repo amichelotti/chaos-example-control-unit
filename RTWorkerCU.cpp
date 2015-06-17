@@ -111,12 +111,28 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     
     
     //create the output attribute
-    addAttributeToDataSet("sinWave",
-                          "The sin waveform",
-                          DataType::TYPE_BYTEARRAY,
-                          DataType::Output,
-                          1);
-	
+//    addAttributeToDataSet("sinWave",
+//                          "The sin waveform",
+//                          DataType::TYPE_BYTEARRAY,
+//                          DataType::Output,
+//                          0);
+    
+//    addBinaryAttributeAsSubtypeToDataSet("sinWave",
+//                                         "The sin waveform",
+//                                         DataType::SUB_TYPE_DOUBLE,
+//                                         0,
+//                                         DataType::Output);
+    
+    std::vector<int32_t> sub_types;
+    sub_types.push_back(DataType::SUB_TYPE_DOUBLE);
+    sub_types.push_back(DataType::SUB_TYPE_INT16|DataType::SUB_TYPE_UNSIGNED);
+    sub_types.push_back(DataType::SUB_TYPE_INT8);
+    addBinaryAttributeAsSubtypeToDataSet("sinWave",
+                                         "The sin waveform",
+                                         sub_types,
+                                         0,
+                                         DataType::Output);
+    
 	//create the input attribute
     addAttributeToDataSet("points",
 						  "The number of point that compose the wave",
@@ -227,14 +243,29 @@ void RTWorkerCU::unitRun() throw(CException) {
 }
 
 void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
-	//r_o_attr_lock->lock();
+
 }
 
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
-
-	
-	
+    //r_o_attr_lock->lock();
+    std::vector<VariableIndexType> changed_idx;
+    getAttributeCache()->getChangedInputAttributeIndex(changed_idx);
+    if(changed_idx.size()){
+        //something has been changed
+        for(std::vector<VariableIndexType>::iterator it = changed_idx.begin();
+            it != changed_idx.end();
+            it++) {
+            switch(*it) {
+                case 0:
+                    setWavePoint();
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+    }
 }
 
 /*
