@@ -21,11 +21,11 @@ PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(SCWorkerCU)
  Construct a new CU with an identifier
  */
 SCWorkerCU::SCWorkerCU(const string& _control_unit_id,
-					   const string& _control_unit_param,
-					   const ControlUnitDriverList& _control_unit_drivers):
+                       const string& _control_unit_param,
+                       const ControlUnitDriverList& _control_unit_drivers):
 chaos::cu::control_manager::SCAbstractControlUnit(_control_unit_id,
-												  _control_unit_param,
-												_control_unit_drivers) {}
+                                                  _control_unit_param,
+                                                  _control_unit_drivers) {}
 
 SCWorkerCU::~SCWorkerCU() {}
 
@@ -43,15 +43,24 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     //install a command
     installCommand(BATCH_COMMAND_GET_DESCRIPTION(SinWaveCommand), true); //is the default
     installCommand(BATCH_COMMAND_GET_DESCRIPTION(TestCorrelatingCommand));
-	
+    
     //set the sin_base command to run on second channels
-	//setDefaultCommand("sinwave_base", 2);
+    //setDefaultCommand("sinwave_base", 2);
     //setup the dataset
-    addAttributeToDataSet("sinWave",
-                          "The sin waveform",
-                          DataType::TYPE_BYTEARRAY,
-                          DataType::Output,
-                          10000);
+    //    addAttributeToDataSet("sin_wave",
+    //                          "The sin waveform",
+    //                          DataType::TYPE_BYTEARRAY,
+    //                          DataType::Output,
+    //                          10000);
+    addBinaryAttributeAsSubtypeToDataSet("sin_wave",
+                                         "The sin waveform",
+                                         DataType::SUB_TYPE_DOUBLE,
+                                         10000,
+                                         DataType::Output);
+    addAttributeToDataSet("run_counter",
+                          "The number of run since last init phase",
+                          DataType::TYPE_INT64,
+                          DataType::Output);
     
     addAttributeToDataSet("points",
                           "The number of point that compose the wave",
@@ -77,19 +86,19 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           "The gain of the wave",
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
-
+    
     addAttributeToDataSet("gain_noise",
                           "The gain of the noise of the wave",
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
-
+    
 }
 
 void SCWorkerCU::unitDefineCustomAttribute() {
     bool quit = false;
-	//here are defined the custom shared variable
-	getAttributeCache()->addCustomAttribute("quit", 1, chaos::DataType::TYPE_BOOLEAN);
-	getAttributeCache()->setCustomAttributeValue("quit", &quit, sizeof(bool));
+    //here are defined the custom shared variable
+    getAttributeCache()->addCustomAttribute("quit", 1, chaos::DataType::TYPE_BOOLEAN);
+    getAttributeCache()->setCustomAttributeValue("quit", &quit, sizeof(bool));
 }
 
 // Abstract method for the initialization of the control unit
@@ -98,27 +107,27 @@ void SCWorkerCU::unitInit() throw(CException) {
 
 // Abstract method for the start of the control unit
 void SCWorkerCU::unitStart() throw(CException) {
-	
+    
 }
 
 // Abstract method for the stop of the control unit
 void SCWorkerCU::unitStop() throw(CException) {
-	
+    
 }
 
 // Abstract method for the deinit of the control unit
 void SCWorkerCU::unitDeinit() throw(CException) {
-	
+    
 }
 
 //! restore the control unit to snapshot
 void SCWorkerCU::unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
-									   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException) {
-	LAPP_ << "restore to snapshot " << restore_snapshot_tag;
-	if(restore_cache &&
-	   restore_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("corr_test"))) {
-		auto_ptr<CDataWrapper> cmd_pack(restore_cache->getAttributeValue(DOMAIN_INPUT, "corr_test")->getValueAsCDatawrapperPtr(true));
-		LAPP_ << "corr_test = " << cmd_pack->getJSONString();
-	}
-
+                                       chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException) {
+    LAPP_ << "restore to snapshot " << restore_snapshot_tag;
+    if(restore_cache &&
+       restore_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("corr_test"))) {
+        auto_ptr<CDataWrapper> cmd_pack(restore_cache->getAttributeValue(DOMAIN_INPUT, "corr_test")->getValueAsCDatawrapperPtr(true));
+        LAPP_ << "corr_test = " << cmd_pack->getJSONString();
+    }
+    
 }

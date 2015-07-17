@@ -111,27 +111,36 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     
     
     //create the output attribute
-//    addAttributeToDataSet("sinWave",
+//    addAttributeToDataSet("sin_wave",
 //                          "The sin waveform",
 //                          DataType::TYPE_BYTEARRAY,
 //                          DataType::Output,
 //                          0);
     
-//    addBinaryAttributeAsSubtypeToDataSet("sinWave",
+//    addBinaryAttributeAsSubtypeToDataSet("sin_wave",
 //                                         "The sin waveform",
 //                                         DataType::SUB_TYPE_DOUBLE,
 //                                         0,
 //                                         DataType::Output);
     
-    std::vector<int32_t> sub_types;
-    sub_types.push_back(DataType::SUB_TYPE_DOUBLE);
-    sub_types.push_back(DataType::SUB_TYPE_INT16|DataType::SUB_TYPE_UNSIGNED);
-    sub_types.push_back(DataType::SUB_TYPE_INT8);
-    addBinaryAttributeAsSubtypeToDataSet("sinWave",
+//    std::vector<int32_t> sub_types;
+//    sub_types.push_back(DataType::SUB_TYPE_DOUBLE);
+//    sub_types.push_back(DataType::SUB_TYPE_INT16|DataType::SUB_TYPE_UNSIGNED);
+//    sub_types.push_back(DataType::SUB_TYPE_INT8);
+//    addBinaryAttributeAsSubtypeToDataSet("sin_wave",
+//                                         "The sin waveform",
+//                                         sub_types,
+//                                         0,
+//                                         DataType::Output);
+    addBinaryAttributeAsSubtypeToDataSet("sin_wave",
                                          "The sin waveform",
-                                         sub_types,
-                                         0,
+                                         DataType::SUB_TYPE_DOUBLE,
+                                         10000,
                                          DataType::Output);
+    addAttributeToDataSet("run_counter",
+                          "The number of run since last init phase",
+                          DataType::TYPE_INT64,
+                          DataType::Output);
     
 	//create the input attribute
     addAttributeToDataSet("points",
@@ -188,6 +197,7 @@ void RTWorkerCU::unitInit() throw(CException) {
 
 	//get handle to the output attribute value
 	getAttributeCache()->getCachedOutputAttributeValue<double>(0, &out_sin_value);
+    getAttributeCache()->getCachedOutputAttributeValue<uint64_t>(1, &out_run_counter);
 	
 	//get handle to the input attribute value
 	getAttributeCache()->getReadonlyCachedAttributeValue<int32_t>(DOMAIN_INPUT, 0, &in_points);
@@ -201,6 +211,9 @@ void RTWorkerCU::unitInit() throw(CException) {
 	getAttributeCache()->resetChangedInputIndex();
 	
 	r_o_attr_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
+    
+    //reset counter
+    (**out_run_counter) = 0;
 }
 
 /*
@@ -216,7 +229,7 @@ void RTWorkerCU::unitStart() throw(CException) {
 void RTWorkerCU::unitRun() throw(CException) {
 	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
 	r_lock->lock();
-	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
+	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
 	int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
 	double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
 	double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
@@ -224,14 +237,7 @@ void RTWorkerCU::unitRun() throw(CException) {
 	double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
 	double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
 
-	/*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
-	double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
-	for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
-		double * ptr = ATTRIBUTE_HANDLE_GET_PTR(out_sin_value);
-		double sin_point = sin((interval*i)+ATTRIBUTE_HANDLE_GET_VALUE(in_phase));
-		double sin_point_rumor = (((double)randInt()/(double)100)*ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise));
-		ptr[i] = ((**in_gain) * sin_point) + sin_point_rumor + ATTRIBUTE_HANDLE_GET_VALUE(in_bias);
-	}*/
+    (**out_run_counter)++;
 	if(cached_sin_value == NULL) return;
 	double interval = (2*PI)/cached_points;
 	for(int i=0; i<cached_points; i++){

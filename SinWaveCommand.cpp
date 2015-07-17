@@ -63,7 +63,8 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     PI = acos((long double) -1);
     out_sin_value_points = 0;
     lastStartTime = 0;
-    
+    uint64_t *cached_run_counter = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "run_counter");
+    (*cached_run_counter) = 0;
     //this is necessary becase if the command is installed after the first start the
     //attribute is not anymore marched has "changed". so in every case at set handler
     //we call the set point funciton that respect the actual value of poits pointer.
@@ -78,21 +79,16 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
-    double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sinWave");
+    double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
+    uint64_t *cached_run_counter = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "run_counter");
     double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
     double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
     double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
     double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
     double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
     
-    /*if(ATTRIBUTE_HANDLE_GET_PTR(out_sin_value) == NULL) return;
-     double interval = (2*PI)/ATTRIBUTE_HANDLE_GET_VALUE(in_points);
-     for(int i=0; i<ATTRIBUTE_HANDLE_GET_VALUE(in_points); i++){
-     double * ptr = ATTRIBUTE_HANDLE_GET_PTR(out_sin_value);
-     double sin_point = sin((interval*i)+ATTRIBUTE_HANDLE_GET_VALUE(in_phase));
-     double sin_point_rumor = (((double)randInt()/(double)100)*ATTRIBUTE_HANDLE_GET_VALUE(in_gain_noise));
-     ptr[i] = ((**in_gain) * sin_point) + sin_point_rumor + ATTRIBUTE_HANDLE_GET_VALUE(in_bias);
-     }*/
+    (*cached_run_counter)++;
+    
     double interval = (2*PI)/out_sin_value_points;
     for(int i=0; i<out_sin_value_points; i++){
         double sin_point = sin((interval*i*cached_frequency) + cached_phase);

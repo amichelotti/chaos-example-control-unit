@@ -47,6 +47,7 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     long double PI;
     
     READWRITE_ATTRIBUTE_HANDLE(double) out_sin_value;
+    READWRITE_ATTRIBUTE_HANDLE(uint64_t) out_run_counter;
 	int32_t out_sin_value_points;
 	
 	READONLY_ATTRIBUTE_HANDLE(int32_t) in_points;
