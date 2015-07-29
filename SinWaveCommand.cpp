@@ -29,7 +29,7 @@ using namespace chaos::common::data;
 
 using namespace chaos::common::batch_command;
 
-BATCH_COMMAND_OPEN_DESCRIPTION_WITH_SLOWCOMMAND_INSTANCER(SinWaveCommand,
+BATCH_COMMAND_OPEN_DESCRIPTION(,SinWaveCommand,
                                                           "Default method for sinusoidal signal generation",
                                                           "2A3C9510-3C76-4B5A-89EE-4D1D5AD29D95")
 BATCH_COMMAND_CLOSE_DESCRIPTION()

@@ -18,13 +18,15 @@ using namespace chaos::common::batch_command;
 using namespace chaos::cu::control_manager::slow_command;
 
 uint64_t TestCorrelatingCommand::instance_cout = 0;
-
-BATCH_COMMAND_OPEN_DESCRIPTION_WITH_SLOWCOMMAND_INSTANCER(TestCorrelatingCommand,
+/*
+ * T
+ */
+BATCH_COMMAND_OPEN_DESCRIPTION(,TestCorrelatingCommand,
                                                           "Test method for correlations",
                                                           "DBDD60DC-8462-4FAD-8CC0-008960A3B0CA")
-BATCH_COMMAND_ADD_INT32_PARAMTER("exception-location", "The location where generate the exception(1-acquire 2-correlation)",/* BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY*/0)
-BATCH_COMMAND_ADD_STRING_PARAMTER("exception", "Message to report into the exception", 0)
-BATCH_COMMAND_ADD_STRING_PARAMTER("correlation-message", "Message to report into the correlation phase", 0)
+BATCH_COMMAND_ADD_INT64_PARAM("exception-location", "The location where generate the exception(1-acquire 2-correlation)",/* BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY*/0)
+BATCH_COMMAND_ADD_STRING_PARAM("exception", "Message to report into the exception", 0)
+BATCH_COMMAND_ADD_STRING_PARAM("correlation-message", "Message to report into the correlation phase", 0)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 TestCorrelatingCommand::TestCorrelatingCommand()  {
