@@ -29,9 +29,10 @@ using namespace chaos::common::data;
 
 using namespace chaos::common::batch_command;
 
-BATCH_COMMAND_OPEN_DESCRIPTION(,SinWaveCommand,
-                                                          "Default method for sinusoidal signal generation",
-                                                          "2A3C9510-3C76-4B5A-89EE-4D1D5AD29D95")
+BATCH_COMMAND_OPEN_DESCRIPTION(,
+                               SinWaveCommand,
+                               "Default method for sinusoidal signal generation",
+                               "2A3C9510-3C76-4B5A-89EE-4D1D5AD29D95")
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 SinWaveCommand::SinWaveCommand():
@@ -70,6 +71,7 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     //we call the set point funciton that respect the actual value of poits pointer.
     setWavePoint();
     
+    //print the default value
     CMDCU_ << "SinWaveCommand::setHandler";
 }
 
