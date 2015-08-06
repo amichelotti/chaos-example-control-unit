@@ -57,51 +57,22 @@ namespace common_plugin = chaos::common::plugin;
 namespace common_utility = chaos::common::utility;
 namespace cu_driver_manager = chaos::cu::driver_manager;
 
-#define OPT_CUSTOM_DEVICE_ID_A "device_a"
-#define OPT_CUSTOM_DEVICE_ID_B "device_b"
-
-
 int main (int argc, char* argv[] )
 {
 	std::vector<string> tmp_device_id;
-    //! [Custom Option]
     try {
-		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_CUSTOM_DEVICE_ID_A, po::value< std::vector<std::string> >()->multitoken(), "Real Time wave simultaion Device A identification string");
-		ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->addOption(OPT_CUSTOM_DEVICE_ID_B, po::value< std::vector<std::string> >()->multitoken(), "Slow Controlled wave simulation Device B identification string");
-		//! [Custom Option]
-		
 		//! [Driver Registration]
 		MATERIALIZE_INSTANCE_AND_INSPECTOR(DummyDriver)
 		cu_driver_manager::DriverManager::getInstance()->registerDriver(DummyDriverInstancer, DummyDriverInspector);
 		//! [Driver Registration]
-		
+        
+		//! [CUTOOLKIT Init]
 		ChaosCUToolkit::getInstance()->init(argc, argv);
 		//! [CUTOOLKIT Init]
-		
-		cu_driver_manager::driver::DrvRequestInfo drv1 = {"DummyDriver","1.0.0","plccalc.lnf.infn.it:102"};
-		control_manager::AbstractControlUnit::ControlUnitDriverList driver_list; driver_list.push_back(drv1);
 		
 		//register control unit into server
 		ChaosCUToolkit::getInstance()->registerControlUnit<RTWorkerCU>();
 		ChaosCUToolkit::getInstance()->registerControlUnit<SCWorkerCU>();
-		
-		//! [Adding the CustomControlUnit]
-		if(ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_CUSTOM_DEVICE_ID_A)){
-			tmp_device_id = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->getOption< std::vector<std::string> >(OPT_CUSTOM_DEVICE_ID_A);
-			for(int idx = 0; idx < tmp_device_id.size(); idx++){
-				ChaosCUToolkit::getInstance()->addControlUnit(new RTWorkerCU(tmp_device_id[idx], std::string(""), driver_list));
-			}
-			
-		}
-		
-		if(ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption(OPT_CUSTOM_DEVICE_ID_B)){
-			tmp_device_id = ChaosCUToolkit::getInstance()->getGlobalConfigurationInstance()->getOption< std::vector<std::string> >(OPT_CUSTOM_DEVICE_ID_B);
-			for(int idx = 0; idx < tmp_device_id.size(); idx++){
-				ChaosCUToolkit::getInstance()->addControlUnit(new SCWorkerCU(tmp_device_id[idx], std::string(""), driver_list));
-			}
-			
-		}
-		//! [Adding the CustomControlUnit]
 		
 		//! [Starting the Framework]
 		ChaosCUToolkit::getInstance()->start();

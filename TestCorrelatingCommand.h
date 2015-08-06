@@ -19,7 +19,7 @@ using namespace chaos;
 namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
-class TestCorrelatingCommand : public ccc_slow_command::SlowCommand {
+DEFINE_BATCH_COMMAND_CLASS(TestCorrelatingCommand, ccc_slow_command::SlowCommand) {
     uint64_t		start_time;
     static			uint64_t instance_cout;
     uint64_t        local_instance_count;
