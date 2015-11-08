@@ -60,6 +60,13 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     boost::mutex pointChangeMutex;
     int32_t messageID;
 	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
+    
+    //!determinate the location of the crash
+    int crash_location;
+    //! in case of the crash need to be throw during run, this variable determinate how much run
+    //! need to pass befor the exception can be thrown.
+    unsigned int crash_run_count;
+    bool crasch_occured;
 public:
     /*
      Construct a new CU with an identifier

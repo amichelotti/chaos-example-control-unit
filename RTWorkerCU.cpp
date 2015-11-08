@@ -30,6 +30,8 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <json/json.h>
+
 #include <cmath>
 #include <stdio.h>
 #include <iostream>
@@ -65,8 +67,37 @@ chaos::cu::control_manager::RTAbstractControlUnit(_control_unit_id,
 rng((const uint_fast32_t) time(0) ),
 one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred),
-out_sin_value_points(0) {
+out_sin_value_points(0),
+crash_location(-1),
+crash_run_count(0),
+crasch_occured(false){
     numberOfResponse = 0;
+    if(getCUParam().size()>0) {
+        //scan json option
+        Json::Reader    json_reader;
+        Json::Value     json_params;
+        if(json_reader.parse(getCUParam(), json_params)) {
+            /*!
+             crash_location can be:
+                0: definition phase
+                1: init phase
+                2: start phase
+                3: stop phase
+                4: deinit phase
+                5: run phase
+             */
+            const Json::Value& _crash_location = json_params["crash_location"];
+            const Json::Value&  _crash_run_count = json_params["crash_run_count"];
+            if(!_crash_location.isNull()) {
+                //we nned to crasch in some situation
+                crash_location = _crash_location.asInt();
+            }
+            if(!_crash_run_count.isNull()) {
+                //we nned to crasch in some situation
+                crash_run_count = _crash_run_count.asUInt();
+            }
+        }
+    }
 }
 
 /*
@@ -80,8 +111,7 @@ RTWorkerCU::~RTWorkerCU() {
  Return the default configuration
  */
 void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
-    //cuSetup.addStringValue(CUDefinitionKey::CS_CM_CU_DESCRIPTION, "This is a beautifull CU");
-    
+    if(crash_location == 0) throw CException(-1, "Test Exception in definition phase", __PRETTY_FUNCTION__);
     
     //set the default delay for the CU
     setDefaultScheduleDelay(CU_DELAY_FROM_TASKS);
@@ -181,7 +211,8 @@ void RTWorkerCU::unitDefineCustomAttribute() {
  */
 void RTWorkerCU::unitInit() throw(CException) {
     LAPP_ << "init RTWorkerCU";
-	
+    if(crash_location == 1) throw CException(-1, "Test Exception in init phase", __PRETTY_FUNCTION__);
+
 	//get the defual value of the number of point
 	RangeValueInfo attributeInfo;
 	getAttributeRangeValueInfo("points", attributeInfo);
@@ -220,13 +251,22 @@ void RTWorkerCU::unitInit() throw(CException) {
  Execute the work, this is called with a determinated delay, it must be as fast as possible
  */
 void RTWorkerCU::unitStart() throw(CException) {
-   // RTAbstractControlUnit::start();
+    if(crash_location == 2) throw CException(-1, "Test Exception in start phase", __PRETTY_FUNCTION__);
 }
 
 /*
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
+    
+    if((crash_location == 5) &&
+       ((**out_run_counter) == crash_run_count) &&
+       !crasch_occured) {
+        crasch_occured = true;
+        //we can throw the exception
+        throw CException(-1, "Test Exception in run phase", __PRETTY_FUNCTION__);
+    }
+    
 	boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
 	r_lock->lock();
 	double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
@@ -279,6 +319,7 @@ void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
  */
 void RTWorkerCU::unitStop() throw(CException) {
     LAPP_ << "stop RTWorkerCU";
+    if(crash_location == 3) throw CException(-1, "Test Exception in stop phase", __PRETTY_FUNCTION__);
     //RTAbstractControlUnit::stop();
 }
 
@@ -287,6 +328,7 @@ void RTWorkerCU::unitStop() throw(CException) {
  */
 void RTWorkerCU::unitDeinit() throw(CException) {
     LAPP_ << "deinit RTWorkerCU";
+    if(crash_location == 3) throw CException(-1, "Test Exception in deinit phase", __PRETTY_FUNCTION__);
 }
 
 //! restore the control unit to snapshot

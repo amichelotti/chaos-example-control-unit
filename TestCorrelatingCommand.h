@@ -25,7 +25,7 @@ DEFINE_BATCH_COMMAND_CLASS(TestCorrelatingCommand, ccc_slow_command::SlowCommand
     uint64_t        local_instance_count;
 	
 	std::string		exception_message;
-	uint32_t		exception_location; //0-set, 1-acquire, 2-correlation
+	int64_t         exception_location; //0-set, 1-acquire, 2-correlation
 	std::string		correlation_message;
 protected:
 	// return the implemented handler
