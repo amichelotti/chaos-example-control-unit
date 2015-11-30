@@ -349,7 +349,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
-					"-lmemcached",
 					"-lboost_system",
 					"-lboost_thread",
 					"-lboost_program_options",
@@ -359,6 +358,7 @@
 					"-lboost_log_setup",
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
+					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
@@ -387,7 +387,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_LDFLAGS = (
 					"-lboost_chrono",
-					"-lmemcached",
 					"-lboost_system",
 					"-lboost_thread",
 					"-lboost_program_options",
@@ -397,6 +396,7 @@
 					"-lboost_log_setup",
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
+					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;

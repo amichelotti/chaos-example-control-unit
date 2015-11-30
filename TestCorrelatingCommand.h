@@ -12,7 +12,7 @@
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
 #include <boost/atomic.hpp>
-#include <chaos/cu_toolkit/ControlManager/slow_command/SlowCommand.h>
+#include <chaos/cu_toolkit/control_manager/slow_command/SlowCommand.h>
 
 using namespace chaos;
 

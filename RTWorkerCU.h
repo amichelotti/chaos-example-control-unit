@@ -25,7 +25,7 @@
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
 #include <chaos/common/utility/Atomic.h>
-#include <chaos/cu_toolkit/ControlManager/RTAbstractControlUnit.h>
+#include <chaos/cu_toolkit/control_manager/RTAbstractControlUnit.h>
 
 using namespace std;
 using namespace boost;
@@ -117,8 +117,7 @@ protected:
     void unitDeinit() throw(CException);
 	
 	//! restore the control unit to snapshot
-	void unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
-							   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException);
+	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
     /*
         Test Action Handler
      */
