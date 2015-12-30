@@ -25,7 +25,7 @@
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
 #include <chaos/common/utility/Atomic.h>
-#include <chaos/cu_toolkit/ControlManager/RTAbstractControlUnit.h>
+#include <chaos/cu_toolkit/control_manager/RTAbstractControlUnit.h>
 
 using namespace std;
 using namespace boost;
@@ -60,6 +60,13 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     boost::mutex pointChangeMutex;
     int32_t messageID;
 	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
+    
+    //!determinate the location of the crash
+    int crash_location;
+    //! in case of the crash need to be throw during run, this variable determinate how much run
+    //! need to pass befor the exception can be thrown.
+    unsigned int crash_run_count;
+    bool crasch_occured;
 public:
     /*
      Construct a new CU with an identifier
@@ -110,8 +117,7 @@ protected:
     void unitDeinit() throw(CException);
 	
 	//! restore the control unit to snapshot
-	void unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
-							   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException);
+	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
     /*
         Test Action Handler
      */

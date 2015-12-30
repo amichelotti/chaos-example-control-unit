@@ -203,7 +203,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = BOOST_ALL_DYN_LINK;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 			};
 			name = Debug;
 		};
@@ -213,7 +213,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = BOOST_ALL_DYN_LINK;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 			};
 			name = Release;
 		};
@@ -326,12 +326,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_LINK_WITH_DYNAMIC_LIBRARIES = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -345,23 +347,16 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../usr/local/include;
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
-					"-lboost_chrono",
-					"-lmemcached",
-					"-lboost_system",
-					"-lboost_thread",
-					"-lboost_program_options",
-					"-lboost_regex",
-					"-lboost_filesystem",
-					"-lboost_log",
-					"-lboost_log_setup",
-					"-lchaos_cutoolkit",
 					"-lchaos_common",
+					"-lchaos_cutoolkit",
+					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -370,12 +365,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_LINK_WITH_DYNAMIC_LIBRARIES = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -384,22 +381,15 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../../usr/local/include;
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
-					"-lboost_chrono",
-					"-lmemcached",
-					"-lboost_system",
-					"-lboost_thread",
-					"-lboost_program_options",
-					"-lboost_regex",
-					"-lboost_filesystem",
-					"-lboost_log",
-					"-lboost_log_setup",
-					"-lchaos_cutoolkit",
 					"-lchaos_common",
+					"-lchaos_cutoolkit",
+					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

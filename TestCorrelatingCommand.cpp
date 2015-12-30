@@ -22,51 +22,51 @@ uint64_t TestCorrelatingCommand::instance_cout = 0;
  * T
  */
 BATCH_COMMAND_OPEN_DESCRIPTION(,TestCorrelatingCommand,
-                                                          "Test method for correlations",
-                                                          "DBDD60DC-8462-4FAD-8CC0-008960A3B0CA")
+                               "Test method for correlations",
+                               "DBDD60DC-8462-4FAD-8CC0-008960A3B0CA")
 BATCH_COMMAND_ADD_INT64_PARAM("exception-location", "The location where generate the exception(1-acquire 2-correlation)",/* BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY*/0)
 BATCH_COMMAND_ADD_STRING_PARAM("exception", "Message to report into the exception", 0)
 BATCH_COMMAND_ADD_STRING_PARAM("correlation-message", "Message to report into the correlation phase", 0)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 TestCorrelatingCommand::TestCorrelatingCommand()  {
-	start_time = 0;
+    start_time = 0;
     local_instance_count = instance_cout++;
-	exception_message = 10;//out of parameter
+    exception_location = - 1;//out of parameter
 }
 
 TestCorrelatingCommand::~TestCorrelatingCommand() {
-	
+    
 }
 
 // return the implemented handler
 uint8_t TestCorrelatingCommand::implementedHandler() {
     return  HandlerType::HT_Set |
-	HandlerType::HT_Correlation;
-			//HandlerType::HT_Acquisition;
+    HandlerType::HT_Correlation;
+    //HandlerType::HT_Acquisition;
 }
 
 // Start the command execution
 void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
-	start_time = getSetTime();
+    start_time = getSetTime();
     CMDCU_ << "Start simulation at " << start_time << " microeconds ";
-	if(data && data->hasKey("exception")) {
-		exception_message = data->getStringValue("exception");
-	}
-	
-	if(data && data->hasKey("exception-location")) {
-		exception_location = data->getInt32Value("exception-location");
-	}
-	
-	if(data && data->hasKey("correlation-message")) {
-		correlation_message = data->getStringValue("correlation-message");
-	}
-
-	
-	if(exception_location == 0) {
-		throw CException(-1, exception_message, __PRETTY_FUNCTION__);
-	}
-	
+    if(data && data->hasKey("exception")) {
+        exception_message = data->getStringValue("exception");
+    }
+    
+    if(data && data->hasKey("exception-location")) {
+        exception_location = data->getInt64Value("exception-location");
+    }
+    
+    if(data && data->hasKey("correlation-message")) {
+        correlation_message = data->getStringValue("correlation-message");
+    }
+    
+    
+    if(exception_location == 0) {
+        throw CException(-1, exception_message, __PRETTY_FUNCTION__);
+    }
+    
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
             case RunningPropertyType::RP_Exsc:
@@ -82,36 +82,36 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
                 BC_EXEC_RUNNIG_PROPERTY
         }
     } else {
-         BC_EXEC_RUNNIG_PROPERTY
+        BC_EXEC_RUNNIG_PROPERTY
     }
-	setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)20000);
+    setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)30000000);
 }
 
 void TestCorrelatingCommand::acquireHandler() {
-	if(exception_location == 1) {
-		throw CException(-1, exception_message, __PRETTY_FUNCTION__);
-	}
+    if(exception_location == 1) {
+        throw CException(-1, exception_message, __PRETTY_FUNCTION__);
+    }
 }
 
 // Correlation and commit phase
 void TestCorrelatingCommand::ccHandler() {
-	if(exception_location == 2) {
-		throw CException(-1, exception_message, __PRETTY_FUNCTION__);
-	}
+    if(exception_location == 2) {
+        throw CException(-1, exception_message, __PRETTY_FUNCTION__);
+    }
     uint64_t timeDiff = getStartStepTime() - start_time;
     CMDCU_ << "Simulate correlation..." << timeDiff << " of " << 20000;
-	if(correlation_message.size()) CMDCU_ << "Correlation Message: " << correlation_message;
+    if(correlation_message.size()) CMDCU_ << "Correlation Message: " << correlation_message;
     if(timeDiff > 20000) {
-			//we can terminate
-		CMDCU_ << "End correlate simulation...";
-		BC_END_RUNNIG_PROPERTY
-	}
+        //we can terminate
+        CMDCU_ << "End correlate simulation...";
+        BC_END_RUNNIG_PROPERTY
+    }
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
-	uint64_t timeDiff = getLastStepTime() - start_time;
-	CMDCU_ << "timeout after " << timeDiff << " milliseconds";
-	//move the state machine on fault
-	throw chaos::CException(1, "timeout reached", __FUNCTION__);
-	return true;
+    uint64_t timeDiff = getLastStepTime() - start_time;
+    CMDCU_ << "timeout after " << timeDiff << " milliseconds";
+    //move the state machine on fault
+    throw chaos::CException(1, "timeout reached", __FUNCTION__);
+    return true;
 }

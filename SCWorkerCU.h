@@ -21,7 +21,7 @@
 #ifndef __ControlUnitTest__SCWorkerCU__
 #define __ControlUnitTest__SCWorkerCU__
 
-#include <chaos/cu_toolkit/ControlManager/SCAbstractControlUnit.h>
+#include <chaos/cu_toolkit/control_manager/SCAbstractControlUnit.h>
 
 using namespace std;
 using namespace chaos;
@@ -56,8 +56,7 @@ protected:
     void unitDeinit() throw(CException);
 	
 	// restore the control unit to snapshot
-	void unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
-							   chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException);
+	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
 public:
     /*
      Construct a new CU with an identifier

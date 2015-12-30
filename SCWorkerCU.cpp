@@ -121,13 +121,11 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 }
 
 //! restore the control unit to snapshot
-void SCWorkerCU::unitRestoreToSnapshot(const std::string& restore_snapshot_tag,
-                                       chaos::cu::control_manager::AbstractSharedDomainCache * const restore_cache) throw(CException) {
-    LAPP_ << "restore to snapshot " << restore_snapshot_tag;
-    if(restore_cache &&
-       restore_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("corr_test"))) {
-        auto_ptr<CDataWrapper> cmd_pack(restore_cache->getAttributeValue(DOMAIN_INPUT, "corr_test")->getValueAsCDatawrapperPtr(true));
+bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
+    if(snapshot_cache &&
+       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("corr_test"))) {
+        auto_ptr<CDataWrapper> cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "corr_test")->getValueAsCDatawrapperPtr(true));
         LAPP_ << "corr_test = " << cmd_pack->getJSONString();
     }
-    
+    return true;
 }

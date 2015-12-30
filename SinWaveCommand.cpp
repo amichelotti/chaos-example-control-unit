@@ -41,7 +41,7 @@ one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred) {
     //boost::shared_ptr<chaos::common::data::CDataWrapper>  a = BATCH_COMMAND_GET_DESCRIPTION(SinWaveCommand);
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
-    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
+
 }
 
 SinWaveCommand::~SinWaveCommand() {
@@ -70,6 +70,8 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
     //attribute is not anymore marched has "changed". so in every case at set handler
     //we call the set point funciton that respect the actual value of poits pointer.
     setWavePoint();
+    
+    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)1000000);
     
     //print the default value
     CMDCU_ << "SinWaveCommand::setHandler";
