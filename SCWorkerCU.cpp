@@ -9,6 +9,9 @@
 #include "SCWorkerCU.h"
 #include "SinWaveCommand.h"
 #include "TestCorrelatingCommand.h"
+
+#include <boost/thread.hpp>
+
 using namespace chaos::common::data;
 
 using namespace chaos::common::batch_command;
@@ -128,6 +131,42 @@ bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
         auto_ptr<CDataWrapper> cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand")->getValueAsCDatawrapperPtr(true));
         LAPP_ << "corr_test = " << cmd_pack->getJSONString();
         submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
+        
+        std::auto_ptr<CommandState> cmd_state;
+        do{
+            cmd_state = getStateForCommandID(cmd_id);
+            if(!cmd_state.get()) break;
+            
+            switch (cmd_state->last_event) {
+                case BatchCommandEventType::EVT_QUEUED:
+                    LAPP_ << cmd_id << " -> QUEUED";
+                    break;
+                case BatchCommandEventType::EVT_RUNNING:
+                    LAPP_ << cmd_id << " -> RUNNING";
+                    break;
+                case BatchCommandEventType::EVT_WAITING:
+                    LAPP_ << cmd_id << " -> WAITING";
+                    break;
+                case BatchCommandEventType::EVT_PAUSED:
+                    LAPP_ << cmd_id << " -> PAUSED";
+                    break;
+                case BatchCommandEventType::EVT_KILLED:
+                    LAPP_ << cmd_id << " -> KILLED";
+                    break;
+                case BatchCommandEventType::EVT_COMPLETED:
+                    LAPP_ << cmd_id << " -> COMPLETED";
+                    break;
+                case BatchCommandEventType::EVT_FAULT:
+                    LAPP_ << cmd_id << " -> FALUT";
+                    break;
+            }
+            
+           boost::this_thread::sleep_for(boost::chrono::seconds(1));
+        }while(cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
+               cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
+               cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
+        
+        LAPP_ << "Resubmitted command in restore method has ended";
     }
     
     return true;
