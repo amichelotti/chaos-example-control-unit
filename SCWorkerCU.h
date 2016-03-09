@@ -57,6 +57,7 @@ protected:
 	
 	// restore the control unit to snapshot
 	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+
 public:
     /*
      Construct a new CU with an identifier

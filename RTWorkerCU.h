@@ -78,7 +78,7 @@ public:
      */
     ~RTWorkerCU();
     
-    inline void setWavePoint();
+    inline void setWavePoint(uint32_t new_point_size);
 protected:
     /*
      Define the Control Unit Dataset and Actions
@@ -132,6 +132,11 @@ protected:
      Test Action Handler
      */
     CDataWrapper* resetStatistic(CDataWrapper*, bool&);
+    
+    
+    bool i32Handler(const std::string& attribute_name,
+                    int32_t value,
+                    uint32_t value_size);
 
 };
 
