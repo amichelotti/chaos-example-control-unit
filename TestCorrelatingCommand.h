@@ -20,13 +20,14 @@ namespace c_data = chaos::common::data;
 namespace ccc_slow_command = chaos::cu::control_manager::slow_command;
 
 DEFINE_BATCH_COMMAND_CLASS(TestCorrelatingCommand, ccc_slow_command::SlowCommand) {
-    uint64_t		start_time;
     static			uint64_t instance_cout;
     uint64_t        local_instance_count;
 	
 	std::string		exception_message;
 	int64_t         exception_location; //0-set, 1-acquire, 2-correlation
 	std::string		correlation_message;
+    
+    uint64_t        work_time_accumulator;
 protected:
 	// return the implemented handler
     uint8_t implementedHandler();
