@@ -82,7 +82,7 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     } else {
         BC_EXEC_RUNNIG_PROPERTY
     }
-    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)10000);
+    setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)100000);
     setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)30000000);
 }
 
