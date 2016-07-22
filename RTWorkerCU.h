@@ -137,6 +137,9 @@ protected:
     bool i32Handler(const std::string& attribute_name,
                     int32_t value,
                     uint32_t value_size);
+    
+    bool variantHandler(const std::string& attribute_name,
+                        const chaos::common::data::CDataVariant& value);
 
 };
 

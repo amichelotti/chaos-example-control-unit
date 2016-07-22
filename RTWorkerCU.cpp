@@ -203,13 +203,13 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           DataType::TYPE_INT32,
                           DataType::Bidirectional);
     
-    addHandlerOnInputAttributeName<RTWorkerCU, int32_t>(this,
-                                                        &RTWorkerCU::i32Handler,
-                                                        "points");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "points");
     
-    addHandlerOnInputAttributeName<RTWorkerCU, int32_t>(this,
-                                                        &RTWorkerCU::i32Handler,
-                                                        "test_in_out");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "test_in_out");
 }
 
 void RTWorkerCU::unitDefineCustomAttribute() {
@@ -397,6 +397,17 @@ bool RTWorkerCU::i32Handler(const std::string& attribute_name,
         setWavePoint(ATTRIBUTE_HANDLE_GET_VALUE(in_points));
     } else if(attribute_name.compare("test_in_out") == 0) {
         LAPP_ << "bidirectional attribute as input with value " << value;
+    }
+    return true;
+}
+
+bool RTWorkerCU::variantHandler(const std::string& attribute_name,
+                                const chaos::common::data::CDataVariant& value) {
+    LAPP_ << boost::str(boost::format("Handler variant for %1% received")%attribute_name);
+    if(attribute_name.compare("points") == 0) {
+        setWavePoint(value.asInt32());
+    } else if(attribute_name.compare("test_in_out") == 0) {
+        LAPP_ << "bidirectional attribute as input with value " << value.asInt32();
     }
     return true;
 }
