@@ -327,7 +327,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -350,8 +350,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
-					"-lchaos_common",
 					"-lchaos_cutoolkit",
+					"-lchaos_common",
 					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
@@ -366,7 +366,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -383,8 +383,8 @@
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
-					"-lchaos_common",
 					"-lchaos_cutoolkit",
+					"-lchaos_common",
 					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
