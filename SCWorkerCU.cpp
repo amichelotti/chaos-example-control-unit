@@ -9,7 +9,7 @@
 #include "SCWorkerCU.h"
 #include "SinWaveCommand.h"
 #include "TestCorrelatingCommand.h"
-
+#include "TestSetOnly.h"
 #include <boost/thread.hpp>
 
 using namespace chaos::common::data;
@@ -46,6 +46,7 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
     //install a command
     installCommand(BATCH_COMMAND_GET_DESCRIPTION(SinWaveCommand), true); //is the default
     installCommand(BATCH_COMMAND_GET_DESCRIPTION(TestCorrelatingCommand));
+    installCommand(BATCH_COMMAND_GET_DESCRIPTION(TestSetOnly));
     
     //set the sin_base command to run on second channels
     //setDefaultCommand("sinwave_base", 2);

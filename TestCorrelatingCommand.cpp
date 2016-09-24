@@ -27,6 +27,7 @@ BATCH_COMMAND_OPEN_DESCRIPTION(,TestCorrelatingCommand,
 BATCH_COMMAND_ADD_INT64_PARAM("exception-location", "The location where generate the exception(0-set,2-acquire 3-correlation)",/* BatchCommandAndParameterDescriptionkey::BC_PARAMETER_FLAG_MANDATORY*/0)
 BATCH_COMMAND_ADD_STRING_PARAM("exception", "Message to report into the exception", 0)
 BATCH_COMMAND_ADD_STRING_PARAM("correlation-message", "Message to report into the correlation phase", 0)
+BATCH_COMMAND_ADD_INT32_PARAM("rs_mode", "Set the run mode RP_Exsc = 0, RP_Normal = 1", 0)
 BATCH_COMMAND_CLOSE_DESCRIPTION()
 
 TestCorrelatingCommand::TestCorrelatingCommand():
