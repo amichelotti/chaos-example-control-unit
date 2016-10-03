@@ -73,7 +73,13 @@ int main (int argc, char* argv[] )
 		//register control unit into server
 		ChaosCUToolkit::getInstance()->registerControlUnit<RTWorkerCU>();
 		ChaosCUToolkit::getInstance()->registerControlUnit<SCWorkerCU>();
-		
+        /*const string _control_unit_id = "STANDALONE_RT_SIN_CU";
+        const string _control_unit_param;
+        RTWorkerCU::ControlUnitDriverList _control_unit_drivers;
+        ChaosCUToolkit::getInstance()->addControlUnit(new RTWorkerCU(_control_unit_id,
+                                                                     _control_unit_param,
+                                                                     _control_unit_drivers));*/
+        
 		//! [Starting the Framework]
 		ChaosCUToolkit::getInstance()->start();
 		//! [Starting the Framework]

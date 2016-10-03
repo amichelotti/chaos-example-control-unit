@@ -45,9 +45,10 @@ REGISTER_CU_DRIVER_PLUGIN_CLASS_INIT_ATTRIBUTE(Sl7Drv,http_address/dnsname:port)
 CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
 
 //default constructor definition
-DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR(DummyDriver), rng((const uint_fast32_t) time(0) ), one_to_hundred( -100, 100 ), randInt(rng, one_to_hundred) {
-	
-}
+DEFAULT_CU_DRIVER_PLUGIN_CONSTRUCTOR(DummyDriver),
+    rng((const uint_fast32_t) time(0) ),
+    one_to_hundred( -100, 100 ),
+    randInt(rng, one_to_hundred) {}
 
 //default descrutcor
 DummyDriver::~DummyDriver() {

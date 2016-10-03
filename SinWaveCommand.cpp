@@ -110,7 +110,7 @@ void SinWaveCommand::ccHandler() {
     if(timeDiff > 10000 || cached_quit) {
         //every ten seconds ste the state until reac the killable and
         //the return to exec
-        lastStartTime = getLastStepTime();
+        lastStartTime = getStartStepTime();
         if(!cached_quit) {
             switch (SlowCommand::getRunningProperty()) {
                 case RunningPropertyType::RP_Exsc:
