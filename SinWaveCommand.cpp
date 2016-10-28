@@ -114,16 +114,16 @@ void SinWaveCommand::ccHandler() {
         if(!cached_quit) {
             switch (SlowCommand::getRunningProperty()) {
                 case RunningPropertyType::RP_Exsc:
-                    BC_NORMAL_RUNNIG_PROPERTY
+                    BC_NORMAL_RUNNING_PROPERTY
                     CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
                     break;
                 case RunningPropertyType::RP_Normal:
-                    BC_EXEC_RUNNIG_PROPERTY
+                    BC_EXEC_RUNNING_PROPERTY
                     CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
                     break;
             }
         } else {
-            BC_END_RUNNIG_PROPERTY;
+            BC_END_RUNNING_PROPERTY;
         }
     }
     

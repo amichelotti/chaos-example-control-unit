@@ -69,19 +69,19 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
             case RunningPropertyType::RP_Exsc:
-                BC_EXEC_RUNNIG_PROPERTY
+                BC_EXEC_RUNNING_PROPERTY
                 break;
             case RunningPropertyType::RP_Normal:
-                BC_NORMAL_RUNNIG_PROPERTY
+                BC_NORMAL_RUNNING_PROPERTY
                 break;
             case RunningPropertyType::RP_End:
-                BC_END_RUNNIG_PROPERTY
+                BC_END_RUNNING_PROPERTY
                 break;
             default:
-                BC_EXEC_RUNNIG_PROPERTY
+                BC_EXEC_RUNNING_PROPERTY
         }
     } else {
-        BC_EXEC_RUNNIG_PROPERTY
+        BC_EXEC_RUNNING_PROPERTY
     }
     setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)100000);
     setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)30000000);
@@ -105,7 +105,7 @@ void TestCorrelatingCommand::ccHandler() {
     if(timeDiff > 20000) {
         //we can terminate
         CMDCU_ << "End correlate simulation... average step time[microsecond]" << ((double)work_time_accumulator/getStepCounter());
-        BC_END_RUNNIG_PROPERTY
+        BC_END_RUNNING_PROPERTY
     }
 }
 
