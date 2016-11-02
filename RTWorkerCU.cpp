@@ -271,6 +271,7 @@ void RTWorkerCU::unitStart() throw(CException) {
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
+    bool tmp_value = false;
     
     if((crash_location == 5) &&
        ((**out_run_counter) == crash_run_count) &&
@@ -291,6 +292,16 @@ void RTWorkerCU::unitRun() throw(CException) {
     double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
     
     (**out_run_counter)++;
+//    if((**out_run_counter) % 2) {
+//        updateAndPusblishStatusFlag(StatusFlagTypeBusy, (tmp_value = getSystemStatsuFlag(StatusFlagTypeBusy)) ^= 1);
+//    }
+//    if((**out_run_counter) % 4) {
+//        updateAndPusblishStatusFlag(StatusFlagTypeWarning, (tmp_value = getSystemStatsuFlag(StatusFlagTypeWarning)) ^= 1);
+//    }
+//    if((**out_run_counter) % 8) {
+//        updateAndPusblishStatusFlag(StatusFlagTypeError, (tmp_value = getSystemStatsuFlag(StatusFlagTypeError)) ^= 1);
+//    }
+//    
     if(cached_sin_value == NULL) return;
     double interval = (2*PI)/cached_points;
     for(int i=0; i<cached_points; i++){

@@ -12,9 +12,9 @@
 using namespace chaos;
 
 using namespace chaos::common::data;
-
 using namespace chaos::common::batch_command;
 
+using namespace chaos::cu::control_manager;
 using namespace chaos::cu::control_manager::slow_command;
 
 uint64_t TestCorrelatingCommand::instance_cout = 0;
@@ -69,20 +69,26 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
             case RunningPropertyType::RP_Exsc:
-                BC_EXEC_RUNNIG_PROPERTY
+                BC_EXEC_RUNNING_PROPERTY
                 break;
             case RunningPropertyType::RP_Normal:
-                BC_NORMAL_RUNNIG_PROPERTY
+                BC_NORMAL_RUNNING_PROPERTY
                 break;
             case RunningPropertyType::RP_End:
-                BC_END_RUNNIG_PROPERTY
+                BC_END_RUNNING_PROPERTY
                 break;
             default:
-                BC_EXEC_RUNNIG_PROPERTY
+                BC_EXEC_RUNNING_PROPERTY
         }
     } else {
-        BC_EXEC_RUNNIG_PROPERTY
+        BC_EXEC_RUNNING_PROPERTY
     }
+    
+    if(BC_CHECK_EXEC_RUNNING_PROPERTY ||
+       BC_CHECK_NORMAL_RUNNING_PROPERTY) {
+        //updateAndPusblishStatusFlag(StatusFlagTypeBusy, true);
+    }
+    
     setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)100000);
     setFeatures(features::FeaturesFlagTypes::FF_SET_COMMAND_TIMEOUT, (uint64_t)30000000);
 }
@@ -105,11 +111,13 @@ void TestCorrelatingCommand::ccHandler() {
     if(timeDiff > 20000) {
         //we can terminate
         CMDCU_ << "End correlate simulation... average step time[microsecond]" << ((double)work_time_accumulator/getStepCounter());
-        BC_END_RUNNIG_PROPERTY
+        BC_END_RUNNING_PROPERTY
+        //updateAndPusblishStatusFlag(StatusFlagTypeBusy, false);
     }
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
+    //updateAndPusblishStatusFlag(StatusFlagTypeBusy, false);
     uint64_t timeDiff = getStartStepTime() - getSetTime();
     CMDCU_ << "timeout after " << timeDiff << " milliseconds";
     //move the state machine on fault
