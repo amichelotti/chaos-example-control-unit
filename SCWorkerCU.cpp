@@ -96,6 +96,8 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
     
+    addAlarm("out_of_set",
+             "Notify when value to reach has not been reached");
 }
 
 void SCWorkerCU::unitDefineCustomAttribute() {

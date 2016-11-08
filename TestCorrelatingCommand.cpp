@@ -86,7 +86,8 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     
     if(BC_CHECK_EXEC_RUNNING_PROPERTY ||
        BC_CHECK_NORMAL_RUNNING_PROPERTY) {
-        //updateAndPusblishStatusFlag(StatusFlagTypeBusy, true);
+        setBusyFlag(true);
+        setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
     }
     
     setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)100000);
@@ -112,12 +113,14 @@ void TestCorrelatingCommand::ccHandler() {
         //we can terminate
         CMDCU_ << "End correlate simulation... average step time[microsecond]" << ((double)work_time_accumulator/getStepCounter());
         BC_END_RUNNING_PROPERTY
-        //updateAndPusblishStatusFlag(StatusFlagTypeBusy, false);
+        setBusyFlag(false);
+        setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     }
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
-    //updateAndPusblishStatusFlag(StatusFlagTypeBusy, false);
+    setBusyFlag(false);
+    setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
     uint64_t timeDiff = getStartStepTime() - getSetTime();
     CMDCU_ << "timeout after " << timeDiff << " milliseconds";
     //move the state machine on fault
