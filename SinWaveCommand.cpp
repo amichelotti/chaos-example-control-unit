@@ -119,11 +119,11 @@ void SinWaveCommand::ccHandler() {
             switch (SlowCommand::getRunningProperty()) {
                 case RunningPropertyType::RP_Exsc:
                     BC_NORMAL_RUNNING_PROPERTY
-                    CMDCU_ << "Change to SL_NORMAL_RUNNING_STATE";
+                    CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
                     break;
                 case RunningPropertyType::RP_Normal:
                     BC_EXEC_RUNNING_PROPERTY
-                    CMDCU_ << "Change to SL_EXEC_RUNNING_STATE";
+                    CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
                     break;
             }
         } else {
