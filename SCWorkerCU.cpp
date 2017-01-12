@@ -137,8 +137,10 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
     uint64_t cmd_id = 0;
     if(snapshot_cache &&
-       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand"))) {
-        auto_ptr<CDataWrapper> cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand")->getValueAsCDatawrapperPtr(true));
+       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand/correlation-message"))) {
+        auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+        cmd_pack->addStringValue("correlation-message", snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand/correlation-message")->getAsVariant().asString());
+        
         LAPP_ << "corr_test = " << cmd_pack->getJSONString();
         submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
         
