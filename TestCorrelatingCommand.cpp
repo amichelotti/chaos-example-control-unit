@@ -12,6 +12,7 @@
 using namespace chaos;
 
 using namespace chaos::common::data;
+using namespace chaos::common::alarm;
 using namespace chaos::common::batch_command;
 
 using namespace chaos::cu::control_manager;
@@ -68,26 +69,31 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     
     if(data && data->hasKey("rs_mode")) {
         switch(data->getInt32Value("rs_mode")) {
-            case RunningPropertyType::RP_Exsc:
-                BC_EXEC_RUNNING_PROPERTY
+            case RunningPropertyType::RP_EXSC:
+                BC_EXCLUSIVE_RUNNING_PROPERTY
                 break;
-            case RunningPropertyType::RP_Normal:
+            case RunningPropertyType::RP_NORMAL:
                 BC_NORMAL_RUNNING_PROPERTY
                 break;
-            case RunningPropertyType::RP_End:
+            case RunningPropertyType::RP_END:
                 BC_END_RUNNING_PROPERTY
                 break;
             default:
-                BC_EXEC_RUNNING_PROPERTY
+                BC_EXCLUSIVE_RUNNING_PROPERTY
         }
     } else {
-        BC_EXEC_RUNNING_PROPERTY
+        BC_EXCLUSIVE_RUNNING_PROPERTY
     }
     
     if(BC_CHECK_EXEC_RUNNING_PROPERTY ||
        BC_CHECK_NORMAL_RUNNING_PROPERTY) {
         setBusyFlag(true);
-        setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelWarning);
+        setStateVariableSeverity(StateVariableTypeAlarmDEV,
+                                 "out_of_set",
+                                 MultiSeverityAlarmLevelWarning);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,
+                                 "hardware_failure",
+                                 MultiSeverityAlarmLevelHigh);
     }
     
     setFeatures(features::FeaturesFlagTypes::FF_SET_SCHEDULER_DELAY, (uint64_t)100000);
@@ -114,13 +120,19 @@ void TestCorrelatingCommand::ccHandler() {
         CMDCU_ << "End correlate simulation... average step time[microsecond]" << ((double)work_time_accumulator/getStepCounter());
         BC_END_RUNNING_PROPERTY
         setBusyFlag(false);
-        setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmCU,
+                                 MultiSeverityAlarmLevelClear);
+        setStateVariableSeverity(StateVariableTypeAlarmDEV,
+                                 MultiSeverityAlarmLevelClear);
     }
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
     setBusyFlag(false);
-    setAlarmSeverity("out_of_set", chaos::common::alarm::MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmDEV,
+                             MultiSeverityAlarmLevelClear);
+    setStateVariableSeverity(StateVariableTypeAlarmCU,
+                             MultiSeverityAlarmLevelClear);
     uint64_t timeDiff = getStartStepTime() - getSetTime();
     CMDCU_ << "timeout after " << timeDiff << " milliseconds";
     //move the state machine on fault
