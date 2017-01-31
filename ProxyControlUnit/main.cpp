@@ -73,7 +73,6 @@ int main (int argc, char* argv[] ) {
         
         //! [Starting the Framework]
         ChaosCUToolkit::getInstance()->start();
-        //! [Starting the Framework]
     } catch (CException& e) {
         cerr<<"Exception::"<<endl;
         std::cerr<< "in:"<<e.errorDomain << std::endl;
@@ -83,7 +82,12 @@ int main (int argc, char* argv[] ) {
     } catch (...){
         cerr << "unexpected exception caught.. " << endl;
     }
-    
+    try{
+        ChaosCUToolkit::getInstance()->stop();
+    }catch(...){}
+    try{
+        ChaosCUToolkit::getInstance()->deinit();
+    }catch(...){}
     return 0;
 }
 
@@ -103,20 +107,18 @@ void proxyHandler(const bool load,
 bool attributeHandler(const std::string& control_unit_id,//control unit id
                       const std::string& control_attribute_name,//attribute name
                       const chaos::common::data::CDataVariant& value) {
-    std::cout<<CHAOS_FORMAT("[%1%] attributeHandler %2%",%control_unit_id%control_attribute_name)<<endl;
+    std::cout<<CHAOS_FORMAT("[%1%] attributeHandler %2%[%3%]",%control_unit_id%control_attribute_name%value.asString())<<endl;
     return true;
 }
 
 void daqThread(std::string control_unit_id,
                boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface> api_interface) {
-    boost::random::mt19937 rng;
-    boost::random::uniform_int_distribution<> random(1,100000);
+    int64_t counter = 0;
     
     int64_t *output_1_value = api_interface->getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT,
                                                                                     "out_1");
-    
     while(map_daq[control_unit_id]->daq_run) {
-        *output_1_value = random(rng);
+        *output_1_value = counter++;
         api_interface->getAttributeCache()->setOutputDomainAsChanged();
         api_interface->pushOutputDataset();
         boost::this_thread::sleep_for(boost::chrono::milliseconds(500));
@@ -135,6 +137,7 @@ void controlUnitEvent(const std::string& control_unit_id,//control unit id
             map_proxy_interface[control_unit_id]->addAttributeToDataSet("in_1",
                                                                         "description attribute in 1", DataType::TYPE_INT64,
                                                                         DataType::Input);
+            map_proxy_interface[control_unit_id]->enableHandlerOnInputAttributeName("in_1");
         }
             break;
         case chaos::cu::control_manager::ControlUnitProxyEventInit:
