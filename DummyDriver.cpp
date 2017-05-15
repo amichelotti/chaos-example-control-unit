@@ -76,7 +76,7 @@ void DummyDriver::initSimulation(int simulation_id, SinData **data) {
     memset((*data)->parameter, 0, sizeof(SimulParameter));
     
     //insert into the hash
-    simulations.insert(std::make_pair<int, SinData *>(simulation_id, *data));
+    simulations.insert(std::make_pair(simulation_id, *data));
 }
 
 void DummyDriver::setSimulationsPoints(SinData *sin_data) {

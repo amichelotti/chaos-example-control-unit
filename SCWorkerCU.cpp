@@ -136,6 +136,7 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 //! restore the control unit to snapshot
 bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
     uint64_t cmd_id = 0;
+    std::unique_ptr<CommandState> cmd_state;
     if(snapshot_cache &&
        snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand/correlation-message"))) {
         auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
@@ -143,11 +144,9 @@ bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
         
         LAPP_ << "corr_test = " << cmd_pack->getJSONString();
         submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
-        
-        std::auto_ptr<CommandState> cmd_state;
         do{
             cmd_state = getStateForCommandID(cmd_id);
-            if(!cmd_state.get()) break;
+            if(!cmd_state) break;
             
             switch (cmd_state->last_event) {
                 case BatchCommandEventType::EVT_QUEUED:
@@ -170,6 +169,11 @@ bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
                     break;
                 case BatchCommandEventType::EVT_FAULT:
                     LAPP_ << cmd_id << " -> FALUT";
+                    break;
+                case BatchCommandEventType::EVT_FATAL_FAULT:
+                    LAPP_ << cmd_id << " -> EVT_FATAL_FAULT";
+                    break;
+                default:
                     break;
             }
             
