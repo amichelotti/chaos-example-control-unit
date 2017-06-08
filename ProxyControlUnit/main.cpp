@@ -51,7 +51,7 @@ MapDaq map_daq;
 
 
 
-void proxyHandler(const bool load,
+bool proxyHandler(const bool load,
                   const std::string& control_unit_id,//control unit id
                   const boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface>& api_interface);
 
@@ -59,7 +59,7 @@ bool attributeHandler(const std::string& control_unit_id,//control unit id
                       const std::string& control_attribute_name,//attribute name
                       const chaos::common::data::CDataVariant& value);
 
-void controlUnitEvent(const std::string& control_unit_id,//control unit id
+bool controlUnitEvent(const std::string& control_unit_id,//control unit id
                       const chaos::cu::control_manager::ControlUnitProxyEvent& value);
 
 int main (int argc, char* argv[] ) {
@@ -91,7 +91,7 @@ int main (int argc, char* argv[] ) {
     return 0;
 }
 
-void proxyHandler(const bool load,
+bool proxyHandler(const bool load,
                   const std::string& control_unit_id,//control unit id
                   const boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface>& api_interface) {
     if(load) {
@@ -102,6 +102,7 @@ void proxyHandler(const bool load,
     } else {
         map_proxy_interface.erase(control_unit_id);
     }
+    return true;
 }
 
 bool attributeHandler(const std::string& control_unit_id,//control unit id
@@ -125,7 +126,7 @@ void daqThread(std::string control_unit_id,
     }
 }
 
-void controlUnitEvent(const std::string& control_unit_id,//control unit id
+bool controlUnitEvent(const std::string& control_unit_id,//control unit id
                       const chaos::cu::control_manager::ControlUnitProxyEvent& value) {
     switch(value) {
         case chaos::cu::control_manager::ControlUnitProxyEventDefine: {
@@ -163,5 +164,6 @@ void controlUnitEvent(const std::string& control_unit_id,//control unit id
             std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventDeinit",%control_unit_id)<<endl;
             break;
     }
+    return true;
 }
 
