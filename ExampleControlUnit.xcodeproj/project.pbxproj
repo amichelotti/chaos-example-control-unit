@@ -61,7 +61,7 @@
 		32F7449914B49CFA0025638B /* ControlUnitExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = ControlUnitExample.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		32F7449A14B49CFA0025638B /* RTWorkerCU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = RTWorkerCU.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		32F7449B14B49CFA0025638B /* RTWorkerCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = RTWorkerCU.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		32FC563B1EE9A3D900C19841 /* libEUApiTestPlugin.chaos_extension */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libEUApiTestPlugin.chaos_extension; sourceTree = BUILT_PRODUCTS_DIR; };
+		32FC563B1EE9A3D900C19841 /* EUApiTestPlugin.chaos_extension */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = EUApiTestPlugin.chaos_extension; sourceTree = BUILT_PRODUCTS_DIR; };
 		32FC563F1EE9A3D900C19841 /* EUApiTestPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EUApiTestPlugin.h; sourceTree = "<group>"; };
 		32FC56411EE9A3D900C19841 /* EUApiTestPlugin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EUApiTestPlugin.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -124,7 +124,7 @@
 				32F7448F14B49CCB0025638B /* ExampleControlUnit */,
 				32862AD6190A531500A7DE63 /* StressRpcTest */,
 				3214A4161E38DE3200184C9D /* ProxyControlUnit */,
-				32FC563B1EE9A3D900C19841 /* libEUApiTestPlugin.chaos_extension */,
+				32FC563B1EE9A3D900C19841 /* EUApiTestPlugin.chaos_extension */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,7 +244,7 @@
 			);
 			name = EUApiTestPlugin;
 			productName = EUApiTestPlugin;
-			productReference = 32FC563B1EE9A3D900C19841 /* libEUApiTestPlugin.chaos_extension */;
+			productReference = 32FC563B1EE9A3D900C19841 /* EUApiTestPlugin.chaos_extension */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -667,7 +667,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_EXTENSION = chaos_extension;
-				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_PREFIX = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -725,7 +725,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXECUTABLE_EXTENSION = chaos_extension;
-				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_PREFIX = "";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
