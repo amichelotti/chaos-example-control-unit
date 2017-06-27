@@ -15,12 +15,14 @@
 OPEN_EUAPI_LUGIN_CLASS_DEFINITION(EUPluginAlgotest, 1.0, EUTestApiPLugin)
 CLOSE_EUAPI_CLASS_DEFINITION
 
-//register the two plugin
+//register the plugin
 OPEN_REGISTER_PLUGIN
-REGISTER_PLUGIN(PluginAlias)
-REGISTER_PLUGIN(DriverAlias)
 REGISTER_PLUGIN(EUPluginAlgotest)
 CLOSE_REGISTER_PLUGIN
+
+int EUTestApiPLugin::init(const char *init_data) {
+    return 0;
+}
 
 int EUTestApiPLugin::execute(const char *in_data,
                              uint32_t in_data_size,
@@ -34,6 +36,10 @@ int EUTestApiPLugin::execute(const char *in_data,
                 ou_str.c_str());
     *out_data_size = (uint32_t)ou_str.size();
     return 0;
+}
+
+void EUTestApiPLugin::deinit() {
+    int i = 0;
 }
 
 const char *EUTestApiPLugin::getApiName() {

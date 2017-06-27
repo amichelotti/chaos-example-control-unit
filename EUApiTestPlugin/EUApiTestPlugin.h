@@ -16,10 +16,12 @@
 //test the eu api in plugin
 using namespace chaos::cu::control_manager::script::api::plugin;
 DECLARE_EUAPI_PLUGIN_SCLASS(EUTestApiPLugin) {
+    int init(const char *init_data);
     int execute(const char *in_data,
                 uint32_t in_data_size,
                 char **out_data,
                 uint32_t *out_data_size);
+    void deinit();
     const char *getApiName();
 };
 

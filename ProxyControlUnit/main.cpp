@@ -31,19 +31,19 @@
 using namespace std;
 using namespace chaos;
 using namespace chaos::cu;
-
+using namespace chaos::cu::control_manager;
 CHAOS_DEFINE_MAP_FOR_TYPE(std::string,
-                          boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface>,
+                          ChaosSharedPtr<ControlUnitApiInterface>,
                           MapProxyInterface);
 
 struct DaqInfo {
     bool daq_run;
-    boost::shared_ptr<boost::thread> thread;
+    ChaosSharedPtr<boost::thread> thread;
     DaqInfo():daq_run(false){}
 };
 
 CHAOS_DEFINE_MAP_FOR_TYPE(std::string,
-                          boost::shared_ptr<DaqInfo>,
+                          ChaosSharedPtr<DaqInfo>,
                           MapDaq);
 
 MapProxyInterface map_proxy_interface;
@@ -53,14 +53,14 @@ MapDaq map_daq;
 
 bool proxyHandler(const bool load,
                   const std::string& control_unit_id,//control unit id
-                  const boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface>& api_interface);
+                  const ChaosSharedPtr<ControlUnitApiInterface>& api_interface);
 
 bool attributeHandler(const std::string& control_unit_id,//control unit id
                       const std::string& control_attribute_name,//attribute name
                       const chaos::common::data::CDataVariant& value);
 
 bool controlUnitEvent(const std::string& control_unit_id,//control unit id
-                      const chaos::cu::control_manager::ControlUnitProxyEvent& value);
+                      const ControlUnitProxyEvent& value);
 
 int main (int argc, char* argv[] ) {
     std::vector<string> tmp_device_id;
@@ -93,7 +93,7 @@ int main (int argc, char* argv[] ) {
 
 bool proxyHandler(const bool load,
                   const std::string& control_unit_id,//control unit id
-                  const boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface>& api_interface) {
+                  const ChaosSharedPtr<ControlUnitApiInterface>& api_interface) {
     if(load) {
         map_proxy_interface.insert(MapProxyInterfacePair(control_unit_id,
                                                          api_interface));
@@ -113,7 +113,7 @@ bool attributeHandler(const std::string& control_unit_id,//control unit id
 }
 
 void daqThread(std::string control_unit_id,
-               boost::shared_ptr<chaos::cu::control_manager::ControlUnitApiInterface> api_interface) {
+               ChaosSharedPtr<ControlUnitApiInterface> api_interface) {
     int64_t counter = 0;
     
     int64_t *output_1_value = api_interface->getAttributeCache()->getRWPtr<int64_t>(DOMAIN_OUTPUT,
@@ -127,10 +127,10 @@ void daqThread(std::string control_unit_id,
 }
 
 bool controlUnitEvent(const std::string& control_unit_id,//control unit id
-                      const chaos::cu::control_manager::ControlUnitProxyEvent& value) {
+                      const ControlUnitProxyEvent& value) {
     switch(value) {
-        case chaos::cu::control_manager::ControlUnitProxyEventDefine: {
-            std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventDefine",%control_unit_id)<<endl;
+        case ControlUnitProxyEventDefine: {
+            std::cout<<CHAOS_FORMAT("[%1%]ControlUnitProxyEventDefine",%control_unit_id)<<endl;
             
             map_proxy_interface[control_unit_id]->addAttributeToDataSet("out_1",
                                                                         "description attribute out 1", DataType::TYPE_INT64,
@@ -141,11 +141,11 @@ bool controlUnitEvent(const std::string& control_unit_id,//control unit id
             map_proxy_interface[control_unit_id]->enableHandlerOnInputAttributeName("in_1");
         }
             break;
-        case chaos::cu::control_manager::ControlUnitProxyEventInit:
-            std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventInit",%control_unit_id)<<endl;
+        case ControlUnitProxyEventInit:
+            std::cout<<CHAOS_FORMAT("[%1%]ControlUnitProxyEventInit",%control_unit_id)<<endl;
             break;
-        case chaos::cu::control_manager::ControlUnitProxyEventStart: {
-            std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventStart",%control_unit_id)<<endl;
+        case ControlUnitProxyEventStart: {
+            std::cout<<CHAOS_FORMAT("[%1%]ControlUnitProxyEventStart",%control_unit_id)<<endl;
             //allocate daq thread
             map_daq[control_unit_id].reset(new DaqInfo());
             map_daq[control_unit_id]->daq_run = true;
@@ -154,14 +154,14 @@ bool controlUnitEvent(const std::string& control_unit_id,//control unit id
                                                                                  map_proxy_interface[control_unit_id])));
             break;
         }
-        case chaos::cu::control_manager::ControlUnitProxyEventStop:{
-            std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventStop",%control_unit_id)<<endl;
+        case ControlUnitProxyEventStop:{
+            std::cout<<CHAOS_FORMAT("[%1%]ControlUnitProxyEventStop",%control_unit_id)<<endl;
             map_daq[control_unit_id]->daq_run = false;
             map_daq[control_unit_id]->thread->join();
             break;
         }
-        case chaos::cu::control_manager::ControlUnitProxyEventDeinit:
-            std::cout<<CHAOS_FORMAT("[%1%]chaos::cu::control_manager::ControlUnitProxyEventDeinit",%control_unit_id)<<endl;
+        case ControlUnitProxyEventDeinit:
+            std::cout<<CHAOS_FORMAT("[%1%]ControlUnitProxyEventDeinit",%control_unit_id)<<endl;
             break;
     }
     return true;

@@ -281,7 +281,7 @@ void RTWorkerCU::unitRun() throw(CException) {
         throw CException(-1, "Test Exception in run phase", __PRETTY_FUNCTION__);
     }
     
-    boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+    ChaosSharedPtr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
     r_lock->lock();
     double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
     int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");

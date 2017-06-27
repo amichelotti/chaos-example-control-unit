@@ -133,7 +133,7 @@ void SinWaveCommand::ccHandler() {
     
     //check if some parameter has changed every 100 msec
     if(timeDiff > 100) {
-        boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+        ChaosSharedPtr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
         r_lock->lock();
         
         std::vector<VariableIndexType> changed_input_attribute;

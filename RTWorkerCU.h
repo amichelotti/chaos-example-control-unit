@@ -59,7 +59,7 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     
     boost::mutex pointChangeMutex;
     int32_t messageID;
-	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
+	ChaosSharedPtr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
     
     //!determinate the location of the crash
     int crash_location;
