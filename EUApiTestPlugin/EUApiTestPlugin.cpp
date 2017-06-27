@@ -10,7 +10,7 @@
 
 //define the general plugin
 #include "EUApiTestPlugin.h"
-#include <string>
+#include <cstring>
 
 OPEN_EUAPI_LUGIN_CLASS_DEFINITION(EUPluginAlgotest, 1.0, EUTestApiPLugin)
 CLOSE_EUAPI_CLASS_DEFINITION
