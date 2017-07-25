@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 include(${CMAKE_SOURCE_DIR}/../../chaosframework/config/CMakeChaos.txt)
 
-SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp DummyDriver.cpp)
+SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp SinGeneratorDriver.cpp)
 SET(roc_test_stress_exe_src StressRpcTest/main.cpp)
 SET(eu_api_plugin_example_src EUApiTestPlugin/EUApiTestPlugin.cpp)
 

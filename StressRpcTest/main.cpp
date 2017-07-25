@@ -15,7 +15,7 @@ using namespace chaos;
 using namespace chaos::ui;
 
 
-#define NUMBER_OF_ITERATION 100
+#define NUMBER_OF_ITERATION 1000000000
 
 int main(int argc, char * argv[])
 {
@@ -35,17 +35,44 @@ int main(int argc, char * argv[])
 			throw chaos::CException(-1, "The device id is mandatory", "init");
 		}
 		
-		if(!ChaosUIToolkit::getInstance()->getGlobalConfigurationInstance()->hasOption("action_name")) {
-			throw chaos::CException(-1, "The action name id is mandatory", "init");
-		}
-		
-        DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID(device_id, timeout);
-        if (!controller) throw CException(4, "Error allcoating decive controller", "device controller creation");
+        for(int idx = 0; idx < 1000000; idx++) {
+            DeviceController *controller = HLDataApi::getInstance()->getControllerForDeviceID(device_id, timeout);
+            if (!controller) throw CException(4, "Error allcoating decive controller", "device controller creation");
+            HLDataApi::getInstance()->disposeDeviceControllerPtr(controller);
+        }
+       
+        
 		for(int idx = 0; idx < iteration; idx++) {
-			controller->sendCustomMessage(action_name.c_str(), NULL);
-			if(idx && ((idx % 100) == 0)) {
-				LAPP_ << "Message sent: " << idx;
-			}
+            chaos::common::data::CDataWrapper test_data;
+            ChaosUniquePtr<chaos::common::data::CDataWrapper> test_data_tmp;
+            ChaosUniquePtr<chaos::common::data::CDataWrapper> test_data_constructor;
+            chaos::common::data::CDataWrapper test_data_return;
+            
+            test_data.addStringValue("string", "string");
+            test_data.addInt32Value("i32", 0);
+            test_data.addInt64Value("i64", (int64_t)1);
+            test_data.addDoubleValue("double", 2.0);
+            test_data_tmp.reset(test_data.clone());
+            test_data.addCSDataValue("csvalue", *test_data_tmp);
+            for(int idx = 0;idx < 100; idx++) {
+                test_data.appendCDataWrapperToArray(*test_data_tmp);
+            }
+            test_data.finalizeArrayForKey("csvalue_array");
+            test_data_tmp.reset(test_data.getCSDataValue("csvalue"));
+            ChaosUniquePtr<chaos::common::data::CMultiTypeDataArrayWrapper> arr(test_data.getVectorValue("csvalue_array"));
+            for(int idx = 0; idx < arr->size(); idx++) {
+                ChaosUniquePtr<chaos::common::data::CDataWrapper> ele(arr->getCDataWrapperElementAtIndex(idx));
+            }
+            ChaosUniquePtr<chaos::common::data::SerializationBuffer> ser(test_data.getBSONData());
+            test_data.copyAllTo(test_data_return);
+            
+            //test_data_constructor.reset(new chaos::common::data::CDataWrapper(test_data.getBSONRawData()));
+			//controller->echoTest(&test_data, &test_data_return);
+			//if(idx && ((idx % 100) == 0)) {
+            //    if(test_data_return){std::cout<<idx<<std::endl;}
+			//}
+            
+            //delete(test_data_return);
 		}
 		LAPP_ << "Message sent: " << iteration;
         ChaosUIToolkit::getInstance()->deinit();

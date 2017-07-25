@@ -1,5 +1,5 @@
 /*
- *	DummyDriver.h
+ *	SinGeneratorDriver.h
  *	!CHOAS
  *	Created by Bisegni Claudio.
  *
@@ -20,50 +20,22 @@
 #ifndef __ControlUnitTest__TestDeviceDriver__
 #define __ControlUnitTest__TestDeviceDriver__
 
-#include <map>
+#include "SinGeneratorTypes.h"
 
+#include <chaos/common/chaos_types.h>
 #include <boost/random.hpp>
 
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
-DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(DummyDriver)
-
-typedef enum {
-    //! init the simulation with an id and the return value of the user need to be an handler to the SinData struct
-    OP_INIT_SIMULATION = cu_driver::OpcodeType::OP_USER,
-    OP_SET_POINTS, //set the number of points of the simulation
-    /*!
-     freq|bias|phase|gain|gainNoise
-     */
-    OP_SET_SIMULATION_PARAMETER,    //require a pointer to a SimulParameter
-    OP_STEP_SIMULATION,             //radvance the simulation
-    OP_GET_SIN_DATA                 //require a pointer to an double array
-} DummyDriverOpcode;
-
-typedef double SimulParameter[5];
-
-typedef struct SinData {
-    int id;
-    double *data;
-    uint32_t points;
-    SimulParameter parameter;
-} SinData;
-
-typedef enum Parameter {
-    freq,
-    bias,
-    phase,
-    gain,
-    gainNoise
-} Parameter;
+DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(SinGeneratorDriver)
 
 /*
  driver definition
  */
-class DummyDriver: ADD_CU_DRIVER_PLUGIN_SUPERCLASS {
-    std::map<int, SinData*> simulations;
+class SinGeneratorDriver: ADD_CU_DRIVER_PLUGIN_SUPERCLASS {
+    std::map<int, ChaosSharedPtr<SinGeneratorData> > simulations;
     typedef boost::mt19937 RNGType;
     RNGType rng;
     boost::uniform_int<> one_to_hundred;
@@ -74,15 +46,15 @@ class DummyDriver: ADD_CU_DRIVER_PLUGIN_SUPERCLASS {
 	void driverInit(const char *initParameter) throw(chaos::CException);
 	void driverDeinit() throw(chaos::CException);
     
-    void initSimulation(int simulation_id, SinData **data);
-    void setSimulationsPoints(SinData *sin_data);
-    void computeSimulation(SinData *sin_data);
+    void initSimulation(int simulation_id, SinGeneratorData **data);
+    void setSimulationsPoints(SinGeneratorData *sin_data);
+    void computeSimulation(SinGeneratorData *sin_data);
     
 public:
-    DummyDriver();
-	~DummyDriver();
+    SinGeneratorDriver();
+	~SinGeneratorDriver();
     //! Execute a command
 	cu_driver::MsgManagmentResultType::MsgManagmentResult execOpcode(cu_driver::DrvMsgPtr cmd);
 };
 
-#endif /* defined(__ControlUnitTest__DummyDriver__) */
+#endif /* defined(__ControlUnitTest__SinGeneratorDriver__) */

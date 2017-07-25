@@ -20,7 +20,8 @@
 
 #include "RTWorkerCU.h"
 #include "SCWorkerCU.h"
-#include "DummyDriver.h"
+#include "SinGeneratorDriver.h"
+#include "SinGeneratorRemoteDriver.h"
 
 #include <chaos/common/chaos_types.h>
 #include <chaos/common/chaos_constants.h>
@@ -63,8 +64,9 @@ int main (int argc, char* argv[] )
     std::vector<string> tmp_device_id;
     try {
         //! [Driver Registration]
-        MATERIALIZE_INSTANCE_AND_INSPECTOR(DummyDriver)
-        cu_driver_manager::DriverManager::getInstance()->registerDriver(DummyDriverInstancer, DummyDriverInspector);
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorDriver)
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteDriver)
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorDriverInstancer, SinGeneratorDriverInspector);
         //! [Driver Registration]
         
         //! [CUTOOLKIT Init]

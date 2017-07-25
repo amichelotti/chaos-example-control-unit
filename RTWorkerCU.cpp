@@ -24,8 +24,6 @@
 
 #include <chaos/common/global.h>
 #include <chaos/common/chaos_constants.h>
-#include <chaos/common/bson/bson.h>
-#include <chaos/common/bson/util/hex.h>
 #include <chaos/common/action/ActionDescriptor.h>
 
 #include <boost/lexical_cast.hpp>
