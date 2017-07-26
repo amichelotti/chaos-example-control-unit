@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
             }
             
             delete(test_data_return);
-            usleep(1000000000);
+            usleep(1000000);
         }
         LAPP_ << "Message sent: " << iteration;
         ChaosMetadataServiceClient::getInstance()->stop();
