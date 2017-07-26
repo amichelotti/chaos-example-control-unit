@@ -28,7 +28,7 @@ OpcodeExternalCommandMapper(_remote_driver){}
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
 void SinGeneratorOpcodeLogic::initSimulation(int simulation_id, SinGeneratorData **data) {
-    
+    //remote_driver->
 }
 
 void SinGeneratorOpcodeLogic::setSimulationsPoints(SinGeneratorData *sin_data) {
