@@ -61,17 +61,11 @@ RTWorkerCU::RTWorkerCU(const string& _control_unit_id,
 chaos::cu::control_manager::RTAbstractControlUnit(_control_unit_id,
                                                   _control_unit_param,
                                                   _control_unit_drivers),
-//instance variabl einizialization
-rng((const uint_fast32_t) time(0) ),
-one_to_hundred( -100, 100 ),
-randInt(rng, one_to_hundred),
-out_sin_value_points(0),
-crash_location(-1),
+out_run_counter(NULL),
 crash_run_count(0),
 crasch_occured(false),
 driver(NULL),
 generation_data(NULL){
-    numberOfResponse = 0;
     if(getCUParam().size()>0) {
         //scan json option
         Json::Reader    json_reader;
@@ -244,30 +238,11 @@ void RTWorkerCU::unitInit() throw(CException) {
     CHECK_ASSERTION_THROW_AND_LOG((driver != NULL), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Driver has been allcoated for CU %1%", %getCUID()));
     
     CHECK_ASSERTION_THROW_AND_LOG(((err = initGenerator()) == 0), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Error %1% initilizing generator in cu %2%", %err%getCUID()));
-    //get the defual value of the number of point
-    //    RangeValueInfo attributeInfo;
-    //    getAttributeRangeValueInfo("points", attributeInfo);
-    //RTAbstractControlUnit::init();
-    
-    srand((unsigned)time(0));
-    PI = acos((long double) -1);
-    
-    //get handle to the output attribute value
-    getAttributeCache()->getCachedOutputAttributeValue<double>(0, &out_sin_value);
+
     getAttributeCache()->getCachedOutputAttributeValue<uint64_t>(1, &out_run_counter);
-    
-    //get handle to the input attribute value
-    getAttributeCache()->getReadonlyCachedAttributeValue<int32_t>(DOMAIN_INPUT, 0, &in_points);
-    getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 1, &in_freq);
-    getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 2, &in_bias);
-    getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 3, &in_gain);
-    getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 4, &in_phase);
-    getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 5, &in_gain_noise);
-    
+
     setGeneratorPoint(getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points"));
     getAttributeCache()->resetChangedInputIndex();
-    
-    r_o_attr_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
     
     //reset counter
     (**out_run_counter) = 0;
@@ -292,6 +267,7 @@ void RTWorkerCU::unitRun() throw(CException) {
         //we can throw the exception
         throw CException(-1, "Test Exception in run phase", __PRETTY_FUNCTION__);
     }
+    (**out_run_counter)++;
     generateWave();
     getAttributeCache()->setOutputDomainAsChanged();
 }
@@ -330,24 +306,6 @@ bool RTWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
 }
 
 /*
- */
-void RTWorkerCU::setWavePoint(uint32_t new_point_size) {
-    int32_t tmpNOP = new_point_size;
-    if(tmpNOP < 1) tmpNOP = 0;
-    if(tmpNOP == out_sin_value_points) return;
-    
-    if(!tmpNOP){
-        //no wero point allowed
-        return;
-    }else{
-        uint32_t byte_size = uint32_t(sizeof(double) * tmpNOP);
-        if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
-            out_sin_value_points = tmpNOP;
-        }
-    }
-}
-
-/*
  Test Action Handler
  */
 CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachParam) {
@@ -363,7 +321,6 @@ CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachP
  */
 CDataWrapper* RTWorkerCU::resetStatistic(CDataWrapper *actionParam, bool& detachParam) {
     LAPP_ << "resetStatistic in RTWorkerCU called from rpc";
-    numberOfResponse = 0;
     return NULL;
 }
 
@@ -389,7 +346,8 @@ bool RTWorkerCU::i32Handler(const std::string& attribute_name,
                             uint32_t value_size) {
     LAPP_ << boost::str(boost::format("Handler for %1% received with value %2%")%attribute_name%value);
     if(attribute_name.compare("points") == 0) {
-        setWavePoint(ATTRIBUTE_HANDLE_GET_VALUE(in_points));
+        //setWavePoint(value.asInt32());
+        setGeneratorPoint(value);
     } else if(attribute_name.compare("test_in_out") == 0) {
         LAPP_ << "bidirectional attribute as input with value " << value;
     }
