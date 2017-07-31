@@ -27,8 +27,8 @@ OpcodeExternalCommandMapper(_remote_driver){}
 
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
-void SinGeneratorOpcodeLogic::initSimulation(int simulation_id, SinGeneratorData **data) {
-    //remote_driver->
+void SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
+
 }
 
 void SinGeneratorOpcodeLogic::setSimulationsPoints(SinGeneratorData *sin_data) {
@@ -39,30 +39,32 @@ void SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
     
 }
 
+void SinGeneratorOpcodeLogic::destroySimulation(SinGeneratorData *sin_data) {
+    
+}
+
 //! Execute a command
 MsgManagmentResultType::MsgManagmentResult SinGeneratorOpcodeLogic::execOpcode(DrvMsgPtr cmd) {
     MsgManagmentResultType::MsgManagmentResult result = MsgManagmentResultType::MMR_EXECUTED;
     switch(cmd->opcode) {
         case OP_INIT_SIMULATION: {
-            int *id = static_cast<int*>(cmd->inputData);
             SinGeneratorData *user_sin_data = static_cast<SinGeneratorData*>(cmd->resultData);
-            initSimulation(*id, &user_sin_data);
+            initSimulation(&user_sin_data);
             break;
         }
             
         case OP_SET_POINTS: {
-            SinGeneratorData *sin_data = static_cast<SinGeneratorData*>(cmd->inputData);
-            setSimulationsPoints(sin_data);
+            setSimulationsPoints(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
             
         case OP_STEP_SIMULATION: {
-            SinGeneratorData *sin_data = static_cast<SinGeneratorData*>(cmd->inputData);
-            computeSimulation(sin_data);
+            computeSimulation(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
             
-        case OP_GET_SIN_DATA: {
+        case OP_DESTROY_SIMULATION: {
+            destroySimulation(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
     }

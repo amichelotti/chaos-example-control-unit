@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
         CHAOS_ASSERT(controller);
         for(int idx = 0; idx < iteration; idx++) {
             chaos::common::data::CDataWrapper test_data;
-            chaos::common::data::CDataWrapper *test_data_return;
+            chaos::common::data::CDataWrapper *test_data_return = NULL;
             test_data.addStringValue("string", "string");
             test_data.addInt32Value("coutner", idx);
             controller->echoTest(&test_data, &test_data_return);

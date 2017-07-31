@@ -31,18 +31,22 @@ typedef enum {
     /*!
      freq|bias|phase|gain|gainNoise
      */
-    OP_SET_SIMULATION_PARAMETER,    //require a pointer to a SimulParameter
-    OP_STEP_SIMULATION,             //radvance the simulation
-    OP_GET_SIN_DATA                 //require a pointer to an double array
+    OP_SET_SIMULATION_PARAMETER,
+    OP_STEP_SIMULATION,
+    OP_DESTROY_SIMULATION
 } SinGeneratorDriverOpcode;
 
 typedef double SimulParameter[5];
 
 typedef struct SinGeneratorData {
-    int id;
+    int gen_id;
     double *data;
     uint32_t points;
     SimulParameter parameter;
+    SinGeneratorData():
+    gen_id(0),
+    points(0){memset(&parameter, 0, sizeof(SimulParameter));}
+    ~SinGeneratorData(){free(data);}
 } SinGeneratorData;
 
 typedef enum SinGeneratorParameter {

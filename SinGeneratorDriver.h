@@ -23,33 +23,39 @@
 #include "SinGeneratorTypes.h"
 
 #include <chaos/common/chaos_types.h>
-#include <boost/random.hpp>
+#include <chaos/common/utility/LockableObject.h>
 
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
+
+#include <boost/random.hpp>
+#include <boost/atomic.hpp>
 
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
 DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(SinGeneratorDriver)
 
+typedef std::map<int, ChaosSharedPtr<SinGeneratorData> > SinGenMap;
+
+CHAOS_DEFINE_LOCKABLE_OBJECT(SinGenMap, LSinGenMap)
 /*
  driver definition
  */
 class SinGeneratorDriver: ADD_CU_DRIVER_PLUGIN_SUPERCLASS {
-    std::map<int, ChaosSharedPtr<SinGeneratorData> > simulations;
+    LSinGenMap simulations;
     typedef boost::mt19937 RNGType;
     RNGType rng;
     boost::uniform_int<> one_to_hundred;
     boost::variate_generator< RNGType, boost::uniform_int<> > randInt;
     
     long double PI;
-    
+    boost::atomic<unsigned int> generator_id;
 	void driverInit(const char *initParameter) throw(chaos::CException);
 	void driverDeinit() throw(chaos::CException);
     
-    void initSimulation(int simulation_id, SinGeneratorData **data);
-    void setSimulationsPoints(SinGeneratorData *sin_data);
-    void computeSimulation(SinGeneratorData *sin_data);
-    
+    int initSimulation(SinGeneratorData **data);
+    int setSimulationsPoints(SinGeneratorData *sin_data);
+    int computeSimulation(SinGeneratorData *sin_data);
+    int destroySimulation(SinGeneratorData *sin_data);
 public:
     SinGeneratorDriver();
 	~SinGeneratorDriver();

@@ -21,7 +21,6 @@
 #include <boost/thread.hpp>
 
 #include "RTWorkerCU.h"
-
 #include <chaos/common/global.h>
 #include <chaos/common/chaos_constants.h>
 #include <chaos/common/action/ActionDescriptor.h>
@@ -50,6 +49,7 @@ using namespace chaos;
 PUBLISHABLE_CONTROL_UNIT_IMPLEMENTATION(RTWorkerCU)
 
 using namespace chaos::cu::control_manager;
+using namespace chaos::cu::driver_manager::driver;
 
 /*
  Construct a new CU with an identifier
@@ -68,7 +68,9 @@ randInt(rng, one_to_hundred),
 out_sin_value_points(0),
 crash_location(-1),
 crash_run_count(0),
-crasch_occured(false){
+crasch_occured(false),
+driver(NULL),
+generation_data(NULL){
     numberOfResponse = 0;
     if(getCUParam().size()>0) {
         //scan json option
@@ -195,7 +197,6 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           "The gain of the noise of the wave",
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
-    
     addAttributeToDataSet("test_in_out",
                           "Bidirectional example",
                           DataType::TYPE_INT32,
@@ -204,7 +205,21 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
                                                       &RTWorkerCU::variantHandler,
                                                       "points");
-    
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "frequency");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "bias");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "gain");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "phase");
+    addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
+                                                      &RTWorkerCU::variantHandler,
+                                                      "gain_noise");
     addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
                                                       &RTWorkerCU::variantHandler,
                                                       "test_in_out");
@@ -222,20 +237,20 @@ void RTWorkerCU::unitDefineCustomAttribute() {
  */
 void RTWorkerCU::unitInit() throw(CException) {
     LAPP_ << "init RTWorkerCU";
+    int err = 0;
     if(crash_location == 1) throw CException(-1, "Test Exception in init phase", __PRETTY_FUNCTION__);
     
+    driver = getAccessoInstanceByIndex(0);
+    CHECK_ASSERTION_THROW_AND_LOG((driver != NULL), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Driver has been allcoated for CU %1%", %getCUID()));
+    
+    CHECK_ASSERTION_THROW_AND_LOG(((err = initGenerator()) == 0), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Error %1% initilizing generator in cu %2%", %err%getCUID()));
     //get the defual value of the number of point
-    RangeValueInfo attributeInfo;
-    getAttributeRangeValueInfo("points", attributeInfo);
+    //    RangeValueInfo attributeInfo;
+    //    getAttributeRangeValueInfo("points", attributeInfo);
     //RTAbstractControlUnit::init();
     
-    initTime = steady_clock::now();
-    lastExecutionTime = steady_clock::now();
-    numberOfResponse = 0;
     srand((unsigned)time(0));
     PI = acos((long double) -1);
-    messageID = 0;
-    out_sin_value_points = 0;
     
     //get handle to the output attribute value
     getAttributeCache()->getCachedOutputAttributeValue<double>(0, &out_sin_value);
@@ -249,7 +264,7 @@ void RTWorkerCU::unitInit() throw(CException) {
     getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 4, &in_phase);
     getAttributeCache()->getReadonlyCachedAttributeValue<double>(DOMAIN_INPUT, 5, &in_gain_noise);
     
-    setWavePoint(ATTRIBUTE_HANDLE_GET_VALUE(in_points));
+    setGeneratorPoint(getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points"));
     getAttributeCache()->resetChangedInputIndex();
     
     r_o_attr_lock = getAttributeCache()->getLockOnOutputAttributeCache(true);
@@ -269,7 +284,6 @@ void RTWorkerCU::unitStart() throw(CException) {
  Execute the Control Unit work
  */
 void RTWorkerCU::unitRun() throw(CException) {
-    bool tmp_value = false;
     
     if((crash_location == 5) &&
        ((**out_run_counter) == crash_run_count) &&
@@ -278,35 +292,7 @@ void RTWorkerCU::unitRun() throw(CException) {
         //we can throw the exception
         throw CException(-1, "Test Exception in run phase", __PRETTY_FUNCTION__);
     }
-    
-    ChaosSharedPtr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
-    r_lock->lock();
-    double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
-    int32_t cached_points = getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points");
-    double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
-    double cached_bias = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
-    double cached_gain = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
-    double cached_phase = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
-    double cached_gain_noise = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
-    
-    (**out_run_counter)++;
-//    if((**out_run_counter) % 2) {
-//        updateAndPusblishStatusFlag(StatusFlagTypeBusy, (tmp_value = getSystemStatsuFlag(StatusFlagTypeBusy)) ^= 1);
-//    }
-//    if((**out_run_counter) % 4) {
-//        updateAndPusblishStatusFlag(StatusFlagTypeWarning, (tmp_value = getSystemStatsuFlag(StatusFlagTypeWarning)) ^= 1);
-//    }
-//    if((**out_run_counter) % 8) {
-//        updateAndPusblishStatusFlag(StatusFlagTypeError, (tmp_value = getSystemStatsuFlag(StatusFlagTypeError)) ^= 1);
-//    }
-//    
-    if(cached_sin_value == NULL) return;
-    double interval = (2*PI)/cached_points;
-    for(int i=0; i<cached_points; i++){
-        double sin_point = sin((interval*i*cached_frequency) + cached_phase);
-        double sin_point_rumor = (((double)randInt()/(double)100) * cached_gain_noise);
-        cached_sin_value[i] = (cached_gain * sin_point) + sin_point_rumor + cached_bias;
-    }
+    generateWave();
     getAttributeCache()->setOutputDomainAsChanged();
 }
 
@@ -317,6 +303,7 @@ void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
     //r_o_attr_lock->lock();
+    
 }
 
 /*
@@ -325,7 +312,6 @@ void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
 void RTWorkerCU::unitStop() throw(CException) {
     LAPP_ << "stop RTWorkerCU";
     if(crash_location == 3) throw CException(-1, "Test Exception in stop phase", __PRETTY_FUNCTION__);
-    //RTAbstractControlUnit::stop();
 }
 
 /*
@@ -334,6 +320,8 @@ void RTWorkerCU::unitStop() throw(CException) {
 void RTWorkerCU::unitDeinit() throw(CException) {
     LAPP_ << "deinit RTWorkerCU";
     if(crash_location == 3) throw CException(-1, "Test Exception in deinit phase", __PRETTY_FUNCTION__);
+    
+    purgeGenerator();
 }
 
 //! restore the control unit to snapshot
@@ -356,9 +344,7 @@ void RTWorkerCU::setWavePoint(uint32_t new_point_size) {
         if(getAttributeCache()->setOutputAttributeNewSize(0, byte_size)) {
             out_sin_value_points = tmpNOP;
         }
-        
     }
-    
 }
 
 /*
@@ -414,9 +400,63 @@ bool RTWorkerCU::variantHandler(const std::string& attribute_name,
                                 const chaos::common::data::CDataVariant& value) {
     LAPP_ << boost::str(boost::format("Handler variant for %1% received")%attribute_name);
     if(attribute_name.compare("points") == 0) {
-        setWavePoint(value.asInt32());
+        //setWavePoint(value.asInt32());
+        setGeneratorPoint(value.asInt32());
     } else if(attribute_name.compare("test_in_out") == 0) {
         LAPP_ << "bidirectional attribute as input with value " << value.asInt32();
     }
     return true;
+}
+
+int RTWorkerCU::initGenerator() {
+    DrvMsg cmd;
+    cmd.opcode = OP_INIT_SIMULATION;
+    cmd.resultData = &generation_data;
+    driver->send(&cmd);
+    return cmd.ret;
+}
+
+int RTWorkerCU::setGeneratorPoint(int32_t points) {
+    DrvMsg cmd;
+    cmd.opcode = OP_SET_POINTS;
+    cmd.inputData = generation_data;
+    
+    generation_data->points = points;
+    
+    driver->send(&cmd);
+    if(cmd.ret == 0) {
+        getAttributeCache()->setOutputAttributeNewSize(0, generation_data->points * sizeof(double));
+    }
+    return cmd.ret;
+}
+
+int RTWorkerCU::generateWave() {
+    DrvMsg cmd;
+    cmd.opcode = OP_STEP_SIMULATION;
+    cmd.inputData = generation_data;
+    ChaosSharedPtr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+    r_lock->lock();
+    
+    generation_data->parameter[freq] = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
+    generation_data->parameter[bias] = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "bias");
+    generation_data->parameter[gain] = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain");
+    generation_data->parameter[phase] = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "phase");
+    generation_data->parameter[gainNoise] = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "gain_noise");
+    driver->send(&cmd);
+    if(cmd.ret == 0) {
+        double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
+        std::memcpy(cached_sin_value, generation_data->data, sizeof(double)*generation_data->points);
+    }
+    return cmd.ret;
+}
+
+int RTWorkerCU::purgeGenerator() {
+    DrvMsg cmd;
+    cmd.opcode = OP_DESTROY_SIMULATION;
+    cmd.inputData = generation_data;
+    driver->send(&cmd);
+    if(cmd.ret == 0) {
+        generation_data = NULL;
+    }
+    return cmd.ret;
 }

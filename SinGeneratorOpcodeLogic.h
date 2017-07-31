@@ -28,9 +28,10 @@
 class SinGeneratorOpcodeLogic:
 public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
 protected:
-    void initSimulation(int simulation_id, SinGeneratorData **data);
+    void initSimulation(SinGeneratorData **data);
     void setSimulationsPoints(SinGeneratorData *sin_data);
     void computeSimulation(SinGeneratorData *sin_data);
+    void destroySimulation(SinGeneratorData *sin_data);
 public:
     SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::AbstractRemoteIODriver *_remote_driver);
     ~SinGeneratorOpcodeLogic();

@@ -20,6 +20,8 @@
 #ifndef ChaosFramework_RTWorkerCU_h
 #define ChaosFramework_RTWorkerCU_h
 
+#include "SinGeneratorTypes.h"
+
 #include <string>
 #include <boost/random.hpp>
 #include <boost/chrono.hpp>
@@ -67,6 +69,9 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     //! need to pass befor the exception can be thrown.
     unsigned int crash_run_count;
     bool crasch_occured;
+    
+    chaos::cu::driver_manager::driver::DriverAccessor *  driver;
+    SinGeneratorData *generation_data;
 public:
     /*
      Construct a new CU with an identifier
@@ -140,7 +145,12 @@ protected:
     
     bool variantHandler(const std::string& attribute_name,
                         const chaos::common::data::CDataVariant& value);
-
+    
+private:
+    int initGenerator();
+    int setGeneratorPoint(int32_t points);
+    int generateWave();
+    int purgeGenerator();
 };
 
 #endif
