@@ -23,20 +23,27 @@
 #define __ExampleControlUnit__DAB3EB0_DEBD_47DC_8DB8_05E1E8BB501E_SinGeneratorOpcodeLogic_h
 
 #include "SinGeneratorTypes.h"
+
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeExternalCommandMapper.h>
 
 class SinGeneratorOpcodeLogic:
 public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
+    typedef std::map<int, ChaosSharedPtr<SinGeneratorData> > SinGenMap;
+    typedef std::pair<int, ChaosSharedPtr<SinGeneratorData> > SinGenMapPair;
+    CHAOS_DEFINE_LOCKABLE_OBJECT(SinGenMap, LSinGenMap)
+    
+    LSinGenMap generator_map;
 protected:
-    void initSimulation(SinGeneratorData **data);
-    void setSimulationsPoints(SinGeneratorData *sin_data);
-    void computeSimulation(SinGeneratorData *sin_data);
-    void destroySimulation(SinGeneratorData *sin_data);
+    int initSimulation(SinGeneratorData **data);
+    int setSimulationsPoints(SinGeneratorData *sin_data);
+    int computeSimulation(SinGeneratorData *sin_data);
+    int destroySimulation(SinGeneratorData *sin_data);
 public:
     SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::AbstractRemoteIODriver *_remote_driver);
     ~SinGeneratorOpcodeLogic();
     
     chaos::cu::driver_manager::driver::MsgManagmentResultType::MsgManagmentResult execOpcode(chaos::cu::driver_manager::driver::DrvMsgPtr cmd);
+    int asyncMessageReceived(chaos::common::data::CDWUniquePtr message);
 };
 
 #endif /* __ExampleControlUnit__DAB3EB0_DEBD_47DC_8DB8_05E1E8BB501E_SinGeneratoOpcodeLogic_h */

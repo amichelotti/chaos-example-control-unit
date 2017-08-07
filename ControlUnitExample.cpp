@@ -67,6 +67,7 @@ int main (int argc, char* argv[] )
         MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorDriver)
         MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteDriver)
         cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorDriverInstancer, SinGeneratorDriverInspector);
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorRemoteDriverInstancer, SinGeneratorRemoteDriverInspector);
         //! [Driver Registration]
         
         //! [CUTOOLKIT Init]

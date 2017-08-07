@@ -21,26 +21,54 @@
 
 #include "SinGeneratorOpcodeLogic.h"
 
+#include <chaos/common/global.h>
+
+#define INFO INFO_LOG(SinGeneratorOpcodeLogic)
+#define ERR ERR_LOG(SinGeneratorOpcodeLogic)
+#define DBG DBG_LOG(SinGeneratorOpcodeLogic)
+
+using namespace chaos::common::data;
 using namespace chaos::cu::driver_manager::driver;
 SinGeneratorOpcodeLogic::SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::AbstractRemoteIODriver *_remote_driver):
-OpcodeExternalCommandMapper(_remote_driver){}
+OpcodeExternalCommandMapper(_remote_driver){
+    //permit only one connection to the driver
+    setNumberOfMaxConnection(1);
+}
 
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
-void SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
-
+int SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
+    CDWUniquePtr request(new CDataWrapper());
+    CDWShrdPtr response;
+    request->addInt32Value("opcode", OP_INIT_SIMULATION);
+    if(sendRawRequest(ChaosMoveOperator(request),
+                      response)) {
+        ERR << "error receiving initilization response from remote server";
+        return -1;
+    } else if(response->hasKey("gen_id") == false){
+        return -2;
+    } else {
+        ChaosSharedPtr<SinGeneratorData> new_generator(new SinGeneratorData());
+        new_generator->gen_id = response->getInt32Value("gen_id");
+        generator_map().insert(SinGenMapPair(new_generator->gen_id, new_generator));
+    }
+    return 0;
 }
 
-void SinGeneratorOpcodeLogic::setSimulationsPoints(SinGeneratorData *sin_data) {
-    
+int SinGeneratorOpcodeLogic::setSimulationsPoints(SinGeneratorData *sin_data) {
+    return 0;
 }
 
-void SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
-    
+int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
+    return 0;
 }
 
-void SinGeneratorOpcodeLogic::destroySimulation(SinGeneratorData *sin_data) {
-    
+int SinGeneratorOpcodeLogic::destroySimulation(SinGeneratorData *sin_data) {
+    return 0;
+}
+
+int SinGeneratorOpcodeLogic::asyncMessageReceived(CDWUniquePtr message) {
+    return 0;
 }
 
 //! Execute a command
@@ -48,23 +76,22 @@ MsgManagmentResultType::MsgManagmentResult SinGeneratorOpcodeLogic::execOpcode(D
     MsgManagmentResultType::MsgManagmentResult result = MsgManagmentResultType::MMR_EXECUTED;
     switch(cmd->opcode) {
         case OP_INIT_SIMULATION: {
-            SinGeneratorData *user_sin_data = static_cast<SinGeneratorData*>(cmd->resultData);
-            initSimulation(&user_sin_data);
+            cmd->ret = initSimulation(static_cast<SinGeneratorData**>(cmd->resultData));
             break;
         }
             
         case OP_SET_POINTS: {
-            setSimulationsPoints(static_cast<SinGeneratorData*>(cmd->inputData));
+            cmd->ret = setSimulationsPoints(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
             
         case OP_STEP_SIMULATION: {
-            computeSimulation(static_cast<SinGeneratorData*>(cmd->inputData));
+            cmd->ret = computeSimulation(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
             
         case OP_DESTROY_SIMULATION: {
-            destroySimulation(static_cast<SinGeneratorData*>(cmd->inputData));
+            cmd->ret = destroySimulation(static_cast<SinGeneratorData*>(cmd->inputData));
             break;
         }
     }

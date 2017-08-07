@@ -65,7 +65,8 @@ out_run_counter(NULL),
 crash_run_count(0),
 crasch_occured(false),
 driver(NULL),
-generation_data(NULL){
+generation_data(NULL),
+crash_location(-1){
     if(getCUParam().size()>0) {
         //scan json option
         Json::Reader    json_reader;
