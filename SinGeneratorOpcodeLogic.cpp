@@ -48,7 +48,7 @@ int SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
     } else if(response->hasKey("gen_id") == false){
         return -2;
     } else {
-        ChaosSharedPtr<SinGeneratorData> new_generator(new SinGeneratorData());
+        ChaosSharedPtr<SinGeneratorData> new_generator(*data = new SinGeneratorData());
         new_generator->gen_id = response->getInt32Value("gen_id");
         generator_map().insert(SinGenMapPair(new_generator->gen_id, new_generator));
     }

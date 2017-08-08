@@ -116,16 +116,19 @@ int executeWork(RawDriverUnitProxy& proxy) {
 
 int manageRemoteMessage(RawDriverUnitProxy& proxy) {
     RemoteMessageUniquePtr remote_message;
+    DataPackUniquePtr remote_req_resp;
     while(proxy.hasMoreMessage()) {
         remote_message = proxy.getNextMessage();
-        if(!remote_message->message->hasKey("opcode") ||
-           !remote_message->message->isInt32("opcode")) {
-            std::cerr << "mesage/request has't the opcode" << std::endl;
+        if(remote_message->is_request &&
+           remote_message->request_message.get()){
+            remote_req_resp = consumeMessage(remote_message->request_message);
+            proxy.sendAnswer(remote_message, remote_req_resp);
+        } else if(remote_message->isError() == false){
+            remote_req_resp = consumeMessage(remote_message->message);
         } else {
-            DataPackUniquePtr response = consumeMessage(remote_message->message);
-            if(remote_message->is_request) {
-                proxy.sendAnswer(remote_message, response);
-            }
+            std::cerr << "[Remote Error]\nCode:"<<remote_message->getErrorCode()<<
+            "\nError Message:"<<remote_message->getErrorMessage()<<
+            "\nError Domain:"<<remote_message->getErrorDomain();
         }
     }
     return 0;
