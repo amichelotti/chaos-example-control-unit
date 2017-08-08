@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3200EF671F39A4B7002B5115 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3200EF661F39A4B7002B5115 /* main.cpp */; };
 		320762E3182D06C5005B21A7 /* TestCorrelatingCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 320762E1182D06C5005B21A7 /* TestCorrelatingCommand.cpp */; };
 		3214A4191E38DE3200184C9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3214A4181E38DE3200184C9D /* main.cpp */; };
 		321B9F2617B24D650070D32D /* SinGeneratorDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 321B9F2417B24D650070D32D /* SinGeneratorDriver.cpp */; };
@@ -23,6 +24,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		3200EF621F39A4B7002B5115 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		3214A4141E38DE3200184C9D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -44,6 +54,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3200EF641F39A4B7002B5115 /* SinGeneratorExternalDriver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SinGeneratorExternalDriver; sourceTree = BUILT_PRODUCTS_DIR; };
+		3200EF661F39A4B7002B5115 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		320762E1182D06C5005B21A7 /* TestCorrelatingCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCorrelatingCommand.cpp; sourceTree = SOURCE_ROOT; };
 		320762E2182D06C5005B21A7 /* TestCorrelatingCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCorrelatingCommand.h; sourceTree = SOURCE_ROOT; };
 		3214A4161E38DE3200184C9D /* ProxyControlUnit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ProxyControlUnit; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,6 +86,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3200EF611F39A4B7002B5115 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3214A4131E38DE3200184C9D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -105,6 +124,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3200EF651F39A4B7002B5115 /* SinGeneratorExternalDriver */ = {
+			isa = PBXGroup;
+			children = (
+				3200EF661F39A4B7002B5115 /* main.cpp */,
+			);
+			path = SinGeneratorExternalDriver;
+			sourceTree = "<group>";
+		};
 		3214A4171E38DE3200184C9D /* ProxyControlUnit */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +148,7 @@
 				32862AD7190A531500A7DE63 /* StressRpcTest */,
 				3214A4171E38DE3200184C9D /* ProxyControlUnit */,
 				32FC563C1EE9A3D900C19841 /* EUApiTestPlugin */,
+				3200EF651F39A4B7002B5115 /* SinGeneratorExternalDriver */,
 				326027B914B30A2400C906CE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -132,6 +160,7 @@
 				32862AD6190A531500A7DE63 /* StressRpcTest */,
 				3214A4161E38DE3200184C9D /* ProxyControlUnit */,
 				32FC563B1EE9A3D900C19841 /* EUApiTestPlugin.chaos_extension */,
+				3200EF641F39A4B7002B5115 /* SinGeneratorExternalDriver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,6 +221,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		3200EF631F39A4B7002B5115 /* SinGeneratorExternalDriver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3200EF6A1F39A4B7002B5115 /* Build configuration list for PBXNativeTarget "SinGeneratorExternalDriver" */;
+			buildPhases = (
+				3200EF601F39A4B7002B5115 /* Sources */,
+				3200EF611F39A4B7002B5115 /* Frameworks */,
+				3200EF621F39A4B7002B5115 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SinGeneratorExternalDriver;
+			productName = SinGeneratorExternalDriver;
+			productReference = 3200EF641F39A4B7002B5115 /* SinGeneratorExternalDriver */;
+			productType = "com.apple.product-type.tool";
+		};
 		3214A4151E38DE3200184C9D /* ProxyControlUnit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3214A41C1E38DE3200184C9D /* Build configuration list for PBXNativeTarget "ProxyControlUnit" */;
@@ -268,6 +314,11 @@
 				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = INFN;
 				TargetAttributes = {
+					3200EF631F39A4B7002B5115 = {
+						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = ZZ5BMKV37Y;
+						ProvisioningStyle = Automatic;
+					};
 					3214A4151E38DE3200184C9D = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = ZZ5BMKV37Y;
@@ -296,11 +347,20 @@
 				3214A4151E38DE3200184C9D /* ProxyControlUnit */,
 				32862AD5190A531500A7DE63 /* StressRpcTest */,
 				32FC563A1EE9A3D900C19841 /* EUApiTestPlugin */,
+				3200EF631F39A4B7002B5115 /* SinGeneratorExternalDriver */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3200EF601F39A4B7002B5115 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3200EF671F39A4B7002B5115 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3214A4121E38DE3200184C9D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -344,6 +404,101 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		3200EF681F39A4B7002B5115 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ZZ5BMKV37Y;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../usr/local/include;
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-lchaos_micro_unit_toolkit";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3200EF691F39A4B7002B5115 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ZZ5BMKV37Y;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../usr/local/include;
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../usr/local/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-lchaos_micro_unit_toolkit";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		3214A41A1E38DE3200184C9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -741,6 +896,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3200EF6A1F39A4B7002B5115 /* Build configuration list for PBXNativeTarget "SinGeneratorExternalDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3200EF681F39A4B7002B5115 /* Debug */,
+				3200EF691F39A4B7002B5115 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		3214A41C1E38DE3200184C9D /* Build configuration list for PBXNativeTarget "ProxyControlUnit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

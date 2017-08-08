@@ -2,15 +2,18 @@ cmake_minimum_required(VERSION 2.8)
 IF ( NOT CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../../usr/local)
 ENDIF()
-include(${CMAKE_SOURCE_DIR}/../../chaosframework/config/CMakeChaos.txt)
-
+#include(${CMAKE_SOURCE_DIR}/../../chaosframework/config/CMakeChaos.txt)
+INCLUDE_DIRECTORIES(../../)
 SET(cutest_exe_src ControlUnitExample.cpp RTWorkerCU.cpp SCWorkerCU.cpp SinWaveCommand.cpp TestCorrelatingCommand.cpp TestSetOnly.cpp SinGeneratorDriver.cpp SinGeneratorRemoteDriver.cpp)
 SET(roc_test_stress_exe_src StressRpcTest/main.cpp)
 SET(eu_api_plugin_example_src EUApiTestPlugin/EUApiTestPlugin.cpp)
+SET(sin_gen_ext_drv SinGeneratorExternalDriver/main.cpp)
 
 
 ADD_EXECUTABLE(ExampleControlUnit ${cutest_exe_src})
 ADD_EXECUTABLE(RpcTestStress ${roc_test_stress_exe_src})
+ADD_EXECUTABLE(SinGeneratorExternalDriver ${sin_gen_ext_drv})
+
 ADD_LIBRARY(EUApiTestPlugin SHARED ${eu_api_plugin_example_src})
 set_target_properties(EUApiTestPlugin PROPERTIES PREFIX "" SUFFIX ".chaos_extension")
 
@@ -23,6 +26,8 @@ ENDIF()
 TARGET_LINK_LIBRARIES(ExampleControlUnit pthread chaos_cutoolkit chaos_common ${FrameworkLib})
 TARGET_LINK_LIBRARIES(RpcTestStress pthread chaos_uitoolkit chaos_common ${FrameworkLib})
 TARGET_LINK_LIBRARIES(EUApiTestPlugin)
+TARGET_LINK_LIBRARIES(SinGeneratorExternalDriver pthread chaos_micro_unit_toolkit)
 
 INSTALL_TARGETS(/bin ExampleControlUnit)
+INSTALL_TARGETS(/bin SinGeneratorExternalDriver)
 INSTALL_TARGETS(/bin RpcTestStress)
