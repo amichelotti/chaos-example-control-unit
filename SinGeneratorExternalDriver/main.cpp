@@ -7,7 +7,11 @@
 //
 
 #include <iostream>
+
 #include <chaos_micro_unit_toolkit/micro_unit_toolkit.h>
+
+#include <boost/random.hpp>
+#include <boost/atomic.hpp>
 
 using namespace chaos::micro_unit_toolkit;
 using namespace chaos::micro_unit_toolkit::data;
@@ -18,8 +22,22 @@ using namespace chaos::micro_unit_toolkit::connection::protocol_adapter;
 
 int event_handler(void *user_data, unsigned int event, void *event_data);
 
+#define points "points"
+#define freq "freq"
+#define bias "bias"
+#define gain "gain"
+#define gainNoise "gainNoise"
+#define phase "phase"
+
+long double PI = acos((long double) -1);
+
+boost::mt19937 rng((const uint_fast32_t) time(0));
+boost::uniform_int<> one_to_hundred( -100, 100 );
+boost::variate_generator< boost::mt19937, boost::uniform_int<> > randInt(rng, one_to_hundred);
+
 int main(int argc, const char * argv[]) {
     int err = 0;
+    srand((unsigned)time(0));
     ChaosMicroUnitToolkit mut;
     const char *option="Content-Type: application/bson-json\r\n";
     ChaosUniquePtr<RawDriverHandlerWrapper> hw = mut.createNewRawDriverHandlerWrapper(ProtocolTypeHTTP,
@@ -30,7 +48,7 @@ int main(int argc, const char * argv[]) {
                                                                                       "work");
     
     while (err == 0) {
-        err = hw->poll(100);
+        err = hw->poll(10);
     }
     std::cout << "Exti with code" << err;
     return err?EXIT_FAILURE:EXIT_SUCCESS;
@@ -40,8 +58,8 @@ int event_handler(void *user_data, unsigned int event, void *event_data) {
     int err = 0;
     switch(event){
         case UP_EV_USR_ACTION:{
-            std::cout << "UP_EV_USR_ACTION" << std::endl;
-            sleep(1);
+            //std::cout << "UP_EV_USR_ACTION" << std::endl;
+            usleep(100000);
             break;
         }
         case UP_EV_CONN_CONNECTED:{
@@ -85,10 +103,36 @@ int event_handler(void *user_data, unsigned int event, void *event_data) {
             UPRequest *req = static_cast<UPRequest*>(event_data);
             switch (req->message->getInt32("opcode")) {
                 case 0:
-                    std::cout << "OPCODE 0 - Create new generation id" << std::endl;
-                    req->response->addInt32("gen_id", 0);
+                    //unused
+                    break;
+                case 1:
+                    //unuseda
+                    break;
+                 
+                case 2:
+                    //unused
                     break;
                     
+                case 3: {
+                    req->response->addInt32("opcode_err", 0);
+                    const uint32_t _points = (uint32_t)req->message->getInt32(points);
+                    const double _freq = req->message->getDouble(freq);
+                    const double _gain = req->message->getDouble(gain);
+                    const double _gainNoise = req->message->getDouble(gainNoise);
+                    const double _bias = req->message->getDouble(bias);
+                    const double _phase = req->message->getDouble(phase);
+                    double sin_points[_points];
+                    double interval = (2*PI)/(_points);
+                    for(int i=0; i<_points; i++){
+                        double sin_point = sin((interval*i*_freq) + _phase);
+                        double sin_point_rumor = (((double)randInt()/(double)100) * _gainNoise);
+                        sin_points[i] = (_gain * sin_point) + sin_point_rumor + _bias;
+                    }
+                    req->response->addBinary("sin_wave",
+                                             reinterpret_cast<const char *>(sin_points),
+                                             _points*sizeof(double));
+                    break;
+                }
                 default:
                     break;
             }

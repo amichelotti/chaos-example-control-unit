@@ -31,7 +31,7 @@ public chaos::cu::driver_manager::driver::OpcodeExternalCommandMapper {
     typedef std::map<int, ChaosSharedPtr<SinGeneratorData> > SinGenMap;
     typedef std::pair<int, ChaosSharedPtr<SinGeneratorData> > SinGenMapPair;
     CHAOS_DEFINE_LOCKABLE_OBJECT(SinGenMap, LSinGenMap)
-    
+    unsigned int counter;
     LSinGenMap generator_map;
 protected:
     int initSimulation(SinGeneratorData **data);
