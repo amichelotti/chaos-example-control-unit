@@ -28,10 +28,5 @@
 DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(SinGeneratorRemoteDriver)
 
 class SinGeneratorRemoteDriver:
-public chaos::cu::driver_manager::driver::TemplatedRemoteIODriver<SinGeneratorOpcodeLogic> {
-protected:
-    int asyncMessageReceived(chaos::common::data::CDWUniquePtr message) {
-        
-    }
-};
+public chaos::cu::driver_manager::driver::TemplatedRemoteIODriver<SinGeneratorOpcodeLogic> {};
 #endif /* __ExampleControlUnit__D6576ED_8DAA_4864_8638_2636B614F9F5_SinGeneratorRemoteDriver_h */

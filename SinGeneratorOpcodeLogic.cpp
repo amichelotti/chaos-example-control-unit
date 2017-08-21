@@ -89,7 +89,6 @@ int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
         int opcode_err = response->getInt32Value("opcode_err");
         if(opcode_err) return opcode_err;
         std::string bin_wave = bson::base64::decode(response->getStringValue("sin_wave"));
-        int size = bin_wave.size();
         std::memcpy(sin_data->data, bin_wave.c_str(), sin_data->points*sizeof(double));
     }
     return 0;

@@ -12,6 +12,7 @@
 
 #include <boost/random.hpp>
 #include <boost/atomic.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace chaos::micro_unit_toolkit;
 using namespace chaos::micro_unit_toolkit::data;
@@ -28,6 +29,9 @@ int event_handler(void *user_data, unsigned int event, void *event_data);
 #define gain "gain"
 #define gainNoise "gainNoise"
 #define phase "phase"
+
+uint64_t last_auto_push_ts = 0;
+const boost::posix_time::ptime EPOCH(boost::gregorian::date(1970,1,1));
 
 long double PI = acos((long double) -1);
 
@@ -54,12 +58,21 @@ int main(int argc, const char * argv[]) {
     return err?EXIT_FAILURE:EXIT_SUCCESS;
 }
 
-int event_handler(void *user_data, unsigned int event, void *event_data) {
+int event_handler(void *user_data,
+                  unsigned int event,
+                  void *event_data) {
     int err = 0;
     switch(event){
         case UP_EV_USR_ACTION:{
-            //std::cout << "UP_EV_USR_ACTION" << std::endl;
-            usleep(100000);
+            uint64_t curr_msec = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
+            if((curr_msec-last_auto_push_ts)>10000) {
+                //push new data automatically
+                RawDriverHandlerWrapper *pi = static_cast<RawDriverHandlerWrapper*>(event_data);
+                DataPackUniquePtr message(new DataPack());
+                message->addString("key", "async messages");
+                pi->sendMessage(message);
+                last_auto_push_ts = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
+            }
             break;
         }
         case UP_EV_CONN_CONNECTED:{
@@ -80,6 +93,8 @@ int event_handler(void *user_data, unsigned int event, void *event_data) {
         }
         case UP_EV_CONN_ACCEPTED:{
             std::cout << "UP_EV_CONN_ACCEPT" << std::endl;
+            //set te start base ts for push
+            last_auto_push_ts = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
             break;
         }
         case UP_EV_CONN_REJECTED:{
