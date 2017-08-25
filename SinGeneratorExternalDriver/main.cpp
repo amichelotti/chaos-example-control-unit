@@ -52,7 +52,7 @@ int main(int argc, const char * argv[]) {
                                                                                       "work");
     
     while (err == 0) {
-        err = hw->poll(10);
+        err = hw->poll(1);
     }
     std::cout << "Exti with code" << err;
     return err?EXIT_FAILURE:EXIT_SUCCESS;
@@ -65,7 +65,7 @@ int event_handler(void *user_data,
     switch(event){
         case UP_EV_USR_ACTION:{
             uint64_t curr_msec = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
-            if((curr_msec-last_auto_push_ts)>10000) {
+            if((curr_msec-last_auto_push_ts)>100) {
                 //push new data automatically
                 RawDriverHandlerWrapper *pi = static_cast<RawDriverHandlerWrapper*>(event_data);
                 DataPackUniquePtr message(new DataPack());
