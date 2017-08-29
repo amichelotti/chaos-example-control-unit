@@ -19,7 +19,7 @@ using namespace chaos::micro_unit_toolkit::data;
 using namespace chaos::micro_unit_toolkit::connection;
 using namespace chaos::micro_unit_toolkit::connection::unit_proxy;
 using namespace chaos::micro_unit_toolkit::connection::unit_proxy::raw_driver;
-using namespace chaos::micro_unit_toolkit::connection::protocol_adapter;
+using namespace chaos::micro_unit_toolkit::connection::connection_adapter;
 
 int event_handler(void *user_data, unsigned int event, void *event_data);
 
@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
     srand((unsigned)time(0));
     ChaosMicroUnitToolkit mut;
     const char *option="Content-Type: application/bson-json\r\n";
-    ChaosUniquePtr<RawDriverHandlerWrapper> hw = mut.createNewRawDriverHandlerWrapper(ProtocolTypeHTTP,
+    ChaosUniquePtr<RawDriverHandlerWrapper> hw = mut.createNewRawDriverHandlerWrapper(ConnectionTypeHTTP,
                                                                                       "ws://localhost:8080/io_driver",
                                                                                       option,
                                                                                       event_handler,
@@ -65,7 +65,7 @@ int event_handler(void *user_data,
     switch(event){
         case UP_EV_USR_ACTION:{
             uint64_t curr_msec = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
-            if((curr_msec-last_auto_push_ts)>100) {
+            if((curr_msec-last_auto_push_ts)>1000) {
                 //push new data automatically
                 RawDriverHandlerWrapper *pi = static_cast<RawDriverHandlerWrapper*>(event_data);
                 DataPackUniquePtr message(new DataPack());
