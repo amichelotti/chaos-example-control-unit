@@ -51,5 +51,5 @@ uint8_t TestSetOnly::implementedHandler() {
 // Start the command execution
 void TestSetOnly::setHandler(CDataWrapper *data) {
     CMDCU_ << "Empty set command for test only";
-    BC_END_RUNNIG_PROPERTY
+    BC_END_RUNNING_PROPERTY
 }

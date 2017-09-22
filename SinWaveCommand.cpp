@@ -27,6 +27,8 @@ using namespace chaos;
 
 using namespace chaos::common::data;
 
+using namespace chaos::cu::control_manager;
+
 using namespace chaos::common::batch_command;
 
 BATCH_COMMAND_OPEN_DESCRIPTION(,
@@ -41,7 +43,7 @@ one_to_hundred( -100, 100 ),
 randInt(rng, one_to_hundred) {
     //boost::shared_ptr<chaos::common::data::CDataWrapper>  a = BATCH_COMMAND_GET_DESCRIPTION(SinWaveCommand);
     //set default scheduler delay 50 milliseconds, the delay is expressed in microseconds
-
+    
 }
 
 SinWaveCommand::~SinWaveCommand() {
@@ -83,6 +85,8 @@ void SinWaveCommand::setHandler(CDataWrapper *data) {
  \return the mask for the runnign state
  */
 void SinWaveCommand::acquireHandler() {
+    bool tmp_value = false;
+    
     double *cached_sin_value = getAttributeCache()->getRWPtr<double>(DOMAIN_OUTPUT, "sin_wave");
     uint64_t *cached_run_counter = getAttributeCache()->getRWPtr<uint64_t>(DOMAIN_OUTPUT, "run_counter");
     double cached_frequency = getAttributeCache()->getValue<double>(DOMAIN_INPUT, "frequency");
@@ -113,23 +117,23 @@ void SinWaveCommand::ccHandler() {
         lastStartTime = getStartStepTime();
         if(!cached_quit) {
             switch (SlowCommand::getRunningProperty()) {
-                case RunningPropertyType::RP_Exsc:
-                    BC_NORMAL_RUNNIG_PROPERTY
-                    CMDCU_ << "Change to SL_NORMAL_RUNNIG_STATE";
+                case RunningPropertyType::RP_EXSC:
+                    BC_NORMAL_RUNNING_PROPERTY
+                    CMDCU_ << "Change to SL_NORMAL_RUNNING_STATE";
                     break;
-                case RunningPropertyType::RP_Normal:
-                    BC_EXEC_RUNNIG_PROPERTY
-                    CMDCU_ << "Change to SL_EXEC_RUNNIG_STATE";
+                case RunningPropertyType::RP_NORMAL:
+                    BC_EXCLUSIVE_RUNNING_PROPERTY
+                    CMDCU_ << "Change to SL_EXEC_RUNNING_STATE";
                     break;
             }
         } else {
-            BC_END_RUNNIG_PROPERTY;
+            BC_END_RUNNING_PROPERTY;
         }
     }
     
     //check if some parameter has changed every 100 msec
     if(timeDiff > 100) {
-        boost::shared_ptr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
+        ChaosSharedPtr<SharedCacheLockDomain> r_lock = getAttributeCache()->getReadLockOnInputAttributeCache();
         r_lock->lock();
         
         std::vector<VariableIndexType> changed_input_attribute;

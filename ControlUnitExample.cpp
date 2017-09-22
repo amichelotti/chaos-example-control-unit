@@ -20,8 +20,10 @@
 
 #include "RTWorkerCU.h"
 #include "SCWorkerCU.h"
-#include "DummyDriver.h"
+#include "SinGeneratorDriver.h"
+#include "SinGeneratorRemoteDriver.h"
 
+#include <chaos/common/chaos_types.h>
 #include <chaos/common/chaos_constants.h>
 #include <chaos/cu_toolkit/ChaosCUToolkit.h>
 
@@ -59,30 +61,26 @@ namespace cu_driver_manager = chaos::cu::driver_manager;
 
 int main (int argc, char* argv[] )
 {
-	std::vector<string> tmp_device_id;
+    std::vector<string> tmp_device_id;
     try {
-		//! [Driver Registration]
-		MATERIALIZE_INSTANCE_AND_INSPECTOR(DummyDriver)
-		cu_driver_manager::DriverManager::getInstance()->registerDriver(DummyDriverInstancer, DummyDriverInspector);
-		//! [Driver Registration]
+        //! [Driver Registration]
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorDriver)
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteDriver)
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorDriverInstancer, SinGeneratorDriverInspector);
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorRemoteDriverInstancer, SinGeneratorRemoteDriverInspector);
+        //! [Driver Registration]
         
-		//! [CUTOOLKIT Init]
-		ChaosCUToolkit::getInstance()->init(argc, argv);
-		//! [CUTOOLKIT Init]
-		
-		//register control unit into server
-		ChaosCUToolkit::getInstance()->registerControlUnit<RTWorkerCU>();
-		ChaosCUToolkit::getInstance()->registerControlUnit<SCWorkerCU>();
-        /*const string _control_unit_id = "STANDALONE_RT_SIN_CU";
-        const string _control_unit_param;
-        RTWorkerCU::ControlUnitDriverList _control_unit_drivers;
-        ChaosCUToolkit::getInstance()->addControlUnit(new RTWorkerCU(_control_unit_id,
-                                                                     _control_unit_param,
-                                                                     _control_unit_drivers));*/
+        //! [CUTOOLKIT Init]
+        ChaosCUToolkit::getInstance()->init(argc, argv);
+        //! [CUTOOLKIT Init]
         
-		//! [Starting the Framework]
-		ChaosCUToolkit::getInstance()->start();
-		//! [Starting the Framework]
+        //register control unit into server
+        ChaosCUToolkit::getInstance()->registerControlUnit<RTWorkerCU>();
+        ChaosCUToolkit::getInstance()->registerControlUnit<SCWorkerCU>();
+        
+        //! [Starting the Framework]
+        ChaosCUToolkit::getInstance()->start();
+        //! [Starting the Framework]
     } catch (CException& e) {
         cerr<<"Exception::"<<endl;
         std::cerr<< "in:"<<e.errorDomain << std::endl;
@@ -92,6 +90,7 @@ int main (int argc, char* argv[] )
     } catch (...){
         cerr << "unexpected exception caught.. " << endl;
     }
-	
+    
     return 0;
 }
+

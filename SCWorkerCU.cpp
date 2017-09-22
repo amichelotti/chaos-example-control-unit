@@ -14,8 +14,10 @@
 
 using namespace chaos::common::data;
 
-using namespace chaos::common::batch_command;
 using namespace chaos::common::data::cache;
+using namespace chaos::common::batch_command;
+
+using namespace chaos::cu::control_manager;
 using namespace chaos::cu::control_manager::slow_command;
 using namespace chaos::cu::driver_manager::driver;
 
@@ -96,6 +98,13 @@ void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
                           DataType::TYPE_DOUBLE,
                           DataType::Input);
     
+    addStateVariable(StateVariableTypeAlarmCU,
+                     "hardware_failure",
+                     "Notify when value to reach has not been reached");
+    
+    addStateVariable(StateVariableTypeAlarmDEV,
+                     "out_of_set",
+                     "Notify when value to reach has not been reached");
 }
 
 void SCWorkerCU::unitDefineCustomAttribute() {
@@ -127,16 +136,17 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 //! restore the control unit to snapshot
 bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
     uint64_t cmd_id = 0;
+    std::unique_ptr<CommandState> cmd_state;
     if(snapshot_cache &&
-       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand"))) {
-        auto_ptr<CDataWrapper> cmd_pack(snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand")->getValueAsCDatawrapperPtr(true));
+       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand/correlation-message"))) {
+        auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
+        cmd_pack->addStringValue("correlation-message", snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand/correlation-message")->getAsVariant().asString());
+        
         LAPP_ << "corr_test = " << cmd_pack->getJSONString();
         submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
-        
-        std::auto_ptr<CommandState> cmd_state;
         do{
             cmd_state = getStateForCommandID(cmd_id);
-            if(!cmd_state.get()) break;
+            if(!cmd_state) break;
             
             switch (cmd_state->last_event) {
                 case BatchCommandEventType::EVT_QUEUED:
@@ -159,6 +169,11 @@ bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
                     break;
                 case BatchCommandEventType::EVT_FAULT:
                     LAPP_ << cmd_id << " -> FALUT";
+                    break;
+                case BatchCommandEventType::EVT_FATAL_FAULT:
+                    LAPP_ << cmd_id << " -> EVT_FATAL_FAULT";
+                    break;
+                default:
                     break;
             }
             

@@ -20,6 +20,8 @@
 #ifndef ChaosFramework_RTWorkerCU_h
 #define ChaosFramework_RTWorkerCU_h
 
+#include "SinGeneratorTypes.h"
+
 #include <string>
 #include <boost/random.hpp>
 #include <boost/chrono.hpp>
@@ -36,30 +38,7 @@ using namespace chaos::common::data;
 
 class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
 	PUBLISHABLE_CONTROL_UNIT_INTERFACE(RTWorkerCU)
-    typedef boost::mt19937 RNGType; 
-    RNGType rng;
-    uniform_int<> one_to_hundred;    
-    variate_generator< RNGType, uniform_int<> > randInt; 
-    double numberOfResponse;
-    high_resolution_clock::time_point initTime;
-    high_resolution_clock::time_point lastExecutionTime;
-    high_resolution_clock::time_point currentExecutionTime;
-    long double PI;
-    
-    READWRITE_ATTRIBUTE_HANDLE(double) out_sin_value;
     READWRITE_ATTRIBUTE_HANDLE(uint64_t) out_run_counter;
-	int32_t out_sin_value_points;
-	
-	READONLY_ATTRIBUTE_HANDLE(int32_t) in_points;
-	READONLY_ATTRIBUTE_HANDLE(double) in_freq;
-    READONLY_ATTRIBUTE_HANDLE(double) in_gain;
-    READONLY_ATTRIBUTE_HANDLE(double) in_phase;
-    READONLY_ATTRIBUTE_HANDLE(double) in_bias;
-    READONLY_ATTRIBUTE_HANDLE(double) in_gain_noise;
-    
-    boost::mutex pointChangeMutex;
-    int32_t messageID;
-	boost::shared_ptr<chaos::cu::control_manager::SharedCacheLockDomain> r_o_attr_lock;
     
     //!determinate the location of the crash
     int crash_location;
@@ -67,6 +46,9 @@ class RTWorkerCU : public chaos::cu::control_manager::RTAbstractControlUnit {
     //! need to pass befor the exception can be thrown.
     unsigned int crash_run_count;
     bool crasch_occured;
+    
+    chaos::cu::driver_manager::driver::DriverAccessor *  driver;
+    SinGeneratorData *generation_data;
 public:
     /*
      Construct a new CU with an identifier
@@ -77,8 +59,6 @@ public:
      Destructor a new CU with an identifier
      */
     ~RTWorkerCU();
-    
-    inline void setWavePoint(uint32_t new_point_size);
 protected:
     /*
      Define the Control Unit Dataset and Actions
@@ -140,7 +120,12 @@ protected:
     
     bool variantHandler(const std::string& attribute_name,
                         const chaos::common::data::CDataVariant& value);
-
+    
+private:
+    int initGenerator();
+    int setGeneratorPoint(int32_t points);
+    int generateWave();
+    int purgeGenerator();
 };
 
 #endif
