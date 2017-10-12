@@ -136,7 +136,7 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 //! restore the control unit to snapshot
 bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
     uint64_t cmd_id = 0;
-    std::unique_ptr<CommandState> cmd_state;
+    ChaosUniquePtr<CommandState> cmd_state;
     if(snapshot_cache &&
        snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand/correlation-message"))) {
         auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
@@ -146,7 +146,7 @@ bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
         submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
         do{
             cmd_state = getStateForCommandID(cmd_id);
-            if(!cmd_state) break;
+            if(!cmd_state.get()) break;
             
             switch (cmd_state->last_event) {
                 case BatchCommandEventType::EVT_QUEUED:

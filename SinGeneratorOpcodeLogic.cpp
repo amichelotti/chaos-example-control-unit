@@ -29,12 +29,9 @@
 
 using namespace chaos::common::data;
 using namespace chaos::cu::driver_manager::driver;
-SinGeneratorOpcodeLogic::SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::AbstractRemoteIODriver *_remote_driver):
+SinGeneratorOpcodeLogic::SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::RemoteIODriverProtocol *_remote_driver):
 OpcodeExternalCommandMapper(_remote_driver),
-counter(0){
-    //permit only one connection to the driver
-    setNumberOfMaxConnection(1);
-}
+counter(0){}
 
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
@@ -86,6 +83,7 @@ int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
     } else if(response->hasKey("opcode_err") == false){
         return -2;
     } else {
+        INFO << response->getJSONString();
         int opcode_err = response->getInt32Value("opcode_err");
         if(opcode_err) return opcode_err;
         std::string bin_wave = bson::base64::decode(response->getStringValue("sin_wave"));

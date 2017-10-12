@@ -236,7 +236,7 @@ void RTWorkerCU::unitInit() throw(CException) {
     if(crash_location == 1) throw CException(-1, "Test Exception in init phase", __PRETTY_FUNCTION__);
     
     driver = getAccessoInstanceByIndex(0);
-    CHECK_ASSERTION_THROW_AND_LOG((driver != NULL), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Driver has been allcoated for CU %1%", %getCUID()));
+    CHECK_ASSERTION_THROW_AND_LOG((driver != NULL), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Driver has not been allocated for CU %1%", %getCUID()));
     
     CHECK_ASSERTION_THROW_AND_LOG(((err = initGenerator()) == 0), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Error %1% initilizing generator in cu %2%", %err%getCUID()));
 
@@ -298,7 +298,7 @@ void RTWorkerCU::unitDeinit() throw(CException) {
     LAPP_ << "deinit RTWorkerCU";
     if(crash_location == 3) throw CException(-1, "Test Exception in deinit phase", __PRETTY_FUNCTION__);
     
-    purgeGenerator();
+    if(driver){purgeGenerator();}
 }
 
 //! restore the control unit to snapshot

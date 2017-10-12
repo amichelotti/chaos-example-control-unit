@@ -23,7 +23,8 @@
 #define __ExampleControlUnit__DAB3EB0_DEBD_47DC_8DB8_05E1E8BB501E_SinGeneratorOpcodeLogic_h
 
 #include "SinGeneratorTypes.h"
-
+#include <chaos/common/chaos_types.h>
+#include <chaos/common/utility/LockableObject.h>
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeExternalCommandMapper.h>
 
 class SinGeneratorOpcodeLogic:
@@ -39,7 +40,7 @@ protected:
     int computeSimulation(SinGeneratorData *sin_data);
     int destroySimulation(SinGeneratorData *sin_data);
 public:
-    SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::AbstractRemoteIODriver *_remote_driver);
+    SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::RemoteIODriverProtocol *_remote_driver);
     ~SinGeneratorOpcodeLogic();
     
     chaos::cu::driver_manager::driver::MsgManagmentResultType::MsgManagmentResult execOpcode(chaos::cu::driver_manager::driver::DrvMsgPtr cmd);

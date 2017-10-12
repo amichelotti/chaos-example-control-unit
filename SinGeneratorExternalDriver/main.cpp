@@ -64,15 +64,15 @@ int event_handler(void *user_data,
     int err = 0;
     switch(event){
         case UP_EV_USR_ACTION:{
-            uint64_t curr_msec = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
-            if((curr_msec-last_auto_push_ts)>1000) {
-                //push new data automatically
-                RawDriverHandlerWrapper *pi = static_cast<RawDriverHandlerWrapper*>(event_data);
-                DataPackUniquePtr message(new DataPack());
-                message->addString("key", "async messages");
-                pi->sendMessage(message);
-                last_auto_push_ts = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
-            }
+//            uint64_t curr_msec = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
+//            if((curr_msec-last_auto_push_ts)>1000) {
+//                //push new data automatically
+//                RawDriverHandlerWrapper *pi = static_cast<RawDriverHandlerWrapper*>(event_data);
+//                DataPackUniquePtr message(new DataPack());
+//                message->addString("key", "async messages");
+//                pi->sendMessage(message);
+//                last_auto_push_ts = (boost::posix_time::microsec_clock::universal_time()-EPOCH).total_milliseconds();
+//            }
             break;
         }
         case UP_EV_CONN_CONNECTED:{
