@@ -26,8 +26,10 @@
 #include <chaos/cu_toolkit/driver_manager/driver/OpcodeDriverWrapper.h>
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractServerRemoteIODriver.h>
 
-DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(SinGeneratorRemoteDriver)
+//DEFINE_CU_DRIVER_DEFINITION_PROTOTYPE(SinGeneratorRemoteDriver)
 
-class SinGeneratorRemoteDriver:
-public chaos::cu::driver_manager::driver::OpcodeDriverWrapper<SinGeneratorOpcodeLogic, chaos::cu::driver_manager::driver::AbstractServerRemoteIODriver> {};
+//class SinGeneratorRemoteServerDriver:
+//public chaos::cu::driver_manager::driver::OpcodeDriverWrapper<SinGeneratorOpcodeLogic, chaos::cu::driver_manager::driver::AbstractServerRemoteIODriver> {};
+EXTERNAL_CLIENT_SERVER_DRIVER_CLASS_DEFINITION(SinGenerator, SinGeneratorOpcodeLogic);
+
 #endif /* __ExampleControlUnit__D6576ED_8DAA_4864_8638_2636B614F9F5_SinGeneratorRemoteDriver_h */

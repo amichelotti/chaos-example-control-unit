@@ -20,5 +20,9 @@
  */
 
 #include "SinGeneratorRemoteDriver.h"
-OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(SinGeneratorRemoteDriver, 1.0.0, SinGeneratorRemoteDriver)
+
+OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(SinGeneratorRemoteServerDriver, 1.0.0, SinGeneratorRemoteServerDriver)
+CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION
+
+OPEN_CU_DRIVER_PLUGIN_CLASS_DEFINITION(SinGeneratorRemoteClientDriver, 1.0.0, SinGeneratorRemoteClientDriver)
 CLOSE_CU_DRIVER_PLUGIN_CLASS_DEFINITION

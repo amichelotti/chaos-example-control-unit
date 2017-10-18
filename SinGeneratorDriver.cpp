@@ -62,7 +62,6 @@ void SinGeneratorDriver::driverInit(const char *initParameter) throw(chaos::CExc
 
 void SinGeneratorDriver::driverDeinit() throw(chaos::CException) {
     SL7DRVLAPP_ << "Deinit dummy driver";
-    
 }
 
 int SinGeneratorDriver::initSimulation(SinGeneratorData **data) {

@@ -65,9 +65,11 @@ int main (int argc, char* argv[] )
     try {
         //! [Driver Registration]
         MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorDriver)
-        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteDriver)
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteServerDriver)
+        MATERIALIZE_INSTANCE_AND_INSPECTOR(SinGeneratorRemoteClientDriver)
         cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorDriverInstancer, SinGeneratorDriverInspector);
-        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorRemoteDriverInstancer, SinGeneratorRemoteDriverInspector);
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorRemoteServerDriverInstancer,SinGeneratorRemoteServerDriverInspector);
+        cu_driver_manager::DriverManager::getInstance()->registerDriver(SinGeneratorRemoteClientDriverInstancer, SinGeneratorRemoteClientDriverInspector);
         //! [Driver Registration]
         
         //! [CUTOOLKIT Init]
