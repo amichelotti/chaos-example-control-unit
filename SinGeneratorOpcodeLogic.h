@@ -42,7 +42,8 @@ protected:
 public:
     SinGeneratorOpcodeLogic(chaos::cu::driver_manager::driver::RemoteIODriverProtocol *_remote_driver);
     ~SinGeneratorOpcodeLogic();
-    
+    void driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException);
+    void driverDeinit() throw(chaos::CException);
     chaos::cu::driver_manager::driver::MsgManagmentResultType::MsgManagmentResult execOpcode(chaos::cu::driver_manager::driver::DrvMsgPtr cmd);
     int asyncMessageReceived(chaos::common::data::CDWUniquePtr message);
 };

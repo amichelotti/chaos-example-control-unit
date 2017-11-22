@@ -22,7 +22,7 @@
 #include "SinGeneratorOpcodeLogic.h"
 
 #include <chaos/common/global.h>
-#include <chaos/common/bson/util/base64.h>
+#include <chaos/common/additional_lib/base64.h>
 #define INFO INFO_LOG(SinGeneratorOpcodeLogic)
 #define ERR ERR_LOG(SinGeneratorOpcodeLogic)
 #define DBG DBG_LOG(SinGeneratorOpcodeLogic)
@@ -35,9 +35,17 @@ counter(0){}
 
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
+void SinGeneratorOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException) {
+    INFO << init_parameter.getJSONString();
+}
+
+void SinGeneratorOpcodeLogic::driverDeinit() throw(chaos::CException) {
+    
+}
+
 int SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
     LSinGenMapWriteLock wl = generator_map.getWriteLockObject();
-
+    
     ChaosSharedPtr<SinGeneratorData> new_generator(*data = new SinGeneratorData());
     std::memset(new_generator.get(), 0, sizeof(SinGeneratorData));
     new_generator->gen_id = counter++;
@@ -83,11 +91,11 @@ int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
     } else if(response->hasKey("opcode_err") == false){
         return -2;
     } else {
-        INFO << response->getJSONString();
         int opcode_err = response->getInt32Value("opcode_err");
         if(opcode_err) return opcode_err;
-        std::string bin_wave = bson::base64::decode(response->getStringValue("sin_wave"));
-        std::memcpy(sin_data->data, bin_wave.c_str(), sin_data->points*sizeof(double));
+        uint32_t bin_size = 0;
+        const char * bin_value = response->getBinaryValue("sin_wave", bin_size);
+        std::memcpy(sin_data->data, bin_value, bin_size);
     }
     return 0;
 }

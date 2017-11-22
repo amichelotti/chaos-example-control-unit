@@ -218,6 +218,9 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
     addVariantHandlerOnInputAttributeName<RTWorkerCU>(this,
                                                       &RTWorkerCU::variantHandler,
                                                       "test_in_out");
+    
+//    char * tmp = NULL;
+//    memset(tmp, 0, 65000);
 }
 
 void RTWorkerCU::unitDefineCustomAttribute() {
