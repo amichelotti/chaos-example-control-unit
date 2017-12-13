@@ -72,6 +72,7 @@ int SinGeneratorOpcodeLogic::setSimulationsPoints(SinGeneratorData *sin_data) {
 }
 
 int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
+    int err = 0;
     LSinGenMapReadLock wl = generator_map.getReadLockObject();
     if(generator_map().count(sin_data->gen_id) == 0) return -1;
     CDWUniquePtr request(new CDataWrapper());
@@ -84,10 +85,10 @@ int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
     request->addDoubleValue("gainNoise", sin_data->parameter[gainNoise]);
     request->addDoubleValue("bias", sin_data->parameter[bias]);
     
-    if(sendRawRequest(ChaosMoveOperator(request),
-                      response)) {
-        ERR << "error receiving ack for step simulation";
-        return -1;
+    if((err = sendRawRequest(ChaosMoveOperator(request),
+                      response))) {
+        ERR << "error receiving ack for step simulation with code" << err;
+        return err;
     } else if(response->hasKey("opcode_err") == false){
         return -2;
     } else {
