@@ -162,6 +162,12 @@ void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
                                          DataType::SUB_TYPE_DOUBLE,
                                          10000,
                                          DataType::Output);
+    
+    addBinaryAttributeAsMIMETypeToDataSet("image",
+                                          "output image tets attribute",
+                                          "image/jpeg",
+                                          DataType::Output);
+    
     addAttributeToDataSet("run_counter",
                           "The number of run since last init phase",
                           DataType::TYPE_INT64,
@@ -243,7 +249,7 @@ void RTWorkerCU::unitInit() throw(CException) {
     
     CHECK_ASSERTION_THROW_AND_LOG(((err = initGenerator()) == 0), ERR_LOG(RTWorkerCU), -2, CHAOS_FORMAT("Error %1% initilizing generator in cu %2%", %err%getCUID()));
 
-    getAttributeCache()->getCachedOutputAttributeValue<uint64_t>(1, &out_run_counter);
+    getAttributeCache()->getCachedOutputAttributeValue<uint64_t>(2, &out_run_counter);
 
     setGeneratorPoint(getAttributeCache()->getValue<int32_t>(DOMAIN_INPUT, "points"));
     getAttributeCache()->resetChangedInputIndex();

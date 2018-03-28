@@ -135,55 +135,26 @@ void SCWorkerCU::unitDeinit() throw(CException) {
 
 //! restore the control unit to snapshot
 bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
-    uint64_t cmd_id = 0;
-    ChaosUniquePtr<CommandState> cmd_state;
-    if(snapshot_cache &&
-       snapshot_cache->getSharedDomain(DOMAIN_INPUT).hasAttribute(std::string("TestCorrelatingCommand/correlation-message"))) {
-        auto_ptr<CDataWrapper> cmd_pack(new CDataWrapper());
-        cmd_pack->addStringValue("correlation-message", snapshot_cache->getAttributeValue(DOMAIN_INPUT, "TestCorrelatingCommand/correlation-message")->getAsVariant().asString());
-        
-        LAPP_ << "corr_test = " << cmd_pack->getJSONString();
-        submitSlowCommand("TestCorrelatingCommand", cmd_pack.release(), cmd_id);
-        do{
-            cmd_state = getStateForCommandID(cmd_id);
-            if(!cmd_state.get()) break;
-            
-            switch (cmd_state->last_event) {
-                case BatchCommandEventType::EVT_QUEUED:
-                    LAPP_ << cmd_id << " -> QUEUED";
-                    break;
-                case BatchCommandEventType::EVT_RUNNING:
-                    LAPP_ << cmd_id << " -> RUNNING";
-                    break;
-                case BatchCommandEventType::EVT_WAITING:
-                    LAPP_ << cmd_id << " -> WAITING";
-                    break;
-                case BatchCommandEventType::EVT_PAUSED:
-                    LAPP_ << cmd_id << " -> PAUSED";
-                    break;
-                case BatchCommandEventType::EVT_KILLED:
-                    LAPP_ << cmd_id << " -> KILLED";
-                    break;
-                case BatchCommandEventType::EVT_COMPLETED:
-                    LAPP_ << cmd_id << " -> COMPLETED";
-                    break;
-                case BatchCommandEventType::EVT_FAULT:
-                    LAPP_ << cmd_id << " -> FALUT";
-                    break;
-                case BatchCommandEventType::EVT_FATAL_FAULT:
-                    LAPP_ << cmd_id << " -> EVT_FATAL_FAULT";
-                    break;
-                default:
-                    break;
-            }
-            
-           boost::this_thread::sleep_for(boost::chrono::seconds(1));
-        }while(cmd_state->last_event != BatchCommandEventType::EVT_COMPLETED &&
-               cmd_state->last_event != BatchCommandEventType::EVT_FAULT &&
-               cmd_state->last_event != BatchCommandEventType::EVT_KILLED);
-        
-        LAPP_ << "Resubmitted command in restore method has ended";
+    ChaosStringVector keys;
+    snapshot_cache->getAttributeNames(DOMAIN_INPUT, keys);
+    for(ChaosStringVectorIterator it = keys.begin(), end = keys.end();
+        it != end;
+        it++) {
+        INFO_LOG(SCWorkerCU) << "[RESTORE]-" << *it << "-"<<  snapshot_cache->getAttributeValue(DOMAIN_INPUT, *it)->getAsVariant().asString();
     }
-    
+    keys.clear();
+    snapshot_cache->getAttributeNames(DOMAIN_OUTPUT, keys);
+    for(ChaosStringVectorIterator it = keys.begin(), end = keys.end();
+        it != end;
+        it++) {
+        INFO_LOG(SCWorkerCU) << "[RESTORE]-" << *it << "-"<<  snapshot_cache->getAttributeValue(DOMAIN_OUTPUT, *it)->getAsVariant().asString();
+    }
+    keys.clear();
+    snapshot_cache->getAttributeNames(DOMAIN_SYSTEM, keys);
+    for(ChaosStringVectorIterator it = keys.begin(), end = keys.end();
+        it != end;
+        it++) {
+        INFO_LOG(SCWorkerCU) << "[RESTORE]-" << *it << "-"<<  snapshot_cache->getAttributeValue(DOMAIN_SYSTEM, *it)->getAsVariant().asString();
+    }
     return true;
 }

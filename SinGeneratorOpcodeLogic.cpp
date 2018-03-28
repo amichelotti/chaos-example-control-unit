@@ -39,13 +39,10 @@ void SinGeneratorOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper
     INFO << init_parameter.getJSONString();
 }
 
-void SinGeneratorOpcodeLogic::driverDeinit() throw(chaos::CException) {
-    
-}
+void SinGeneratorOpcodeLogic::driverDeinit() throw(chaos::CException) {}
 
 int SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
     LSinGenMapWriteLock wl = generator_map.getWriteLockObject();
-    
     ChaosSharedPtr<SinGeneratorData> new_generator(*data = new SinGeneratorData());
     std::memset(new_generator.get(), 0, sizeof(SinGeneratorData));
     new_generator->gen_id = counter++;
@@ -85,18 +82,22 @@ int SinGeneratorOpcodeLogic::computeSimulation(SinGeneratorData *sin_data) {
     request->addDoubleValue("gainNoise", sin_data->parameter[gainNoise]);
     request->addDoubleValue("bias", sin_data->parameter[bias]);
     
-    if((err = sendRawRequest(ChaosMoveOperator(request),
-                      response))) {
+    if((err = sendOpcodeRequest("gen_sin",
+                                ChaosMoveOperator(request),
+                                response))) {
         ERR << "error receiving ack for step simulation with code" << err;
         return err;
-    } else if(response->hasKey("opcode_err") == false){
-        return -2;
     } else {
-        int opcode_err = response->getInt32Value("opcode_err");
-        if(opcode_err) return opcode_err;
-        uint32_t bin_size = 0;
-        const char * bin_value = response->getBinaryValue("sin_wave", bin_size);
-        std::memcpy(sin_data->data, bin_value, bin_size);
+        INFO << response->getCompliantJSONString();
+        if(response->hasKey("err") == false){
+            return -2;
+        } else {
+            int opcode_err = response->getInt32Value("err");
+            if(opcode_err) return opcode_err;
+            uint32_t bin_size = 0;
+            const char * bin_value = response->getBinaryValue("sin_wave", bin_size);
+            std::memcpy(sin_data->data, bin_value, bin_size);
+        }
     }
     return 0;
 }

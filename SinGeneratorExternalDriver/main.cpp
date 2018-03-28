@@ -44,12 +44,12 @@ int main(int argc, const char * argv[]) {
     srand((unsigned)time(0));
     ChaosMicroUnitToolkit mut;
     const char *option="Content-Type: application/bson-json\r\n";
-    ChaosUniquePtr<RawDriverHandlerWrapper> hw = mut.createNewRawDriverHandlerWrapper(ConnectionTypeHTTP,
-                                                                                      "ws://localhost:8080/io_driver",
-                                                                                      option,
-                                                                                      event_handler,
-                                                                                      NULL,
-                                                                                      "");
+    ChaosUniquePtr<ExternalDriverHandlerWrapper> hw = mut.createNewExternalDriverHandlerWrapper(ConnectionTypeHTTP,
+                                                                                                "ws://localhost:8080/sim/sine",
+                                                                                                option,
+                                                                                                event_handler,
+                                                                                                NULL,
+                                                                                                "");
     
     while (err == 0) {
         err = hw->poll(100);
@@ -113,43 +113,43 @@ int event_handler(void *user_data,
             std::cout << "UP_EV_MSG_RECEIVED" << std::endl;
             break;
         }
+        
+        case UP_EV_INIT_RECEIVED:{
+            std::cout << "UP_EV_INIT_RECEIVED" << std::endl;
+            EDInitRequest *req = static_cast<EDInitRequest*>(event_data);
+            req->response.configuration_state = 1;
+            req->response.new_uri_id ="new instance";
+            break;
+        }
+           
+        case UP_EV_DEINIT_RECEIVED:{
+            std::cout << "UP_EV_DEINIT_RECEIVED" << std::endl;
+            EDDeinitRequest *req = static_cast<EDDeinitRequest*>(event_data);
+            //fetch instance
+            break;
+        }
+            
         case UP_EV_REQ_RECEIVED:{
+            //fetch instace
             std::cout << "UP_EV_REQ_RECEIVED" << std::endl;
-            UPRequest *req = static_cast<UPRequest*>(event_data);
-            switch (req->message->getInt32Value("opcode")) {
-                case 0:
-                    //unused
-                    break;
-                case 1:
-                    //unuseda
-                    break;
-                    
-                case 2:
-                    //unused
-                    break;
-                    
-                case 3: {
-                    req->response->addInt32Value("opcode_err", 0);
-                    const uint32_t _points = (uint32_t)req->message->getInt32Value(points);
-                    const double _freq = req->message->getDoubleValue(freq);
-                    const double _gain = req->message->getDoubleValue(gain);
-                    const double _gainNoise = req->message->getDoubleValue(gainNoise);
-                    const double _bias = req->message->getDoubleValue(bias);
-                    const double _phase = req->message->getDoubleValue(phase);
-                    double sin_points[_points];
-                    double interval = (2*PI)/(_points);
-                    for(int i=0; i<_points; i++){
-                        double sin_point = sin((interval*i*_freq) + _phase);
-                        double sin_point_rumor = (((double)randInt()/(double)100) * _gainNoise);
-                        sin_points[i] = (_gain * sin_point) + sin_point_rumor + _bias;
-                    }
-                    req->response->addBinaryValue("sin_wave",
-                                                  reinterpret_cast<const char *>(sin_points),
-                                                  _points*sizeof(double));
-                    break;
+            EDNormalRequest *req = static_cast<EDNormalRequest*>(event_data);
+            if(req->message.opcode.compare("gen_sin") == 0) {
+                const uint32_t _points = (uint32_t)req->message.opcode_par->getInt32Value(points);
+                const double _freq = req->message.opcode_par->getDoubleValue(freq);
+                const double _gain = req->message.opcode_par->getDoubleValue(gain);
+                const double _gainNoise = req->message.opcode_par->getDoubleValue(gainNoise);
+                const double _bias = req->message.opcode_par->getDoubleValue(bias);
+                const double _phase = req->message.opcode_par->getDoubleValue(phase);
+                double sin_points[_points];
+                double interval = (2*PI)/(_points);
+                for(int i=0; i<_points; i++){
+                    double sin_point = sin((interval*i*_freq) + _phase);
+                    double sin_point_rumor = (((double)randInt()/(double)100) * _gainNoise);
+                    sin_points[i] = (_gain * sin_point) + sin_point_rumor + _bias;
                 }
-                default:
-                    break;
+                req->response.message->addBinaryValue("sin_wave",
+                                                      reinterpret_cast<const char *>(sin_points),
+                                                      _points*sizeof(double));
             }
             break;
         }
