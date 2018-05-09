@@ -118,6 +118,7 @@ MsgManagmentResultType::MsgManagmentResult SinGeneratorOpcodeLogic::execOpcode(D
     MsgManagmentResultType::MsgManagmentResult result = MsgManagmentResultType::MMR_EXECUTED;
     switch(cmd->opcode) {
         case OP_INIT_SIMULATION: {
+            sendInitRequest();
             cmd->ret = initSimulation(static_cast<SinGeneratorData**>(cmd->resultData));
             break;
         }
@@ -134,6 +135,7 @@ MsgManagmentResultType::MsgManagmentResult SinGeneratorOpcodeLogic::execOpcode(D
             
         case OP_DESTROY_SIMULATION: {
             cmd->ret = destroySimulation(static_cast<SinGeneratorData*>(cmd->inputData));
+            sendDeinitRequest();
             break;
         }
     }
