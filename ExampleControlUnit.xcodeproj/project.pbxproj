@@ -903,6 +903,7 @@
 				3200EF691F39A4B7002B5115 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3214A41C1E38DE3200184C9D /* Build configuration list for PBXNativeTarget "ProxyControlUnit" */ = {
 			isa = XCConfigurationList;

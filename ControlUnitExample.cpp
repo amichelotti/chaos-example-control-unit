@@ -59,7 +59,7 @@ namespace common_plugin = chaos::common::plugin;
 namespace common_utility = chaos::common::utility;
 namespace cu_driver_manager = chaos::cu::driver_manager;
 
-int main (int argc, char* argv[] )
+int main (int argc, const char* argv[] )
 {
     std::vector<string> tmp_device_id;
     try {
