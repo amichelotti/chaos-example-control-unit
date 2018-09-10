@@ -744,7 +744,6 @@
 				OTHER_LDFLAGS = (
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
-					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
@@ -778,7 +777,6 @@
 				OTHER_LDFLAGS = (
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
-					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
