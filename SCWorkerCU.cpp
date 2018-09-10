@@ -37,7 +37,7 @@ SCWorkerCU::~SCWorkerCU() {}
 /*
  Return the default configuration
  */
-void SCWorkerCU::unitDefineActionAndDataset() throw(CException) {
+void SCWorkerCU::unitDefineActionAndDataset()  {
     //set the base information
     RangeValueInfo rangeInfoTemp;
     //cuSetup.addStringValue(CUDefinitionKey::CS_CM_CU_DESCRIPTION, "This is a beautifull CU");
@@ -115,26 +115,26 @@ void SCWorkerCU::unitDefineCustomAttribute() {
 }
 
 // Abstract method for the initialization of the control unit
-void SCWorkerCU::unitInit() throw(CException) {
+void SCWorkerCU::unitInit()  {
 }
 
 // Abstract method for the start of the control unit
-void SCWorkerCU::unitStart() throw(CException) {
+void SCWorkerCU::unitStart()  {
     
 }
 
 // Abstract method for the stop of the control unit
-void SCWorkerCU::unitStop() throw(CException) {
+void SCWorkerCU::unitStop()  {
     
 }
 
 // Abstract method for the deinit of the control unit
-void SCWorkerCU::unitDeinit() throw(CException) {
+void SCWorkerCU::unitDeinit()  {
     
 }
 
 //! restore the control unit to snapshot
-bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
+bool SCWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache)  {
     ChaosStringVector keys;
     snapshot_cache->getAttributeNames(DOMAIN_INPUT, keys);
     for(ChaosStringVectorIterator it = keys.begin(), end = keys.end();

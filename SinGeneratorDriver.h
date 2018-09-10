@@ -49,8 +49,8 @@ class SinGeneratorDriver: ADD_CU_DRIVER_PLUGIN_SUPERCLASS {
     
     long double PI;
     boost::atomic<unsigned int> generator_id;
-	void driverInit(const char *initParameter) throw(chaos::CException);
-	void driverDeinit() throw(chaos::CException);
+	void driverInit(const char *initParameter) ;
+	void driverDeinit() ;
     
     int initSimulation(SinGeneratorData **data);
     int setSimulationsPoints(SinGeneratorData *sin_data);

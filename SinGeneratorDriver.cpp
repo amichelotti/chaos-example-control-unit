@@ -54,13 +54,13 @@ generator_id(0) {}
 //default descrutcor
 SinGeneratorDriver::~SinGeneratorDriver(){}
 
-void SinGeneratorDriver::driverInit(const char *initParameter) throw(chaos::CException) {
+void SinGeneratorDriver::driverInit(const char *initParameter)  {
     SL7DRVLAPP_ << "Init dummy driver";
     srand((unsigned)time(0));
     PI = acos((long double) -1);
 }
 
-void SinGeneratorDriver::driverDeinit() throw(chaos::CException) {
+void SinGeneratorDriver::driverDeinit()  {
     SL7DRVLAPP_ << "Deinit dummy driver";
 }
 

@@ -105,7 +105,7 @@ RTWorkerCU::~RTWorkerCU() {
 /*
  Return the default configuration
  */
-void RTWorkerCU::unitDefineActionAndDataset() throw(CException) {
+void RTWorkerCU::unitDefineActionAndDataset()  {
     if(crash_location == 0) throw CException(-1, "Test Exception in definition phase", __PRETTY_FUNCTION__);
     
     //set the default delay for the CU
@@ -239,7 +239,7 @@ void RTWorkerCU::unitDefineCustomAttribute() {
 /*
  Initialize the Custom Contro Unit and return the configuration
  */
-void RTWorkerCU::unitInit() throw(CException) {
+void RTWorkerCU::unitInit()  {
     LAPP_ << "init RTWorkerCU";
     int err = 0;
     if(crash_location == 1) throw CException(-1, "Test Exception in init phase", __PRETTY_FUNCTION__);
@@ -261,14 +261,14 @@ void RTWorkerCU::unitInit() throw(CException) {
 /*
  Execute the work, this is called with a determinated delay, it must be as fast as possible
  */
-void RTWorkerCU::unitStart() throw(CException) {
+void RTWorkerCU::unitStart()  {
     if(crash_location == 2) throw CException(-1, "Test Exception in start phase", __PRETTY_FUNCTION__);
 }
 
 /*
  Execute the Control Unit work
  */
-void RTWorkerCU::unitRun() throw(CException) {
+void RTWorkerCU::unitRun()  {
     
     if((crash_location == 5) &&
        ((**out_run_counter) == crash_run_count) &&
@@ -282,12 +282,12 @@ void RTWorkerCU::unitRun() throw(CException) {
     getAttributeCache()->setOutputDomainAsChanged();
 }
 
-void  RTWorkerCU::unitInputAttributePreChangeHandler() throw(CException) {
+void  RTWorkerCU::unitInputAttributePreChangeHandler()  {
     
 }
 
 //! changed attribute
-void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
+void RTWorkerCU::unitInputAttributeChangedHandler()  {
     //r_o_attr_lock->lock();
     
 }
@@ -295,7 +295,7 @@ void RTWorkerCU::unitInputAttributeChangedHandler() throw(CException) {
 /*
  Execute the Control Unit work
  */
-void RTWorkerCU::unitStop() throw(CException) {
+void RTWorkerCU::unitStop()  {
     LAPP_ << "stop RTWorkerCU";
     if(crash_location == 3) throw CException(-1, "Test Exception in stop phase", __PRETTY_FUNCTION__);
 }
@@ -303,7 +303,7 @@ void RTWorkerCU::unitStop() throw(CException) {
 /*
  Deinit the Control Unit
  */
-void RTWorkerCU::unitDeinit() throw(CException) {
+void RTWorkerCU::unitDeinit()  {
     LAPP_ << "deinit RTWorkerCU";
     if(crash_location == 3) throw CException(-1, "Test Exception in deinit phase", __PRETTY_FUNCTION__);
     
@@ -311,7 +311,7 @@ void RTWorkerCU::unitDeinit() throw(CException) {
 }
 
 //! restore the control unit to snapshot
-bool RTWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException) {
+bool RTWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache)  {
     return true;
 }
 

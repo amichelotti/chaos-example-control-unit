@@ -35,11 +35,11 @@ counter(0){}
 
 SinGeneratorOpcodeLogic::~SinGeneratorOpcodeLogic() {}
 
-void SinGeneratorOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter) throw(chaos::CException) {
+void SinGeneratorOpcodeLogic::driverInit(const chaos::common::data::CDataWrapper& init_parameter)  {
     INFO << init_parameter.getJSONString();
 }
 
-void SinGeneratorOpcodeLogic::driverDeinit() throw(chaos::CException) {}
+void SinGeneratorOpcodeLogic::driverDeinit()  {}
 
 int SinGeneratorOpcodeLogic::initSimulation(SinGeneratorData **data) {
     LSinGenMapWriteLock wl = generator_map.getWriteLockObject();
