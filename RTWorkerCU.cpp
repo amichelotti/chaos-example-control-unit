@@ -318,8 +318,8 @@ bool RTWorkerCU::unitRestoreToSnapshot(chaos::cu::control_manager::AbstractShare
 /*
  Test Action Handler
  */
-CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachParam) {
-    CDataWrapper *result = new CDataWrapper();
+CDWUniquePtr RTWorkerCU::actionTestOne(CDWUniquePtr api_data) {
+    CreateNewDataWrapper(result,);
     static uint64_t counter = 0;
     result->addInt64Value("call_counter", counter++);
     LAPP_ << "call_counter = " << counter;
@@ -329,18 +329,18 @@ CDataWrapper* RTWorkerCU::actionTestOne(CDataWrapper *actionParam, bool& detachP
 /*
  Test Action Handler
  */
-CDataWrapper* RTWorkerCU::resetStatistic(CDataWrapper *actionParam, bool& detachParam) {
+CDWUniquePtr RTWorkerCU::resetStatistic(CDWUniquePtr api_data) {
     LAPP_ << "resetStatistic in RTWorkerCU called from rpc";
-    return NULL;
+    return CDWUniquePtr();
 }
 
 /*
  Test Action Handler
  */
-CDataWrapper* RTWorkerCU::actionTestTwo(CDataWrapper *actionParam, bool& detachParam) {
+CDWUniquePtr RTWorkerCU::actionTestTwo(CDWUniquePtr api_data) {
     LAPP_ << "resetStatistic in RTWorkerCU called from rpc";
-    if(actionParam->hasKey(ACTION_TWO_PARAM_NAME)){
-        int32_t sleepTime =  actionParam->getInt32Value(ACTION_TWO_PARAM_NAME);
+    if(api_data->hasKey(ACTION_TWO_PARAM_NAME)){
+        int32_t sleepTime =  api_data->getInt32Value(ACTION_TWO_PARAM_NAME);
         
         LAPP_ << "param for actionTestTwo with value:" << sleepTime;
         LAPP_ << "let this thread to waith "<< sleepTime << " usec";
@@ -348,7 +348,7 @@ CDataWrapper* RTWorkerCU::actionTestTwo(CDataWrapper *actionParam, bool& detachP
     } else {
         LAPP_ << "No param received for action actionTestTwo";
     }
-    return NULL;
+    return CDWUniquePtr();
 }
 
 bool RTWorkerCU::i32Handler(const std::string& attribute_name,

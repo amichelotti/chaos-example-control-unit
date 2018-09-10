@@ -101,17 +101,17 @@ protected:
     /*
         Test Action Handler
      */
-    CDataWrapper* actionTestOne(CDataWrapper*, bool&);
+    CDWUniquePtr actionTestOne(CDWUniquePtr api_data);
     
     /*
      Test Action Handler
      */
-    CDataWrapper* actionTestTwo(CDataWrapper*, bool&);
+    CDWUniquePtr actionTestTwo(CDWUniquePtr api_data);
     
     /*
      Test Action Handler
      */
-    CDataWrapper* resetStatistic(CDataWrapper*, bool&);
+    CDWUniquePtr resetStatistic(CDWUniquePtr api_data);
     
     
     bool i32Handler(const std::string& attribute_name,
