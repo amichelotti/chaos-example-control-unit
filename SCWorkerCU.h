@@ -36,27 +36,27 @@ protected:
     /*
      Define the Control Unit Dataset and Actions
      */
-    void unitDefineActionAndDataset()throw(CException);
+    void unitDefineActionAndDataset();
     void unitDefineCustomAttribute();
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
      */
-    void unitInit() throw(CException);
+    void unitInit() ;
     /*(Optional)
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
-    void unitStart() throw(CException);
+    void unitStart() ;
     /*(Optional)
      The Control Unit will be stopped
      */
-    void unitStop() throw(CException);
+    void unitStop() ;
     /*(Optional)
      The Control Unit will be deinitialized and disposed
      */
-    void unitDeinit() throw(CException);
+    void unitDeinit() ;
 	
 	// restore the control unit to snapshot
-	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) ;
 
 public:
     /*

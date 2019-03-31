@@ -87,7 +87,6 @@ void TestCorrelatingCommand::setHandler(CDataWrapper *data) {
     
     if(BC_CHECK_EXEC_RUNNING_PROPERTY ||
        BC_CHECK_NORMAL_RUNNING_PROPERTY) {
-        setBusyFlag(true);
         setStateVariableSeverity(StateVariableTypeAlarmDEV,
                                  "out_of_set",
                                  MultiSeverityAlarmLevelWarning);
@@ -119,7 +118,6 @@ void TestCorrelatingCommand::ccHandler() {
         //we can terminate
         CMDCU_ << "End correlate simulation... average step time[microsecond]" << ((double)work_time_accumulator/getStepCounter());
         BC_END_RUNNING_PROPERTY
-        setBusyFlag(false);
         setStateVariableSeverity(StateVariableTypeAlarmCU,
                                  MultiSeverityAlarmLevelClear);
         setStateVariableSeverity(StateVariableTypeAlarmDEV,
@@ -128,7 +126,6 @@ void TestCorrelatingCommand::ccHandler() {
 }
 
 bool TestCorrelatingCommand::timeoutHandler() {
-    setBusyFlag(false);
     setStateVariableSeverity(StateVariableTypeAlarmDEV,
                              MultiSeverityAlarmLevelClear);
     setStateVariableSeverity(StateVariableTypeAlarmCU,

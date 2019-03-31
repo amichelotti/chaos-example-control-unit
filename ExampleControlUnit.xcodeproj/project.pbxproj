@@ -719,6 +719,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				COMPILER_INDEX_STORE_ENABLE = NO;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -743,7 +744,6 @@
 				OTHER_LDFLAGS = (
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
-					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
@@ -758,6 +758,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				COMPILER_INDEX_STORE_ENABLE = NO;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../usr/local/bin";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -776,7 +777,6 @@
 				OTHER_LDFLAGS = (
 					"-lchaos_cutoolkit",
 					"-lchaos_common",
-					"-ljsoncpp",
 				);
 				PRODUCT_NAME = ExampleControlUnit;
 				SDKROOT = macosx;
@@ -903,6 +903,7 @@
 				3200EF691F39A4B7002B5115 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3214A41C1E38DE3200184C9D /* Build configuration list for PBXNativeTarget "ProxyControlUnit" */ = {
 			isa = XCConfigurationList;

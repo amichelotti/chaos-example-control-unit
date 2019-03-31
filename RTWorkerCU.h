@@ -63,55 +63,55 @@ protected:
     /*
      Define the Control Unit Dataset and Actions
      */
-    void unitDefineActionAndDataset()throw(CException);
+    void unitDefineActionAndDataset();
 	
 	void unitDefineCustomAttribute();
 	
     /*(Optional)
      Initialize the Control Unit and all driver, with received param from MetadataServer
      */
-    void unitInit() throw(CException);
+    void unitInit() ;
     /*
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
-    void unitStart() throw(CException);
+    void unitStart() ;
     /*
      Execute the work, this is called with a determinated delay, it must be as fast as possible
      */
-    void unitRun() throw(CException);
+    void unitRun() ;
 	
 	//! pre imput attribute change
-	void unitInputAttributePreChangeHandler() throw(CException);
+	void unitInputAttributePreChangeHandler() ;
 	
 	//! attribute changed handler
-	void unitInputAttributeChangedHandler() throw(CException);
+	void unitInputAttributeChangedHandler() ;
 	
     /*
      The Control Unit will be stopped
      */
-    void unitStop() throw(CException);
+    void unitStop() ;
     
     /*(Optional)
      The Control Unit will be deinitialized and disposed
      */
-    void unitDeinit() throw(CException);
+    void unitDeinit() ;
 	
 	//! restore the control unit to snapshot
-	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) throw(CException);
+	bool unitRestoreToSnapshot(chaos::cu::control_manager::AbstractSharedDomainCache * const snapshot_cache) ;
     /*
         Test Action Handler
      */
-    CDataWrapper* actionTestOne(CDataWrapper*, bool&);
+    CDWUniquePtr actionTestOne(CDWUniquePtr api_data);
     
     /*
      Test Action Handler
      */
-    CDataWrapper* actionTestTwo(CDataWrapper*, bool&);
+    CDWUniquePtr actionTestTwo(CDWUniquePtr api_data);
     
     /*
      Test Action Handler
      */
-    CDataWrapper* resetStatistic(CDataWrapper*, bool&);
+    CDWUniquePtr resetStatistic(CDWUniquePtr api_data);
     
     
     bool i32Handler(const std::string& attribute_name,
