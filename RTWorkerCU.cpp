@@ -164,7 +164,7 @@ void RTWorkerCU::unitDefineActionAndDataset()  {
                                          DataType::Output);
     
     addBinaryAttributeAsMIMETypeToDataSet("image",
-                                          "output image tets attribute",
+                                          "output image test attribute",
                                           "image/jpeg",
                                           DataType::Output);
     

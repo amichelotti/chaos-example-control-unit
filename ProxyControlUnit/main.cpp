@@ -62,7 +62,7 @@ bool attributeHandler(const std::string& control_unit_id,//control unit id
 bool controlUnitEvent(const std::string& control_unit_id,//control unit id
                       const ControlUnitProxyEvent& value);
 
-int main (int argc, char* argv[] ) {
+int main (int argc, const char const* argv[] ) {
     std::vector<string> tmp_device_id;
     try {
         

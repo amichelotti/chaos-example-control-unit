@@ -63,6 +63,10 @@ void SCWorkerCU::unitDefineActionAndDataset()  {
                                          DataType::SUB_TYPE_DOUBLE,
                                          10000,
                                          DataType::Output);
+    addBinaryAttributeAsMIMETypeToDataSet("image",
+                                          "output image test attribute",
+                                          "image/jpeg",
+                                          DataType::Output);
     addAttributeToDataSet("run_counter",
                           "The number of run since last init phase",
                           DataType::TYPE_INT64,
