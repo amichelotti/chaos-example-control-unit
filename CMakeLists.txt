@@ -1,16 +1,22 @@
 cmake_minimum_required(VERSION 2.8)
-#include(${CMAKE_SOURCE_DIR}/../../chaosframework/config/CMakeChaos.txt)
-project(examplecontrolunit)
-#IF ( NOT CMAKE_INSTALL_PREFIX)
-#  set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../../usr/local)
-#ENDIF()
-#include(${CMAKE_SOURCE_DIR}/../../chaosframework/config/CMakeChaos.txt)
-#INCLUDE_DIRECTORIES(../../)
 
+project(examplecontrolunit)
+include(ExternalProject)
 
 find_package(chaos MODULE REQUIRED)
-include_directories(/Users/bisegni/source/chaos_development/usr/local/include)
-link_directories(/Users/bisegni/source/chaos_development/usr/local/lib)
+#include_directories(/Users/bisegni/source/chaos_development/usr/local/include)
+#link_directories(/Users/bisegni/source/chaos_development/usr/local/lib)
+
+ExternalProject_Add(
+opencv
+GIT_REPOSITORY https://github.com/opencv/opencv.git
+GIT_TAG master
+PREFIX "${CMAKE_BINARY_DIR}/lib/opencv-prefix"
+SOURCE_DIR "${CMAKE_BINARY_DIR}/lib/opencv-src"
+BINARY_DIR "${CMAKE_BINARY_DIR}/lib/opencv-build"
+LOG_DOWNLOAD ON
+LOG_CONFIGURE ON
+LOG_BUILD ON)
 
 SET(cutest_exe_src ControlUnitExample.cpp
                   RTWorkerCU.cpp
