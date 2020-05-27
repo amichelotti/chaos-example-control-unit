@@ -45,6 +45,9 @@ TARGET_LINK_LIBRARIES(ExampleControlUnit ${FrameworkLib})
 #TARGET_LINK_LIBRARIES(EUApiTestPlugin)
 #TARGET_LINK_LIBRARIES(SinGeneratorExternalDriver pthread chaos_micro_unit_toolkit)
 
-INSTALL_TARGETS(/bin ExampleControlUnit)
+
+INSTALL(TARGETS ExampleControlUnit
+        DESTINATION "bin"
+        PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 #INSTALL_TARGETS(/bin SinGeneratorExternalDriver)
 #INSTALL_TARGETS(/bin RpcTestStress)
