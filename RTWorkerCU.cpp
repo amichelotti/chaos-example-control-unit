@@ -282,10 +282,6 @@ void RTWorkerCU::unitRun()  {
     getAttributeCache()->setOutputDomainAsChanged();
 }
 
-void  RTWorkerCU::unitInputAttributePreChangeHandler()  {
-    
-}
-
 //! changed attribute
 void RTWorkerCU::unitInputAttributeChangedHandler()  {
     //r_o_attr_lock->lock();
