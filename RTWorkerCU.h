@@ -80,9 +80,6 @@ protected:
      */
     void unitRun() ;
 	
-	//! pre imput attribute change
-	void unitInputAttributePreChangeHandler() ;
-	
 	//! attribute changed handler
 	void unitInputAttributeChangedHandler() ;
 	
