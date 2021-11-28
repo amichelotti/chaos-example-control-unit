@@ -42,7 +42,7 @@ DEFINE_BATCH_COMMAND_CLASS(SinWaveCommand, SlowCommand) {
     
     long double PI;
     int32_t messageID;
-    boost::mutex pointChangeMutex;
+    ChaosMutex pointChangeMutex;
     inline void _setWavePoint(int32_t new_points);
     inline void setWavePoint();
 protected:
