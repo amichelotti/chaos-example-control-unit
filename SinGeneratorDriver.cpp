@@ -23,7 +23,7 @@
 
 #include <chaos/cu_toolkit/driver_manager/driver/AbstractDriverPlugin.h>
 
-#include <boost/regex.hpp>
+#include <regex>
 
 namespace cu_driver = chaos::cu::driver_manager::driver;
 
@@ -33,9 +33,9 @@ namespace cu_driver = chaos::cu::driver_manager::driver;
 
 
 //! Regular expression for check server hostname and port
-static const boost::regex PlcHostNameAndPort("([a-zA-Z0-9]+(.[a-zA-Z0-9]+)+):([0-9]{3,5})");
+static const std::regex PlcHostNameAndPort("([a-zA-Z0-9]+(.[a-zA-Z0-9]+)+):([0-9]{3,5})");
 //! Regular expression for check server ip and port
-static const boost::regex PlcIpAnPort("(\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b):([0-9]{4,5})");
+static const std::regex PlcIpAnPort("(\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b):([0-9]{4,5})");
 
 
 //GET_PLUGIN_CLASS_DEFINITION
